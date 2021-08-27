@@ -10,10 +10,11 @@ jobs:
           name: Building CI image
           command: |
             set -e
+            LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
             echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USER" --password-stdin
-            docker build -t $CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1 .
+            docker build -t $LC_REPO:$CIRCLE_SHA1 .
             mkdir -p workspace
-            docker save -o workspace/${CIRCLE_PROJECT_REPONAME}_${CIRCLE_SHA1}.tar $CIRCLE_SHA1
+            docker save -o workspace/${LC_REPO}_${CIRCLE_SHA1}.tar $CIRCLE_SHA1
       - persist_to_workspace:
           root: workspace
           paths:
@@ -27,8 +28,9 @@ jobs:
       - run:
           name: Building R binary
           command: |
-            docker load -i /tmp/workspace/${CIRCLE_PROJECT_REPONAME}_${CIRCLE_SHA1}.tar
-            docker run -ti --rm ${CIRCLE_PROJECT_REPONAME}_${CIRCLE_SHA1} r -e "devtools::build(binary = TRUE)"
+            LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
+            docker load -i /tmp/workspace/${LC_REPO}_${CIRCLE_SHA1}.tar
+            docker run -ti --rm ${LC_REPO}_${CIRCLE_SHA1} r -e "devtools::build(binary = TRUE)"
 
 
 workflows:
