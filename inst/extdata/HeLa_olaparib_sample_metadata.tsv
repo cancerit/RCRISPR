@@ -1,0 +1,8 @@
+sample_name	plasmid	control	treatment	filename	treatment_group	reads
+HELA_T0	1	0	0	HELA_T0.tsv	T0	30000000
+HELA_T15A_CTRL	0	1	0	HELA_T15A_CTRL.tsv.gz	untreated-control	30000000
+HELA_T15B_CTRL	0	1	0	HELA_T15B_CTRL.tsv.gz	untreated-control	30000000
+HELA_T15C_CTRL	0	1	0	HELA_T15C_CTRL.tsv.gz	untreated-control	30000000
+HELA_T15A_OLA	0	0	1	HELA_T15A_OLA.tsv.gz	olaparib-treated	30000000
+HELA_T15B_OLA	0	0	1	HELA_T15B_OLA.tsv.gz	olaparib-treated	30000000
+HELA_T15C_OLA	0	0	1	HELA_T15C_OLA.tsv.gz	olaparib-treated	30000000

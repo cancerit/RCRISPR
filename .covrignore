@@ -1,0 +1,1 @@
+package_coverage(exclusions = "tests/testthat/testdata")

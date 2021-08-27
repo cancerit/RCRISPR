@@ -1,0 +1,7 @@
+^rcrispr\.Rproj$
+^\.Rproj\.user$
+^\.github$
+^README\.Rmd$
+^.covrignore
+^Dockerfile
+^\.gitlab-ci\.yml$

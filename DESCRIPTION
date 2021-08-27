@@ -1,0 +1,14 @@
+Package: rcrispr
+Title: R Functions for CRISPR-Related Analyses
+Version: 0.0.0.1
+Authors@R: person(given = "Victoria", family = "Offord", role = c("aut", "cre"), email = "vo1@sanger.ac.uk")
+Description: A collection of R functions to assist with common CRISPR-related analyses.
+License: GPL (>=3)
+Imports: methods,optparse,dplyr,tidyr,stringr,rlang,ggplot2,ggrepel,matrixStats,scales,ggpubr
+Suggests: testthat (>= 3.0.0),covr,knitr,rmarkdown,R.utils
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Config/testthat/edition: 3
+VignetteBuilder: knitr
