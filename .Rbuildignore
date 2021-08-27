@@ -3,5 +3,5 @@
 ^\.github$
 ^README\.Rmd$
 ^.covrignore
-^Dockerfile
-^\.gitlab-ci\.yml$
+^Dockerfile*
+^\.circleci$
