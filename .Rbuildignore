@@ -5,3 +5,4 @@
 ^.covrignore
 ^Dockerfile
 ^\.gitlab-ci\.yml$
+.licenserc.yaml
