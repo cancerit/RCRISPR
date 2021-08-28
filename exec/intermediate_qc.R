@@ -122,6 +122,13 @@ sample_metadata_object <-
   )
 sample_metadata <- get_sample_metadata(sample_metadata_object, processed = T)
 
+# Set sample columns
+if (!is_gene) {
+  sample_columns = 3:ncol(sample_data)
+} else {
+  sample_columns = 2:ncol(sample_data)
+}
+
 # If --check_names is used, check that count/lfc sample names exist in the sample metadata
 if (!opt$no_check_names & !is_gene) {
   message("Comparing matrix column names to sample metadata labels...")
@@ -130,7 +137,7 @@ if (!opt$no_check_names & !is_gene) {
       data = sample_data,
       id_column = 1,
       gene_column = 2,
-      sample_columns = 3:ncol(sample_data),
+      sample_columns = sample_columns,
       sample_metadata_object = sample_metadata_object
     )
   } else {
@@ -138,11 +145,10 @@ if (!opt$no_check_names & !is_gene) {
       data = sample_data,
       id_column = NULL,
       gene_column = 1,
-      sample_columns = 2:ncol(sample_data),
+      sample_columns = sample_columns,
       sample_metadata_object = sample_metadata_object
     )
   }
-
   # No need to add another check here, if the names mismatch the function will error out
 }
 
@@ -219,7 +225,18 @@ if (opt$no_plot) {
                                                                        is_fc & !is_gene ~ 'sgRNA fold changes',
                                                                        !is_fc & is_gene ~ 'Gene counts',
                                                                        !is_fc & !is_gene ~ 'sgRNA counts',
-                                                                       TRUE ~ 'Densitys'))
+                                                                       TRUE ~ 'Density'))
+  # Ridgeline density plot of count or lfc densities
+  message("Generating ridgeline density plot...")
+  density_plot_name <- ifelse(is_fc, 'fold_change.density', 'count_matrix.density')
+  density_plot_name <- ifelse(is_gene, paste0('gene.', density_plot_name), paste0('sgrna.', density_plot_name))
+  plot_list[[density_plot_name]] <- plot_common_density_ridges(sample_data_narrow,
+                                                                xcol = 'values',
+                                                                xlab = case_when(is_fc & is_gene ~ 'Gene fold changes',
+                                                                                 is_fc & !is_gene ~ 'sgRNA fold changes',
+                                                                                 !is_fc & is_gene ~ 'Gene counts',
+                                                                                 !is_fc & !is_gene ~ 'sgRNA counts',
+                                                                                 TRUE ~ 'Density'))
 
   # Save plots
   message("Saving plots...")
@@ -228,6 +245,21 @@ if (opt$no_plot) {
                                prefix = opt$prefix,
                                suffix = opt$suffix,
                                dpi = 300)
+
+  # Plot and save correlation plot separately
+  # Correlation plot
+  message("Generating correlation plot...")
+  correlation_plot_name <- ifelse(is_fc, 'fold_change.correlation', 'count_matrix.correlation')
+  correlation_plot_name <- ifelse(is_gene, paste0('gene.', correlation_plot_name), paste0('sgrna.', correlation_plot_name))
+  correlation_plot <- plot_correlation(sample_data, sample_columns)
+  message("Saving correlation plot...")
+  correlation_plot_file <- save_plot_with_ggsave(
+                              data = correlation_plot,
+                              outfile = paste0(correlation_plot_name, '.png'),
+                              outdir = opt$outdir,
+                              prefix = opt$prefix,
+                              suffix = opt$suffix,
+                              dpi = 300)
 }
 
 # Write processed data to .Rdata
@@ -242,6 +274,8 @@ if (!is.null(opt$rdata)) {
                                                    sample_metadata,
                                                    sample_data_narrow,
                                                    sample_data_statistics,
+                                                   correlation_plot,
+                                                   correlation_plot_file,
                                                    plot_list,
                                                    plot_files))
   message(paste("R data written to:", rdata_outfile))
