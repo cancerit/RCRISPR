@@ -27,6 +27,13 @@
 # identical to a statement that reads ‘Copyright (c) 2005, 2006, 2007, 2008,
 # 2009, 2010, 2011, 2012’.
 #
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                           check_dataframe()                         -- *#
+#* --                                                                     -- *#
+###############################################################################
+
 #' Check dataframe is not empty and indices are valid
 #'
 #' @description Check dataframe is not empty and indices exist.
@@ -67,6 +74,12 @@ check_dataframe <-
     return(TRUE)
   }
 
+###############################################################################
+#* --                                                                     -- *#
+#* --                 check_is_numeric_and_is_integer()                   -- *#
+#* --                                                                     -- *#
+###############################################################################
+
 #' Check value is numeric and is an integer.
 #'
 #' @description Check value is numeric and is an integer.
@@ -87,6 +100,12 @@ check_is_numeric_and_is_integer <-
       return(TRUE)
     }
   }
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                       process_column_indices()                      -- *#
+#* --                                                                     -- *#
+###############################################################################
 
 #' Process column indices into vector.
 #'
@@ -142,6 +161,12 @@ process_column_indices <-
     return(processed_columns)
   }
 
+###############################################################################
+#* --                                                                     -- *#
+#* --                         add_pseudocount()                           -- *#
+#* --                                                                     -- *#
+###############################################################################
+
 #' Add pseudocount
 #'
 #' @description Add pseudocount to selected dataframe columns
@@ -189,7 +214,7 @@ add_pseudocount <-
     return(data)
   }
 
-################################################################################
+###############################################################################
 #* --                                                                     -- *#
 #* --                       compare_annotations()                         -- *#
 #* --                                                                     -- *#
