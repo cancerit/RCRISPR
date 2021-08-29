@@ -123,6 +123,10 @@ sample_metadata_object <-
   )
 sample_metadata <- get_sample_metadata(sample_metadata_object, processed = TRUE)
 
+# Get ordered sample labels
+ordered_sample_metadata <- sample_metadata %>%
+  arrange(desc(plasmid), desc(control), desc(treatment), desc(label))
+
 # Set sample columns
 if (!is_gene) {
   sample_columns = 3:ncol(sample_data)
@@ -153,7 +157,6 @@ if (!opt$no_check_names & !is_gene) {
   # No need to add another check here, if the names mismatch the function will error out
 }
 
-# TODO: Add general statistics for intermediate data
 # Collapse data for stats and plots
 message("Collapsing data...")
   if (!is_gene) {
@@ -217,6 +220,14 @@ if (opt$no_plot) {
         # Stop if there is an error
         stop(paste("Cannot add groups to collapsed data:", e))
       })
+  }
+
+  # Check that the union of sample_order and sample is the right length
+  message("Ordering sample names...")
+  if (length(intersect(ordered_sample_metadata$label, sample_data_narrow$sample)) == 0) {
+    message("Will not apply sample order, sample names do not exist in metadata.")
+  } else {
+    sample_data_narrow$sample <- factor(sample_data_narrow$sample, levels = intersect(ordered_sample_metadata$label, sample_data_narrow$sample))
   }
 
   # Violin plot of count or lfc densities
