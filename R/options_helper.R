@@ -1146,3 +1146,74 @@ intermediate_qc_options <- function() {
   )
   return(opts)
 }
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                         BAGEL GENE INFILE OPTIONS                   -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+#' Optparse options for BAGEL
+#'
+#' @importFrom optparse make_option
+#' @return list of optparse options
+#' @export bagel_gene_infile_options
+bagel_gene_infile_options <- function() {
+  opts <- list(
+    make_option(
+       c("--ess"),
+       type = "character",
+       default = NULL,
+       metavar = "character",
+       help = "file containing essential gene names"
+     ),
+    make_option(
+      c("--ess_gene_column_index"),
+      type = "integer",
+      default = 1,
+      help = "index of column containing gene names in essential gene file [Default: 1]",
+      metavar = "integer"
+    ),
+    make_option(
+       c("--no_ess_header"),
+       default = FALSE,
+       action = "store_true",
+       help = "essential gene file has no header"
+     ),
+     make_option(
+       c("--ess_delim"),
+       type = "character",
+       default = "\t",
+       help = "essential gene file delimiter [Default: \\t]",
+       metavar = "character"
+     ),
+    make_option(
+       c("--noness"),
+       type = "character",
+       default = NULL,
+       metavar = "character",
+       help = "file containing non-essential gene names"
+     ),
+    make_option(
+      c("--noness_gene_column_index"),
+      type = "integer",
+      default = 1,
+      help = "index of column containing gene names in non-essential gene file [Default: 1]",
+      metavar = "integer"
+    ),
+    make_option(
+       c("--no_noness_header"),
+       default = FALSE,
+       action = "store_true",
+       help = "non-essential gene file has no header"
+     ),
+     make_option(
+       c("--noness_delim"),
+       type = "character",
+       default = "\t",
+       help = "non-essential gene file delimiter [Default: \\t]",
+       metavar = "character"
+     )
+  )
+  return(opts)
+}

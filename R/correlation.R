@@ -80,19 +80,20 @@ plot_correlation <-
   p <-
     tryCatch({
       if (groups) {
+        df[,group_column] <- factor(df[,group_column])
         group_column <- colnames(df)[group_column]
         ggpairs(
           data = df,
           columns = cor_column_indices,
-          mapping = ggplot2::aes(color = group_column),
+          mapping = ggplot2::aes_string(color = group_column),
           progress = FALSE,
           diag = list(continuous = wrap("densityDiag", alpha = 0.5)),
-          upper = list(continuous = wrap('cor', fontface = 'bold', size = 2, method = method)),
+          upper = list(continuous = wrap('cor', fontface = 'bold', size = 1.2, method = method)),
           lower = list(continuous = wrap("points", alpha = 0.7, size = 0.8, position = position_jitter(height = 3, width = 3)),
                        combo = wrap("dot", alpha = 0.7, size = 0.8))
         ) +
-        scale_fill_brewer(palette = 'Set3') +
-        scale_color_brewer(palette = 'Set3') +
+        scale_fill_brewer(palette = 'Dark2') +
+        scale_color_brewer(palette = 'Dark2') +
         theme_light() +
         theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
               strip.text.y = element_text(angle = 0, hjust = 0, face = 'bold', size = 10, color = 'black'),
@@ -104,7 +105,7 @@ plot_correlation <-
           columns = cor_column_indices,
           progress = FALSE,
           diag = list(continuous = wrap("densityDiag", alpha = 0.5)),
-          upper = list(continuous = wrap('cor', fontface = 'bold', size = 2, method = method)),
+          upper = list(continuous = wrap('cor', fontface = 'bold', size = 1.2, method = method)),
           lower = list(continuous = wrap("points", alpha = 0.7, size = 0.8, position = position_jitter(height = 3, width = 3)),
                        combo = wrap("dot", alpha = 0.7, size = 0.8))
         ) +
@@ -119,10 +120,4 @@ plot_correlation <-
       stop(paste("Cannot plot correlation:", e))
     })
   return(p)
-}
-
-
-
-
-
-
+  }

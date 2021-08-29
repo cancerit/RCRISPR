@@ -124,6 +124,7 @@ outfile <- write_dataframe_to_file(data = raw_qc_stats,
                                    outfile = opt$outfile,
                                    outdir = opt$outdir,
                                    prefix = opt$prefix,
+                                   suffix = opt$suffix,
                                    row.names = FALSE,
                                    quote = FALSE,
                                    sep = "\t")
@@ -243,6 +244,7 @@ if (opt$no_plot) {
 if (!is.null(opt$rdata)) {
   message("Writing R data to file...")
   rdata_outfile <- write_rdata_to_file(prefix = opt$prefix,
+                                       suffix = opt$suffix,
                                        outfile = opt$rdata,
                                        outdir = opt$outdir,
                                        data = list(sample_count_matrix,

@@ -14,6 +14,7 @@ option_list = c(
   basic_infile_options(),
   sample_metadata_options(),
   intermediate_qc_options(),
+  bagel_gene_infile_options(),
   basic_outfile_options(),
   shared_output_options(),
   infile_format_options(),
@@ -43,20 +44,20 @@ opt <- tryCatch({
 ###############################################################################
 
 # Check whether required fields are provided
-for (n in c('infile', 'info', 'infile_id_column_index')) {
+for (n in c('infile', 'info', 'infile_id_column_index', 'ess', 'noness')) {
   check_option(n, opt[[n]])
-}
-
-# Set is_lfc to true if option used
-is_fc = FALSE
-if (opt$is_fc) {
-  is_fc = TRUE
 }
 
 # Set is_gene to true if option used
 is_gene = FALSE
 if (opt$is_gene) {
   is_gene = TRUE
+}
+
+# Set is_lfc to true if option used
+is_fc = FALSE
+if (opt$is_fc) {
+  is_fc = TRUE
 }
 
 # If is_gene is FALSE expect the infile_gene_column_index to be set
@@ -69,13 +70,27 @@ if (is_gene && !is_fc)
 
 # Set default stats file name
 if (is.null(opt$outfile))
-  opt$outfile <- 'intermediate_summary.tsv'
+  opt$outfile <- 'bagel_classification_summary.tsv'
 
 ###############################################################################
 #* --                                                                     -- *#
 #* --                       MAIN SCRIPT - STATISTICS                      -- *#
 #* --                                                                     -- *#
 ###############################################################################
+
+# Read in essential genes
+message("Reading essential gene file...")
+ess <- read_file_to_dataframe(filepath = opt$ess,
+                              file_separator = opt$ess_delim,
+                              file_header = ifelse(opt$no_ess_header, FALSE, TRUE),
+                              column_indices = opt$ess_gene_column_index)
+
+# Read in non-essential genes
+message("Reading non-essential gene file...")
+noness <- read_file_to_dataframe(filepath = opt$noness,
+                                 file_separator = opt$noness_delim,
+                                 file_header = ifelse(opt$no_noness_header, FALSE, TRUE),
+                                 column_indices = opt$noness_gene_column_index)
 
 # Read in sample data matrix
 # NOTE: although options say counts, this can be either a count or lfc matrix (where count column should be set to lfc columns)
@@ -135,7 +150,7 @@ if (!is_gene) {
 }
 
 # If --check_names is used, check that count/lfc sample names exist in the sample metadata
-if (!opt$no_check_names) {
+if (!opt$no_check_names & !is_gene) {
   message("Comparing matrix column names to sample metadata labels...")
   if (!is_gene) {
     sample_name_check <- compare_matrix_to_sample_metadata(
@@ -157,30 +172,29 @@ if (!opt$no_check_names) {
   # No need to add another check here, if the names mismatch the function will error out
 }
 
+# Add BAGEL classifications
+sample_data <- add_bagel_classifications(data = sample_data,
+                                          gene_column = which(colnames(sample_data) == 'gene'),
+                                          ess = ess[,1],
+                                          noness = noness[,1])
+
 # Collapse data for stats and plots
 message("Collapsing data...")
-  if (!is_gene) {
-    sample_data_narrow <- sample_data %>%
-      gather(sample, values, -sgRNA, -gene)
-  } else {
-    sample_data_narrow <- sample_data %>%
-      gather(sample, values, -gene)
-  }
+if (!is_gene) {
+  sample_data_narrow <- sample_data %>%
+    gather(sample, values, -sgRNA, -gene, -classification)
+} else {
+  sample_data_narrow <- sample_data %>%
+    gather(sample, values, -gene, -classification)
+}
 
-# Summarise sample data
-message("Building generic intermediate statistics...")
-sample_data_statistics <- sample_data_narrow %>%
-  group_by(sample) %>%
-  summarise('n' = n(),
-            'total' = sum(values),
-            'mean' = mean(values),
-            'median' = median(values),
-            'min' = min(values),
-            'max' = max(values),
-            .groups = 'keep')
+# Build BAGEL statistics
+sample_data_statistics <- get_bagel_statistics(data = sample_data_narrow,
+                                               is_fc = is_fc,
+                                               is_gene = is_gene)
 
 # Write raw count statistics to output file
-message("Writing generic intermediate to file...")
+message("Writing BAGEL classification statistics to file...")
 outfile <- write_dataframe_to_file(data = sample_data_statistics,
                                    outfile = opt$outfile,
                                    outdir = opt$outdir,
@@ -189,7 +203,7 @@ outfile <- write_dataframe_to_file(data = sample_data_statistics,
                                    row.names = FALSE,
                                    quote = FALSE,
                                    sep = "\t")
-message(paste("Intermediate statistics written to:", outfile))
+message(paste("BAGEL classification statistics written to:", outfile))
 
 ###############################################################################
 #* --                                                                     -- *#
@@ -203,25 +217,20 @@ num_sample_columns <- length(process_column_indices(sample_columns))
 # Set up empty plot filename vector
 plot_files <- NULL
 
-if (opt$no_plot) {
+# Were any BAGEL essential and non-essential genes found
+bagel_genes_identified <- sample_data %>%
+  filter(classification != 'unknown') %>%
+  nrow()
+found_bagel_genes <- ifelse(bagel_genes_identified > 0, TRUE, FALSE)
+if (opt$no_plot || !found_bagel_genes) {
+  if (!found_bagel_genes)
+    message("Cannot generate plots, no BAGEL genes were idenitfied in dataset.")
   # Message when --no_plot
   message("Plots are disabled.")
 } else {
   message("Generating plots...")
   # Generate list of plots for saving
   plot_list <- list()
-
-  # Set groups for remaining plots
-  if (!is.null(opt$info_group_column_index)) {
-    message("Adding groups...")
-    sample_data_narrow <- tryCatch({
-       sample_data_narrow %>%
-        left_join(sample_metadata %>% select('sample' = label, group), by = 'sample')
-      }, error = function(e) {
-        # Stop if there is an error
-        stop(paste("Cannot add groups to collapsed data:", e))
-      })
-  }
 
   # Check that the union of sample_order and sample is the right length
   message("Ordering sample names...")
@@ -231,92 +240,19 @@ if (opt$no_plot) {
     sample_data_narrow$sample <- factor(sample_data_narrow$sample, levels = intersect(ordered_sample_metadata$label, sample_data_narrow$sample))
   }
 
-  # Violin plot of count or lfc densities
-  message("Generating violin plot...")
-  violin_plot_name <- ifelse(is_fc, 'fold_change.violin', 'count_matrix.violin')
-  violin_plot_name <- ifelse(is_gene, paste0('gene.', violin_plot_name), paste0('sgrna.', violin_plot_name))
-  plot_list[[violin_plot_name]] <- plot_common_violin(sample_data_narrow,
-                                                      ycol = 'values',
-                                                      ylab = case_when(is_fc & is_gene ~ 'Gene fold changes',
-                                                                       is_fc & !is_gene ~ 'sgRNA fold changes',
-                                                                       !is_fc & is_gene ~ 'Gene counts',
-                                                                       !is_fc & !is_gene ~ 'sgRNA counts',
-                                                                       TRUE ~ 'Density'))
-
   # Ridgeline density plot of count or lfc densities
   message("Generating ridgeline density plot...")
   density_plot_name <- ifelse(is_fc, 'fold_change.density', 'count_matrix.density')
   density_plot_name <- ifelse(is_gene, paste0('gene.', density_plot_name), paste0('sgrna.', density_plot_name))
-  plot_list[[density_plot_name]] <- plot_common_density_ridges(sample_data_narrow,
+  plot_list[[density_plot_name]] <- plot_common_density_ridges(sample_data_narrow %>%
+                                                                 filter(classification != 'unknown') %>%
+                                                                 rename('group' = 'classification'),
                                                                 xcol = 'values',
                                                                 xlab = case_when(is_fc & is_gene ~ 'Gene fold changes',
                                                                                  is_fc & !is_gene ~ 'sgRNA fold changes',
                                                                                  !is_fc & is_gene ~ 'Gene counts',
                                                                                  !is_fc & !is_gene ~ 'sgRNA counts',
                                                                                  TRUE ~ 'Density'))
-
-  # Only prepare and plot PCA if there are 2 or more samples
-  if (num_sample_columns < 2) {
-    message("Cannot generate PCA plot as there are less than 2 sample columns.")
-    pca_data <- NULL
-  } else {
-    message("Preparing data for PCA plots...")
-    # Get only sample columns
-    if (is_gene) {
-      sample_data_pca <- sample_data_narrow %>%
-        select(gene, sample, values) %>%
-        spread(sample, values) %>%
-        select(-gene)
-    } else {
-      sample_data_pca <- sample_data_narrow %>%
-        select(sgRNA, sample, values) %>%
-        spread(sample, values) %>%
-        select(-sgRNA)
-    }
-    # Prepare data for PCA plots
-    pca_data <- prepare_pca(df = sample_data_pca, transform = T, log_transform = ifelse(is_fc, FALSE, TRUE))
-
-    # Set groups for PCA plots
-    pca_data[['processed_data']] <- pca_data[['data']]$x %>% as.data.frame()
-    if (!is.null(opt$info_group_column_index)) {
-      message("Adding groups to PCA data...")
-       pca_data[['processed_data']] <- pca_data[['processed_data']] %>%
-        rownames_to_column('sample') %>%
-        left_join(sample_metadata %>% select('sample' = label, 'color' = group, plasmid, control, treatment), by = 'sample')
-    }
-    message("Adding plasmid, control and treatment to PCA data...")
-    pca_data[['processed_data']] <- pca_data[['processed_data']] %>%
-      mutate('shape' = case_when(plasmid == 1 ~ 'plasmid',
-                                 control == 1 ~ 'control',
-                                 treatment == 1 ~ 'treatment')) %>%
-      select(-control, -plasmid, -treatment)
-    if (length(unique(pca_data[['processed_data']]$color)) == 1 && length(unique(pca_data[['processed_data']]$shape)) == 1) {
-      message("Samples are all in one group and of one type, skipping PCA plot.")
-    } else {
-      # Plot PC scree
-      message("Generating PCA scree plot...")
-      pca_scree_plot_name <- ifelse(is_fc, 'fold_change.PCA_scree', 'count_matrix.PCA_scree')
-      pca_scree_plot_name <- ifelse(is_gene, paste0('gene.', pca_scree_plot_name), paste0('sgrna.', pca_scree_plot_name))
-      plot_list[[pca_scree_plot_name]] <- plot_common_barplot(pca_data[['variance_explained']],
-                                                      xcol = 'PC',
-                                                      ycol = 'variance_explained',
-                                                      ylab = 'Variance explained (%)')
-      # Plot PCA
-      message("Plot PCA...")
-      pca_plot_name <- ifelse(is_fc, 'fold_change.PCA', 'count_matrix.PCA')
-      pca_plot_name <- ifelse(is_gene, paste0('gene.', pca_plot_name), paste0('sgrna.', pca_plot_name))
-      plot_list[[pca_plot_name]] <- plot_pca(pca_data[['processed_data']])
-    }
-  }
-
-  # Save plots
-  message("Saving plots...")
-  plot_files <- save_plot_list(plot_list = plot_list,
-                               outdir = opt$outdir,
-                               prefix = opt$prefix,
-                               suffix = opt$suffix,
-                               dpi = 300)
-
   # Plot and save correlation plot separately
   if (num_sample_columns < 2) {
     message("Cannot generate correlation plot as there are less than 2 sample columns.")
@@ -327,7 +263,10 @@ if (opt$no_plot) {
     message("Generating correlation plot...")
     correlation_plot_name <- ifelse(is_fc, 'fold_change.correlation', 'count_matrix.correlation')
     correlation_plot_name <- ifelse(is_gene, paste0('gene.', correlation_plot_name), paste0('sgrna.', correlation_plot_name))
-    correlation_plot <- plot_correlation(sample_data, sample_columns)
+    correlation_plot <- plot_correlation(df = sample_data %>% filter(classification != 'unknown'),
+                                         cor_columns = c(sample_columns, ncol(sample_data)),
+                                         group_column = which(colnames(sample_data) == 'classification'))
+
     message("Saving correlation plot...")
     correlation_plot_file <- save_plot_with_ggsave(
                                 data = correlation_plot,
@@ -335,8 +274,16 @@ if (opt$no_plot) {
                                 outdir = opt$outdir,
                                 prefix = opt$prefix,
                                 suffix = opt$suffix,
-                                dpi = 300)
+                                dpi = 400)
   }
+
+  # Save plots
+  message("Saving plots...")
+  plot_files <- save_plot_list(plot_list = plot_list,
+                               outdir = opt$outdir,
+                               prefix = opt$prefix,
+                               suffix = opt$suffix,
+                               dpi = 300)
 }
 
 # Write processed data to .Rdata
@@ -351,7 +298,6 @@ if (!is.null(opt$rdata)) {
                                                    sample_metadata,
                                                    sample_data_narrow,
                                                    sample_data_statistics,
-                                                   pca_data,
                                                    correlation_plot,
                                                    correlation_plot_file,
                                                    plot_list,
