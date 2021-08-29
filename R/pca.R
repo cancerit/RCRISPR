@@ -85,7 +85,9 @@ prepare_pca <-
 #'
 #' @description Generate PCA plot.
 #'
-#' @param data a data frame.
+#' @param df a data frame.
+#' @param pc_x principal component to plot on x axis
+#' @param pc_y principal component to plot on y axis
 #'
 #' @import ggplot2
 #' @export plot_pca

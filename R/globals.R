@@ -40,4 +40,13 @@ utils::globalVariables(c("sgRNA", "gene", "Gene", 'sgrna',
                          "prop_mapped_reads", "pct_low_sgrnas", "pct_zero_sgrnas",
                          "low_counts_per_sample", ":=", "total_reads", "total_counts",
                          "pct_mapped_reads", "unmapped", "pct_unmapped_reads",
-                         "category", "num_reads", "df", "data"))
+                         "category", "num_reads", "df", "data", "classification",
+                         "mean", "values", "median", "val", "ess", "median", "n_essential",
+                         "total_essential", "n_nonessential", "total_essential", "n_nonessential",
+                         "total_nonessential", "prop_bagel_essential", "setNames", "sd", "NNMD",
+                         "Essential.Glass.Delta"))
+
+
+
+
+
