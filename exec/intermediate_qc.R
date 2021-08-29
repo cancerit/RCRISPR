@@ -89,7 +89,8 @@ if (is_fc) {
     file_separator = opt$infile_delim,
     file_header = ifelse(opt$no_infile_header, FALSE, TRUE),
     is_gene = is_gene,
-    processed = T
+    processed = TRUE,
+    check.names = FALSE
   )
 } else {
   message("Reading sample count matrix...")
@@ -100,7 +101,8 @@ if (is_fc) {
       count_column = opt$infile_data_column_index,
       file_separator = opt$infile_delim,
       file_header = ifelse(opt$no_infile_header, FALSE, TRUE),
-      processed = T
+      processed = TRUE,
+      check.names = FALSE
     )
 }
 
@@ -119,7 +121,7 @@ sample_metadata_object <-
     file_header = ifelse(opt$no_info_header,FALSE,TRUE),
     check.names = FALSE
   )
-sample_metadata <- get_sample_metadata(sample_metadata_object, processed = T)
+sample_metadata <- get_sample_metadata(sample_metadata_object, processed = TRUE)
 
 # Set sample columns
 if (!is_gene) {
@@ -250,7 +252,7 @@ if (opt$no_plot) {
     # Get only sample columns
     if (is_gene) {
       sample_data_pca <- sample_data_narrow %>%
-        select(gene, sample, value) %>%
+        select(gene, sample, values) %>%
         spread(sample, values) %>%
         select(-gene)
     } else {
@@ -262,15 +264,7 @@ if (opt$no_plot) {
     # Prepare data for PCA plots
     pca_data <- prepare_pca(df = sample_data_pca, transform = T, log_transform = ifelse(is_fc, FALSE, TRUE))
 
-    # Plot PC scree
-    message("Generating PCA scree plot...")
-    pca_scree_plot_name <- ifelse(is_fc, 'fold_change.PCA_scree', 'count_matrix.PCA_scree')
-    pca_scree_plot_name <- ifelse(is_gene, paste0('gene.', pca_scree_plot_name), paste0('sgrna.', pca_scree_plot_name))
-    plot_list[[pca_scree_plot_name]] <- plot_common_barplot(pca_data[['variance_explained']],
-                                                    xcol = 'PC',
-                                                    ycol = 'variance_explained',
-                                                    ylab = 'Variance explained (%)')
-    # Set groups for remaining plots
+    # Set groups for PCA plots
     pca_data[['processed_data']] <- pca_data[['data']]$x %>% as.data.frame()
     if (!is.null(opt$info_group_column_index)) {
       message("Adding groups to PCA data...")
@@ -284,9 +278,18 @@ if (opt$no_plot) {
                                  control == 1 ~ 'control',
                                  treatment == 1 ~ 'treatment')) %>%
       select(-control, -plasmid, -treatment)
-    if (length(unique(pca_data[['processed_data']]$color == 1)) && length(unique(pca_data[['processed_data']]$shape == 1))) {
+    if (length(unique(pca_data[['processed_data']]$color)) == 1 && length(unique(pca_data[['processed_data']]$shape)) == 1) {
       message("Samples are all in one group and of one type, skipping PCA plot.")
     } else {
+      # Plot PC scree
+      message("Generating PCA scree plot...")
+      pca_scree_plot_name <- ifelse(is_fc, 'fold_change.PCA_scree', 'count_matrix.PCA_scree')
+      pca_scree_plot_name <- ifelse(is_gene, paste0('gene.', pca_scree_plot_name), paste0('sgrna.', pca_scree_plot_name))
+      plot_list[[pca_scree_plot_name]] <- plot_common_barplot(pca_data[['variance_explained']],
+                                                      xcol = 'PC',
+                                                      ycol = 'variance_explained',
+                                                      ylab = 'Variance explained (%)')
+      # Plot PCA
       message("Plot PCA...")
       pca_plot_name <- ifelse(is_fc, 'fold_change.PCA', 'count_matrix.PCA')
       pca_plot_name <- ifelse(is_gene, paste0('gene.', pca_plot_name), paste0('sgrna.', pca_plot_name))

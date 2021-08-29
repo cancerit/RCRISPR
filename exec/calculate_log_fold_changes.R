@@ -57,7 +57,8 @@ sample_count_matrix <- read_count_matrix_file(
   count_column = c(opt$control_indices, opt$treatment_indices),
   file_separator = opt$counts_delim,
   file_header = ifelse(opt$no_counts_header,FALSE,TRUE),
-  processed = T
+  processed = TRUE,
+  check.names = FALSE
 )
 
 # Calculate sgRNA-level log fold changes

@@ -71,7 +71,8 @@ sample_count_matrix <- read_count_matrix_file(
   count_column = opt$count_count_column_index,
   file_separator = opt$counts_delim,
   file_header = ifelse(opt$no_counts_header,FALSE,TRUE),
-  processed = T
+  processed = T,
+  check.names = F
 )
 
 # Read in sample metadata (optional)

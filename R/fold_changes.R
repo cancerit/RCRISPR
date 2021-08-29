@@ -215,14 +215,14 @@ calculate_lfc <-
     # Get mean of control indices
     data <- data.frame(data[1:2],
                        'control_means' = apply(data[3:(4 + (ncontrol - 2))], 1, function(x) mean(x)),
-                       data[treatment_indices])
+                       data[treatment_indices], check.names = FALSE)
     # Add pseudocount to counts
     data <- add_pseudocount(data,
                             pseudocount = pseudocount,
                             indices = c(3:(3 + ntreatment)))
     # Calculate log fold changes
     data <- data.frame(data[1:2],
-                       log2(data[,4:(3 + ntreatment)] / data[,3]))
+                       log2(data[,4:(3 + ntreatment)] / data[,3]), check.names = FALSE)
     return(data)
   }
 

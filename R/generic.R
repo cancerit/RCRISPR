@@ -176,6 +176,7 @@ process_column_indices <-
 #' @param indices column indices.
 #' @param ... parameters for `check_dataframe`.
 #'
+#' @import dplyr
 #' @return a data frame.
 #' @export add_pseudocount
 add_pseudocount <-
@@ -192,22 +193,17 @@ add_pseudocount <-
       stop("Cannot add pseudocount, pseudocount is not numeric.")
     # Check dataframe
     check_dataframe(data)
-    # Get original column order
-    column_order <- colnames(data)
+    # Process column indices
+    indices <- process_column_indices(indices)
     # If no indices given, apply to full data frame
     if (is.null(indices)) {
       # Add pseudocount to all data frame columns
       warning("No indices given, adding pseudocount to all indices")
-      data <- data.frame(apply(data[indices], 2, function(x) x + pseudocount))
+      data <- data %>% mutate(across(1:ncol(data), ~ . + pseudocount))
     } else {
-      # Add pseudocount to selected dataf rame columns
-      data <- data.frame(data[-indices],
-                         apply(data[indices], 2, function(x) x + pseudocount))
+      # Add pseudocount to selected data frame columns
+      data <- data %>% mutate(across(indices, ~ . + pseudocount))
     }
-    # Check data frame
-    check_dataframe(data, ...)
-    # Make sure data columns are in same order
-    data <- data[,column_order]
     # Check data frame
     check_dataframe(data, ...)
     # Return data frame

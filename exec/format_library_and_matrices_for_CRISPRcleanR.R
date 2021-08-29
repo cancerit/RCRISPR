@@ -78,7 +78,8 @@ sample_count_matrix <- read_count_matrix_file(
   count_column = opt$count_count_column_index,
   file_separator = opt$counts_delim,
   file_header = ifelse(opt$no_counts_header,FALSE,TRUE),
-  processed = T
+  processed = TRUE,
+  check.names = FALSE
 )
 
 # Read in fold change matrix
@@ -90,7 +91,8 @@ fold_change_matrix <- read_count_matrix_file(
   count_column = opt$lfc_lfc_column_index,
   file_separator = opt$lfc_delim,
   file_header = ifelse(opt$no_lfc_header,FALSE,TRUE),
-  processed = T
+  processed = TRUE,
+  check.names = FALSE
 )
 
 # Compare sgRNA IDs and gene names between count matrix and library
