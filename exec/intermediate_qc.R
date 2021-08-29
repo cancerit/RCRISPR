@@ -1,6 +1,7 @@
 suppressPackageStartupMessages(library(optparse))
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(tidyr))
+suppressPackageStartupMessages(library(tibble))
 suppressPackageStartupMessages(library(rcrispr))
 
 ###############################################################################
@@ -21,8 +22,7 @@ option_list = c(
   sample_metadata_sample_filename_column_index_options(),
   sample_metadata_sample_label_column_index_options(),
   sample_metadata_sample_type_column_index_options(),
-  sample_metadata_sample_group_column_index_options(),
-  sample_metadata_sample_read_count_column_index_options()
+  sample_metadata_sample_group_column_index_options()
 )
 
 opt_parser <- OptionParser(option_list = option_list)
@@ -114,7 +114,6 @@ sample_metadata_object <-
     plasmid_column = opt$info_plasmid_column_index,
     control_column = opt$info_control_column_index,
     treatment_column = opt$info_treatment_column_index,
-    reads_column = opt$info_reads_column_index,
     group_column =  opt$info_group_column_index,
     file_separator = opt$info_delim,
     file_header = ifelse(opt$no_info_header,FALSE,TRUE),
@@ -192,6 +191,9 @@ message(paste("Intermediate statistics written to:", outfile))
 #* --                                                                     -- *#
 ###############################################################################
 
+# Get number of samples
+num_sample_columns <- length(process_column_indices(sample_columns))
+
 # Set up empty plot filename vector
 plot_files <- NULL
 
@@ -226,6 +228,7 @@ if (opt$no_plot) {
                                                                        !is_fc & is_gene ~ 'Gene counts',
                                                                        !is_fc & !is_gene ~ 'sgRNA counts',
                                                                        TRUE ~ 'Density'))
+
   # Ridgeline density plot of count or lfc densities
   message("Generating ridgeline density plot...")
   density_plot_name <- ifelse(is_fc, 'fold_change.density', 'count_matrix.density')
@@ -238,6 +241,59 @@ if (opt$no_plot) {
                                                                                  !is_fc & !is_gene ~ 'sgRNA counts',
                                                                                  TRUE ~ 'Density'))
 
+  # Only prepare and plot PCA if there are 2 or more samples
+  if (num_sample_columns < 2) {
+    message("Cannot generate PCA plot as there are less than 2 sample columns.")
+    pca_data <- NULL
+  } else {
+    message("Preparing data for PCA plots...")
+    # Get only sample columns
+    if (is_gene) {
+      sample_data_pca <- sample_data_narrow %>%
+        select(gene, sample, value) %>%
+        spread(sample, values) %>%
+        select(-gene)
+    } else {
+      sample_data_pca <- sample_data_narrow %>%
+        select(sgRNA, sample, values) %>%
+        spread(sample, values) %>%
+        select(-sgRNA)
+    }
+    # Prepare data for PCA plots
+    pca_data <- prepare_pca(df = sample_data_pca, transform = T, log_transform = ifelse(is_fc, FALSE, TRUE))
+
+    # Plot PC scree
+    message("Generating PCA scree plot...")
+    pca_scree_plot_name <- ifelse(is_fc, 'fold_change.PCA_scree', 'count_matrix.PCA_scree')
+    pca_scree_plot_name <- ifelse(is_gene, paste0('gene.', pca_scree_plot_name), paste0('sgrna.', pca_scree_plot_name))
+    plot_list[[pca_scree_plot_name]] <- plot_common_barplot(pca_data[['variance_explained']],
+                                                    xcol = 'PC',
+                                                    ycol = 'variance_explained',
+                                                    ylab = 'Variance explained (%)')
+    # Set groups for remaining plots
+    pca_data[['processed_data']] <- pca_data[['data']]$x %>% as.data.frame()
+    if (!is.null(opt$info_group_column_index)) {
+      message("Adding groups to PCA data...")
+       pca_data[['processed_data']] <- pca_data[['processed_data']] %>%
+        rownames_to_column('sample') %>%
+        left_join(sample_metadata %>% select('sample' = label, 'color' = group, plasmid, control, treatment), by = 'sample')
+    }
+    message("Adding plasmid, control and treatment to PCA data...")
+    pca_data[['processed_data']] <- pca_data[['processed_data']] %>%
+      mutate('shape' = case_when(plasmid == 1 ~ 'plasmid',
+                                 control == 1 ~ 'control',
+                                 treatment == 1 ~ 'treatment')) %>%
+      select(-control, -plasmid, -treatment)
+    if (length(unique(pca_data[['processed_data']]$color == 1)) && length(unique(pca_data[['processed_data']]$shape == 1))) {
+      message("Samples are all in one group and of one type, skipping PCA plot.")
+    } else {
+      message("Plot PCA...")
+      pca_plot_name <- ifelse(is_fc, 'fold_change.PCA', 'count_matrix.PCA')
+      pca_plot_name <- ifelse(is_gene, paste0('gene.', pca_plot_name), paste0('sgrna.', pca_plot_name))
+      plot_list[[pca_plot_name]] <- plot_pca(pca_data[['processed_data']])
+    }
+  }
+
   # Save plots
   message("Saving plots...")
   plot_files <- save_plot_list(plot_list = plot_list,
@@ -247,19 +303,25 @@ if (opt$no_plot) {
                                dpi = 300)
 
   # Plot and save correlation plot separately
-  # Correlation plot
-  message("Generating correlation plot...")
-  correlation_plot_name <- ifelse(is_fc, 'fold_change.correlation', 'count_matrix.correlation')
-  correlation_plot_name <- ifelse(is_gene, paste0('gene.', correlation_plot_name), paste0('sgrna.', correlation_plot_name))
-  correlation_plot <- plot_correlation(sample_data, sample_columns)
-  message("Saving correlation plot...")
-  correlation_plot_file <- save_plot_with_ggsave(
-                              data = correlation_plot,
-                              outfile = paste0(correlation_plot_name, '.png'),
-                              outdir = opt$outdir,
-                              prefix = opt$prefix,
-                              suffix = opt$suffix,
-                              dpi = 300)
+  if (num_sample_columns < 2) {
+    message("Cannot generate correlation plot as there are less than 2 sample columns.")
+    correlation_plot <- NULL
+    correlation_plot_file <- NULL
+  } else {
+    # Correlation plot
+    message("Generating correlation plot...")
+    correlation_plot_name <- ifelse(is_fc, 'fold_change.correlation', 'count_matrix.correlation')
+    correlation_plot_name <- ifelse(is_gene, paste0('gene.', correlation_plot_name), paste0('sgrna.', correlation_plot_name))
+    correlation_plot <- plot_correlation(sample_data, sample_columns)
+    message("Saving correlation plot...")
+    correlation_plot_file <- save_plot_with_ggsave(
+                                data = correlation_plot,
+                                outfile = paste0(correlation_plot_name, '.png'),
+                                outdir = opt$outdir,
+                                prefix = opt$prefix,
+                                suffix = opt$suffix,
+                                dpi = 300)
+  }
 }
 
 # Write processed data to .Rdata
@@ -274,6 +336,7 @@ if (!is.null(opt$rdata)) {
                                                    sample_metadata,
                                                    sample_data_narrow,
                                                    sample_data_statistics,
+                                                   pca_data,
                                                    correlation_plot,
                                                    correlation_plot_file,
                                                    plot_list,

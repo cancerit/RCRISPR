@@ -346,7 +346,7 @@ save_plot_with_ggsave <-
                ...))
     }, error = function(e) {
       # Stop if there is an error
-      stop("Could not save plot with ggsave.")
+      stop(paste("Could not save plot with ggsave:", e))
     })
     # Check output file exists
     check_file(filepath)
@@ -388,6 +388,7 @@ save_plot_list <-
     plot_filepaths <- vector()
     # Loop over plot list
     for (pn in names(plot_list)) {
+      message(paste("Saving plot:", pn))
       # Check name isn't null or numeric
       if (is.numeric(pn) || is.null(pn))
         stop(paste("Could not save plot from list, name is numeric or null:", pn))

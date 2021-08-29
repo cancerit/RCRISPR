@@ -157,18 +157,21 @@ if (opt$no_plot) {
   message("Generating zero sgRNA statistics plot...")
   plot_list[['percentage_zero_guides_per_sample']] <- plot_common_barplot(
                                                         raw_qc_stats,
+                                                        xcol = 'sample',
                                                         ycol = 'pct_zero_sgrnas',
                                                         ylab = 'Guides with no reads assigned (%)')
   # Plot percent low sgRNAs
   message("Generating low sgRNA statistics plot...")
   plot_list[['percentage_low_guides_per_sample']] <- plot_common_barplot(
                                                       raw_qc_stats,
+                                                      xcol = 'sample',
                                                       ycol = 'pct_low_sgrnas',
                                                       ylab = paste0("Guides with <", low_counts, " reads assigned (%)"))
   # Plot percent low sgRNAs
   message("Generating gini index statistics plot...")
   plot_list[['gini_index_per_sample']] <- plot_common_barplot(
                                                       raw_qc_stats,
+                                                      xcol = 'sample',
                                                       ycol = 'gini_index',
                                                       ylab = paste0("Gini index"))
   # Save plots
