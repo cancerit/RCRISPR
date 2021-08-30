@@ -193,6 +193,7 @@ read_file_to_dataframe <-
 #' @param outdir the name of the output directory (defaults to current directory).
 #' @param prefix a prefix to be added to the file name.
 #' @param suffix a suffix to be added to the file name (before file extension).
+#' @param create_dir whether to create directory if it does not exist
 #' @importFrom tools file_path_sans_ext
 #' @importFrom tools file_ext
 #' @return A file path.
@@ -270,7 +271,8 @@ write_dataframe_to_file <-
   outfile <- prepare_filepath(outfile = outfile,
                               outdir = outdir,
                               prefix = prefix,
-                              suffix = suffix)
+                              suffix = suffix,
+                              create_dir = TRUE)
   # Write data to file
   write.table(x = data, file = outfile, ...)
   # Check file
@@ -311,7 +313,8 @@ write_rdata_to_file <-
     outfile <- prepare_filepath(outfile = outfile,
                                 outdir = outdir,
                                 prefix = prefix,
-                                suffix = suffix)
+                                suffix = suffix,
+                                create_dir = TRUE)
     # Write data to file
     save(data, file = outfile)
     # Check file
@@ -357,7 +360,8 @@ save_plot_with_ggsave <-
     filepath <- prepare_filepath(outfile = outfile,
                                  outdir = outdir,
                                  prefix = prefix,
-                                 suffix = suffix)
+                                 suffix = suffix,
+                                 create_dir = TRUE)
     # Save plot
     tryCatch({
       suppressMessages(

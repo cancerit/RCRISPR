@@ -913,6 +913,13 @@ filter_by_index_options <- function() {
       default = NULL,
       help = "output file for processed library",
       metavar = "character"
+    ),
+    make_option(
+      c("--filtered_guides_outfile"),
+      type = "character",
+      default = NULL,
+      help = "output file for filtered guides",
+      metavar = "character"
     )
   )
   return(opts)

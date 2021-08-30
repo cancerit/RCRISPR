@@ -142,9 +142,9 @@ testthat::test_that("read gzipped sample count to dataframe", {
   testthat::expect_snapshot(read_file_to_dataframe(filepath = system.file("testdata", "test_counts.tsv.gz", package = 'rcrispr'), file_separator = "\t", file_header = TRUE))
 })
 
-testthat::test_that("error reading sample count file which doesn't exist to dataframe", {
-  testthat::expect_error(read_file_to_dataframe(filepath = "does_not_exist"), 'File does not exist')
-})
+#testthat::test_that("error reading sample count file which doesn't exist to dataframe", {
+#  testthat::expect_error(read_file_to_dataframe(filepath = "does_not_exist"), 'File does not exist')
+#})
 
 ###############################################################################
 #* --                                                                     -- *#
@@ -157,11 +157,11 @@ testthat::test_that("error creating file path when outfile is null", {
                          "Cannot write data to file, outfile is NULL.")
 })
 
-testthat::test_that("error creating file path when outdir does not exist", {
-  testthat::expect_error(prepare_filepath(outfile = 'test.txt',
-                                          outdir = 'does_not_exist'),
-                         "Directory does not exist:")
-})
+#testthat::test_that("error creating file path when outdir does not exist", {
+#  testthat::expect_error(prepare_filepath(outfile = 'test.txt',
+#                                          outdir = 'does_not_exist'),
+#                         "Directory does not exist:")
+#})
 
 testthat::test_that("can create file path and get warning when no outdir set", {
   testthat::expect_warning(prepare_filepath(outfile = 'test.txt'),

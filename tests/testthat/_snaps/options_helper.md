@@ -1922,6 +1922,39 @@
       list()
       
       
+      [[6]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--filtered_guides_outfile"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "character"
+      
+      Slot "dest":
+      [1] "filtered_guides_outfile"
+      
+      Slot "default":
+      NULL
+      
+      Slot "help":
+      [1] "output file for filtered guides"
+      
+      Slot "metavar":
+      [1] "character"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
 
 # CRISPRcleanR output options
 
