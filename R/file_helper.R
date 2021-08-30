@@ -201,7 +201,8 @@ prepare_filepath <-
   function(outfile = NULL,
            outdir = NULL,
            prefix = NULL,
-           suffix = NULL) {
+           suffix = NULL,
+           create_dir = TRUE) {
     if (is.null(outfile))
       stop("Cannot write data to file, outfile is NULL.")
     # If outdir is null, default to current working directory
@@ -209,6 +210,12 @@ prepare_filepath <-
       outdir <- getwd()
       warning(paste("outdir was not set, using working directory:", getwd()))
     } else {
+      if (create_dir) {
+        # Check that directory exists, if not, create it
+        if (!dir.exists(outdir)) {
+          dir.create(outdir, recursive = TRUE)
+        }
+      }
       # Check preset directory is valid
       check_directory(outdir, ignore_empty = TRUE)
     }
