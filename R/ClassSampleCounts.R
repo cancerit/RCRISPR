@@ -41,7 +41,7 @@
 setClass(
   "SampleCounts",
   representation(
-    sample_name = "any",
+    sample_name = "ANY",
     filepath = "character",
     id_column = "numeric",
     gene_column = "numeric",
