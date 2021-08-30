@@ -97,11 +97,9 @@ count_matrix_stats <-
                'pct_mapped_reads' = round(prop_mapped_reads * 100, 2 ), .after = total_reads)
     }
     # Check data frame
-    tryCatch({
-      check_dataframe(count_stats)
-    }, error = function(e) {
-      stop(paste("Cannot calculate count stats:", e))
-    })
+    check_dataframe(count_stats)
+    # Check data frame
+    check_dataframe(count_stats)
     return(count_stats)
   }
 

@@ -27,6 +27,12 @@
 # identical to a statement that reads ‘Copyright (c) 2005, 2006, 2007, 2008,
 # 2009, 2010, 2011, 2012’.
 #
+################################################################################
+#* --                                                                      -- *#
+#* --                     plot_common_violin()                             -- *#
+#* --                                                                      -- *#
+################################################################################
+
 #' Generate violin plot
 #'
 #' @description Generate violin plot.
@@ -35,8 +41,6 @@
 #' @param ycol column from data to plot
 #' @param ylab label for y axis
 #'
-#' @import dplyr
-#' @import tidyr
 #' @importFrom ggpubr theme_pubr
 #' @importFrom scales pretty_breaks unit_format
 #' @export plot_common_violin
@@ -70,7 +74,7 @@ plot_common_violin <-
     if (groups == TRUE) {
       p <- tryCatch({
         ggplot(df, aes_string(x = 'sample', y = ycol, fill = 'group')) +
-          geom_violin(colour="gray30") +
+          geom_violin(colour = "gray30") +
           labs(x = "", y = ylab, fill = "") +
           scale_fill_brewer(palette = 'Set3') +
           scale_y_continuous(breaks = pretty_breaks(10)) +
@@ -78,21 +82,95 @@ plot_common_violin <-
           theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
       }, error = function(e) {
         # Stop if there is an error
-        stop(paste("Cannot plot read mapping statistics:", e))
+        stop(paste("Cannot generate violin plot:", e))
       })
     } else {
       p <- tryCatch({
         ggplot(df, aes_string(x = 'sample', y = ycol)) +
           geom_violin(colour="gray30") +
           labs(x = "", y = ylab) +
-          scale_fill_brewer(palette = 'Set3') +
           scale_y_continuous(breaks = pretty_breaks(10)) +
           theme_pubr(base_size = 16) +
           theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
       }, error = function(e) {
         # Stop if there is an error
-        stop(paste("Cannot plot read mapping statistics:", e))
+        stop(paste("Cannot generate violin plot:", e))
       })
     }
     return(p)
   }
+
+################################################################################
+#* --                                                                      -- *#
+#* --                     plot_common_density_ridges()                     -- *#
+#* --                                                                      -- *#
+################################################################################
+
+#' Generate ridgeline density plot
+#'
+#' @description Generate ridgeline density plot.
+#'
+#' @param df a data frame.
+#' @param xcol column from data to plot
+#' @param xlab label for x axis
+#'
+#' @importFrom ggridges geom_density_ridges
+#' @importFrom ggpubr theme_pubr
+#' @importFrom scales pretty_breaks unit_format
+#' @export plot_common_density_ridges
+plot_common_density_ridges <-
+  function(df = NULL,
+           xcol = NULL,
+           xlab = NULL
+           ) {
+    # Check data frame
+    check_dataframe(df)
+    # Check xcol exists and is a column in the data frame
+    if (is.null(xcol))
+      stop("Cannot generate ridgeline denisty plot, xcol is null.")
+    if (!xcol %in% colnames(df))
+      stop(paste("Cannot generate ridgeline denisty plot, ycol is not in data frame:", xcol))
+    # Check xlab exists
+    if (is.null(xlab))
+      stop("Cannot generate ridgeline denisty plot, xlab is null.")
+    # Set use_groups to FALSE by default
+    groups <- FALSE
+    # If group is in column names, set it to TRUE
+    if ('group' %in% colnames(df)) {
+      if (length(unique(df$group)) > 12) {
+        # If there are more than 12 groups, message and don't use groups
+        message('Cannot plot more than 12 groups. Setting groups to null.')
+      } else {
+        groups <- TRUE
+      }
+    }
+    # Build common violin plot
+    if (groups == TRUE) {
+      p <- tryCatch({
+        ggplot(df, aes_string(y = 'sample', x = xcol, fill = 'group')) +
+          geom_density_ridges(colour = "gray30", alpha = 0.5) +
+          labs(x = xlab, y = "", fill = "") +
+          scale_fill_brewer(palette = 'Set3') +
+          scale_x_continuous(breaks = pretty_breaks(16)) +
+          theme_pubr(base_size = 16) +
+          theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 10))
+      }, error = function(e) {
+        # Stop if there is an error
+        stop(paste("Cannot generate ridgeline denisty plot:", e))
+      })
+    } else {
+      p <- tryCatch({
+        ggplot(df, aes_string(y = 'sample', x = xcol)) +
+          geom_density_ridges(colour = "gray30", alpha = 0.5) +
+          labs(x = xlab, y = "", fill = "") +
+          scale_x_continuous(breaks = pretty_breaks(16)) +
+          theme_pubr(base_size = 16) +
+          theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 10))
+      }, error = function(e) {
+        # Stop if there is an error
+        stop(paste("Cannot generate ridgeline denisty plot:", e))
+      })
+    }
+    return(p)
+  }
+

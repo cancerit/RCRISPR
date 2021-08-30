@@ -27,6 +27,13 @@
 # identical to a statement that reads ‘Copyright (c) 2005, 2006, 2007, 2008,
 # 2009, 2010, 2011, 2012’.
 #
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                           check_dataframe()                         -- *#
+#* --                                                                     -- *#
+###############################################################################
+
 #' Check dataframe is not empty and indices are valid
 #'
 #' @description Check dataframe is not empty and indices exist.
@@ -67,6 +74,12 @@ check_dataframe <-
     return(TRUE)
   }
 
+###############################################################################
+#* --                                                                     -- *#
+#* --                 check_is_numeric_and_is_integer()                   -- *#
+#* --                                                                     -- *#
+###############################################################################
+
 #' Check value is numeric and is an integer.
 #'
 #' @description Check value is numeric and is an integer.
@@ -87,6 +100,12 @@ check_is_numeric_and_is_integer <-
       return(TRUE)
     }
   }
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                       process_column_indices()                      -- *#
+#* --                                                                     -- *#
+###############################################################################
 
 #' Process column indices into vector.
 #'
@@ -142,6 +161,12 @@ process_column_indices <-
     return(processed_columns)
   }
 
+###############################################################################
+#* --                                                                     -- *#
+#* --                         add_pseudocount()                           -- *#
+#* --                                                                     -- *#
+###############################################################################
+
 #' Add pseudocount
 #'
 #' @description Add pseudocount to selected dataframe columns
@@ -151,6 +176,7 @@ process_column_indices <-
 #' @param indices column indices.
 #' @param ... parameters for `check_dataframe`.
 #'
+#' @import dplyr
 #' @return a data frame.
 #' @export add_pseudocount
 add_pseudocount <-
@@ -167,29 +193,24 @@ add_pseudocount <-
       stop("Cannot add pseudocount, pseudocount is not numeric.")
     # Check dataframe
     check_dataframe(data)
-    # Get original column order
-    column_order <- colnames(data)
+    # Process column indices
+    indices <- process_column_indices(indices)
     # If no indices given, apply to full data frame
     if (is.null(indices)) {
       # Add pseudocount to all data frame columns
       warning("No indices given, adding pseudocount to all indices")
-      data <- data.frame(apply(data[indices], 2, function(x) x + pseudocount))
+      data <- data %>% mutate(across(1:ncol(data), ~ . + pseudocount))
     } else {
-      # Add pseudocount to selected dataf rame columns
-      data <- data.frame(data[-indices],
-                         apply(data[indices], 2, function(x) x + pseudocount))
+      # Add pseudocount to selected data frame columns
+      data <- data %>% mutate(across(indices, ~ . + pseudocount))
     }
-    # Check data frame
-    check_dataframe(data, ...)
-    # Make sure data columns are in same order
-    data <- data[,column_order]
     # Check data frame
     check_dataframe(data, ...)
     # Return data frame
     return(data)
   }
 
-################################################################################
+###############################################################################
 #* --                                                                     -- *#
 #* --                       compare_annotations()                         -- *#
 #* --                                                                     -- *#
@@ -361,4 +382,50 @@ get_column_indices <-
     if (sorted)
       column_indices <- sort(column_indices)
     return(column_indices)
+}
+
+################################################################################
+#* --                                                                      -- *#
+#* --                     average_replicates()                             -- *#
+#* --                                                                      -- *#
+################################################################################
+
+#' Average replicates
+#'
+#' @description
+#' Calculate average of replicates
+#'
+#' @param data data frame
+#' @param gene_column index of column for rownames
+#' @param data_columns index of columns to average
+#'
+#' @export average_replicates
+average_replicates <-
+  function(data = NULL,
+           gene_column = NULL,
+           data_columns = NULL) {
+    # Error if gene_column is null
+    if (is.null(gene_column))
+      stop("Cannot average replicates, gene_column is null.")
+    # Error if data_columns is null
+    if (is.null(data_columns))
+      stop("Cannot average replicates, data_columns is null.")
+    # Check data frame
+    check_dataframe(data, check_na = TRUE, check_nan = TRUE)
+    # Process column indices
+    column_indices <- process_column_indices(data_columns)
+    # Convert gene column to integer
+    gene_column <- convert_variable_to_integer(gene_column)
+    # Process data frame
+    processed_data <- tryCatch({
+      data.frame('gene' = data[, gene_column],
+                 'mean' = rowMeans(data[, column_indices]),
+                 check.names = FALSE)
+    }, error = function(e) {
+      stop(paste("Cannot average replicates:", e))
+    })
+    # Check data frame
+    check_dataframe(processed_data)
+    # Return data frame
+    return(processed_data)
 }
