@@ -14,7 +14,7 @@ get_bagel_statistics(data = NULL, is_gene = FALSE, is_fc = FALSE)
 \item{is_fc}{whether input data is at fc-level.}
 }
 \value{
-logical.
+dataframe.
 }
 \description{
 Prepare BAGEL statistics

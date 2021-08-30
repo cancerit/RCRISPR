@@ -77,7 +77,7 @@ add_bagel_classifications <-
 
 ###############################################################################
 #* --                                                                     -- *#
-#* --                       get_bagel_statistics()                   -- *#
+#* --                       get_bagel_statistics()                        -- *#
 #* --                                                                     -- *#
 ###############################################################################
 #' Prepare BAGEL statistics
@@ -91,7 +91,7 @@ add_bagel_classifications <-
 #'
 #' @import dplyr
 #' @importFrom stats median sd setNames
-#' @return logical.
+#' @return dataframe.
 #' @export get_bagel_statistics
 get_bagel_statistics <-
   function (data = NULL,
@@ -161,5 +161,156 @@ get_bagel_statistics <-
   check_dataframe(sample_stats)
   # Return sample stats
   return(sample_stats)
+}
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                       get_bagel_statistics()                        -- *#
+#* --                                                                     -- *#
+###############################################################################
+#' Prepare BAGEL statistics
+#'
+#' @description
+#' Prepare BAGEL statistics
+#'
+#' @param data data frame.
+#' @param gene_column index of column containing gene names.
+#' @param data_column index of column containing values.
+#' @param classification_column index of column containing BAGEL classifications.
+#'
+#' @import dplyr
+#' @return dataframe
+#' @export prepare_essentiality_data
+# Based on code from Clare Pacini
+prepare_essentiality_data <-
+  function (data = NULL,
+            gene_column = 1,
+            data_column = 2,
+            classification_column = 3,
+            threshold = 0.05) {
+    # Check data frame
+    check_dataframe(data)
+    # Check threshold is not null
+    if (is.null(threshold))
+      stop("Cannot prepare essentiality data, threshold is null.")
+    # Check threshold is numeric
+    if (!is.numeric(threshold))
+      stop(paste("Cannot prepare essentiality data, threshold is not numeric:", threshold))
+    # Subset data
+    data <- data[,c(gene_column, data_column, classification_column)]
+    colnames(data) <- c('gene', 'values', 'classification')
+    # Get genes that are essential
+    all_genes <- data %>% filter(classification != 'unknown') %>% pull(gene) %>% unique()
+    if (length(all_genes) == 0)
+      stop("Cannot scale data, no essential or non-essential genes found.")
+    # Get essential genes
+    essential_genes <- data %>% filter(classification == 'essential') %>% pull(gene) %>% unique()
+    if (length(essential_genes) == 0)
+      stop("Cannot scale data, no essential genes found.")
+    # Prepare the response dataframe for pROC
+    # Essential = 1, Non-essential = 0
+    essentiality <- rep(0, length(all_genes))
+    names (essentiality) <- all_genes
+    essentiality[essential_genes] <- 1
+    # Get predicted values for each observation
+    essentiality_data <- list()
+    essentiality_data[['essentiality']] <- essentiality
+    essentiality_data[['predictor']] <- data %>% filter(gene %in% all_genes) %>% pull(values)
+    essentiality_data[['min']] <- min(essentiality_data[['predictor']], na.rm = TRUE)
+    essentiality_data[['modified_predictor']] <-  essentiality_data[['predictor']] - essentiality_data[['min']]
+    # Return essentiality data
+    return(essentiality_data)
+}
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                           process_roc()                             -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+#' Process ROC
+#'
+#' @description
+#' Process ROC
+#'
+#' @param roc_obj pROC ROC object.
+#' @param predictor_min minimum value of predictor.
+#' @param threshold threshold value.
+#'
+#' @return dataframe
+#' @export process_roc
+# Based on code from Clare Pacini
+process_roc <-
+  function(roc_obj = NULL,
+           predictor_min = NULL,
+           threshold = 0.05 ) {
+    # Check roc_obj is not null
+    if (is.null(roc_obj))
+      stop("Cannot process ROC, roc_obj is null.")
+    # Check predictor min is not null
+    if (is.null(predictor_min))
+      stop("Cannot process ROC, predictor_min is null.")
+    # Check predictor_min is numeric
+    if (!is.numeric(predictor_min))
+      stop(paste("Cannot process ROC, predictor_min is not numeric:", predictor_min))
+    # Get coordinates
+    roc_coords <- coords(roc_obj, ret = c('all'), transpose = T)
+    roc_coords['threshold',] <- roc_coords['threshold',] + predictor_min
+    # Add id
+    id <- min(which(roc_coords['ppv',] > (1 - threshold)))
+    if( id == "Inf" ){
+      id <- min(which(roc_coords['ppv',] >= (1 - threshold)))
+    }
+    if( id == "Inf" ){
+      id <- max(which(round(roc_coords['ppv',]) >= (1 - threshold)))
+    }
+    # Get best precision
+    best_prec <- c(roc_coords['threshold',id],
+                   roc_coords['specificity',id],
+                   roc_coords['sensitivity',id],
+                   roc_coords['ppv',id])
+    # Get thresholds
+    bestPrecisionTh <- rbind(best_prec)
+    colnames(bestPrecisionTh) <- c('thresholds', 'specificity', 'sensitivity', 'ppv')
+    # Return threshold data
+    return(bestPrecisionTh)
+}
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                             plot_roc()                              -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+#' Plot ROC
+#'
+#' @description
+#' Plot ROC
+#'
+#' @param roc_obj pROC `roc` object.
+#'
+#' @import ggplot2
+#' @importFrom ggpubr theme_pubr
+#'
+#' @return ggplot
+#' @export plot_roc
+# Based on code from Clare Pacini
+plot_roc <-
+  function( roc_obj ) {
+    roc_obj.coords <- data.frame('FPR' = (1 - roc_obj$specificities),
+                                 'TPR' = roc_obj$sensitivities)
+    roc_obj.plot <- ggplot(roc_obj.coords, aes(x = FPR, y = TPR)) +
+                      geom_line(size = 0.8, color = 'dodgerblue4') +
+                      xlab('FPR (1 - Specificity)') +
+                      ylab('TPR (Sensitivity)') +
+                      theme_pubr() +
+                      theme(text = element_text(size = 14)) +
+                      annotate("text",
+                               x = 0.9,
+                               y = 1.05,
+                               vjust = 0,
+                               size = 5,
+                               label = paste("AUC =", sprintf("%.3f", roc_obj$auc)))
+    return( roc_obj.plot )
 }
 

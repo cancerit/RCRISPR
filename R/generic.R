@@ -383,3 +383,49 @@ get_column_indices <-
       column_indices <- sort(column_indices)
     return(column_indices)
 }
+
+################################################################################
+#* --                                                                      -- *#
+#* --                     average_replicates()                             -- *#
+#* --                                                                      -- *#
+################################################################################
+
+#' Average replicates
+#'
+#' @description
+#' Calculate average of replicates
+#'
+#' @param data data frame
+#' @param gene_column index of column for rownames
+#' @param data_columns index of columns to average
+#'
+#' @export average_replicates
+average_replicates <-
+  function(data = NULL,
+           gene_column = NULL,
+           data_columns = NULL) {
+    # Error if gene_column is null
+    if (is.null(gene_column))
+      stop("Cannot average replicates, gene_column is null.")
+    # Error if data_columns is null
+    if (is.null(data_columns))
+      stop("Cannot average replicates, data_columns is null.")
+    # Check data frame
+    check_dataframe(data, check_na = TRUE, check_nan = TRUE)
+    # Process column indices
+    column_indices <- process_column_indices(data_columns)
+    # Convert gene column to integer
+    gene_column <- convert_variable_to_integer(gene_column)
+    # Process data frame
+    processed_data <- tryCatch({
+      data.frame('gene' = data[, gene_column],
+                 'mean' = rowMeans(data[, column_indices]),
+                 check.names = FALSE)
+    }, error = function(e) {
+      stop(paste("Cannot average replicates:", e))
+    })
+    # Check data frame
+    check_dataframe(processed_data)
+    # Return data frame
+    return(processed_data)
+}

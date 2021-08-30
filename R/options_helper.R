@@ -1217,3 +1217,45 @@ bagel_gene_infile_options <- function() {
   )
   return(opts)
 }
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                          SCALING OPTIONS                            -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+#' Optparse options for scaling LFCs and BFs
+#'
+#' @importFrom optparse make_option
+#' @return list of optparse options
+#' @export scaling_options
+scaling_options <- function() {
+  opts <- list(
+    make_option(
+      c( "-t", "--threshold" ),
+      type = "numeric",
+      default = 0.05,
+      help = "threshold [Default: 0.05]",
+      metavar = "numeric"
+    ),
+    make_option(
+       c("--is_fc"),
+       default = FALSE,
+       action = "store_true",
+       help = "whether input is a fold change matrix"
+     ),
+    make_option(
+       c("--is_bf"),
+       default = FALSE,
+       action = "store_true",
+       help = "whether input is Bayes factors"
+     ),
+    make_option(
+      c("--no_plot"),
+      default = FALSE,
+      action = "store_true",
+      help = "do not produce plots"
+    )
+  )
+  return(opts)
+}
