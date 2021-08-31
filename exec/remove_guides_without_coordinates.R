@@ -11,6 +11,7 @@ option_list = c(
   count_path_options(),
   library_annotation_options(),
   remove_no_coordinate_guide_options(),
+  count_library_outfile_options(),
   shared_output_options(),
   count_format_options(),
   count_column_index_options(),

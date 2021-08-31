@@ -1094,72 +1094,6 @@
       list()
       
       
-      [[2]]
-      An object of class "OptionParserOption"
-      Slot "short_flag":
-      [1] NA
-      
-      Slot "long_flag":
-      [1] "--count_matrix_outfile"
-      
-      Slot "action":
-      [1] "store"
-      
-      Slot "type":
-      [1] "character"
-      
-      Slot "dest":
-      [1] "count_matrix_outfile"
-      
-      Slot "default":
-      NULL
-      
-      Slot "help":
-      [1] "output file for processed count matrix"
-      
-      Slot "metavar":
-      [1] "character"
-      
-      Slot "callback":
-      NULL
-      
-      Slot "callback_args":
-      list()
-      
-      
-      [[3]]
-      An object of class "OptionParserOption"
-      Slot "short_flag":
-      [1] NA
-      
-      Slot "long_flag":
-      [1] "--library_outfile"
-      
-      Slot "action":
-      [1] "store"
-      
-      Slot "type":
-      [1] "character"
-      
-      Slot "dest":
-      [1] "library_outfile"
-      
-      Slot "default":
-      NULL
-      
-      Slot "help":
-      [1] "output file for processed library"
-      
-      Slot "metavar":
-      [1] "character"
-      
-      Slot "callback":
-      NULL
-      
-      Slot "callback_args":
-      list()
-      
-      
 
 # remove guide options
 
@@ -1188,72 +1122,6 @@
       
       Slot "help":
       [1] "file of guides to remove"
-      
-      Slot "metavar":
-      [1] "character"
-      
-      Slot "callback":
-      NULL
-      
-      Slot "callback_args":
-      list()
-      
-      
-      [[2]]
-      An object of class "OptionParserOption"
-      Slot "short_flag":
-      [1] NA
-      
-      Slot "long_flag":
-      [1] "--count_matrix_outfile"
-      
-      Slot "action":
-      [1] "store"
-      
-      Slot "type":
-      [1] "character"
-      
-      Slot "dest":
-      [1] "count_matrix_outfile"
-      
-      Slot "default":
-      NULL
-      
-      Slot "help":
-      [1] "output file for processed count matrix"
-      
-      Slot "metavar":
-      [1] "character"
-      
-      Slot "callback":
-      NULL
-      
-      Slot "callback_args":
-      list()
-      
-      
-      [[3]]
-      An object of class "OptionParserOption"
-      Slot "short_flag":
-      [1] NA
-      
-      Slot "long_flag":
-      [1] "--library_outfile"
-      
-      Slot "action":
-      [1] "store"
-      
-      Slot "type":
-      [1] "character"
-      
-      Slot "dest":
-      [1] "library_outfile"
-      
-      Slot "default":
-      NULL
-      
-      Slot "help":
-      [1] "output file for processed library"
       
       Slot "metavar":
       [1] "character"
@@ -1427,7 +1295,7 @@
       [1] "pseudocount"
       
       Slot "default":
-      [1] 0.05
+      [1] 5
       
       Slot "help":
       [1] "pseudocount to add to sample counts"
@@ -1685,72 +1553,6 @@
       list()
       
       
-      [[2]]
-      An object of class "OptionParserOption"
-      Slot "short_flag":
-      [1] NA
-      
-      Slot "long_flag":
-      [1] "--count_matrix_outfile"
-      
-      Slot "action":
-      [1] "store"
-      
-      Slot "type":
-      [1] "character"
-      
-      Slot "dest":
-      [1] "count_matrix_outfile"
-      
-      Slot "default":
-      NULL
-      
-      Slot "help":
-      [1] "output file for processed count matrix"
-      
-      Slot "metavar":
-      [1] "character"
-      
-      Slot "callback":
-      NULL
-      
-      Slot "callback_args":
-      list()
-      
-      
-      [[3]]
-      An object of class "OptionParserOption"
-      Slot "short_flag":
-      [1] NA
-      
-      Slot "long_flag":
-      [1] "--library_outfile"
-      
-      Slot "action":
-      [1] "store"
-      
-      Slot "type":
-      [1] "character"
-      
-      Slot "dest":
-      [1] "library_outfile"
-      
-      Slot "default":
-      NULL
-      
-      Slot "help":
-      [1] "output file for processed library"
-      
-      Slot "metavar":
-      [1] "character"
-      
-      Slot "callback":
-      NULL
-      
-      Slot "callback_args":
-      list()
-      
-      
 
 # Filter counts and library by index options
 
@@ -1845,105 +1647,6 @@
       
       Slot "help":
       [1] "minimum number of reads for filtering [Default: 30]"
-      
-      Slot "metavar":
-      [1] "character"
-      
-      Slot "callback":
-      NULL
-      
-      Slot "callback_args":
-      list()
-      
-      
-      [[4]]
-      An object of class "OptionParserOption"
-      Slot "short_flag":
-      [1] NA
-      
-      Slot "long_flag":
-      [1] "--count_matrix_outfile"
-      
-      Slot "action":
-      [1] "store"
-      
-      Slot "type":
-      [1] "character"
-      
-      Slot "dest":
-      [1] "count_matrix_outfile"
-      
-      Slot "default":
-      NULL
-      
-      Slot "help":
-      [1] "output file for processed count matrix"
-      
-      Slot "metavar":
-      [1] "character"
-      
-      Slot "callback":
-      NULL
-      
-      Slot "callback_args":
-      list()
-      
-      
-      [[5]]
-      An object of class "OptionParserOption"
-      Slot "short_flag":
-      [1] NA
-      
-      Slot "long_flag":
-      [1] "--library_outfile"
-      
-      Slot "action":
-      [1] "store"
-      
-      Slot "type":
-      [1] "character"
-      
-      Slot "dest":
-      [1] "library_outfile"
-      
-      Slot "default":
-      NULL
-      
-      Slot "help":
-      [1] "output file for processed library"
-      
-      Slot "metavar":
-      [1] "character"
-      
-      Slot "callback":
-      NULL
-      
-      Slot "callback_args":
-      list()
-      
-      
-      [[6]]
-      An object of class "OptionParserOption"
-      Slot "short_flag":
-      [1] NA
-      
-      Slot "long_flag":
-      [1] "--filtered_guides_outfile"
-      
-      Slot "action":
-      [1] "store"
-      
-      Slot "type":
-      [1] "character"
-      
-      Slot "dest":
-      [1] "filtered_guides_outfile"
-      
-      Slot "default":
-      NULL
-      
-      Slot "help":
-      [1] "output file for filtered guides"
       
       Slot "metavar":
       [1] "character"

@@ -12,11 +12,12 @@ option_list = c(
   library_annotation_options(),
   sample_metadata_options(),
   count_format_options(),
-  basic_outfile_options(),
+  count_library_outfile_options(),
   shared_output_options(),
   count_column_index_options(),
   library_annotation_format_options(),
   library_annotation_column_index_options(),
+  library_annotation_genomic_column_index_options(),
   sample_metadata_format_options(),
   sample_metadata_sample_filename_column_index_options(),
   sample_metadata_sample_label_column_index_options(),
@@ -44,8 +45,11 @@ for (n in c('counts', 'library', 'info')) {
   check_option(n, opt[[n]])
 }
 
-if (is.null(opt$outfile))
-  opt$outfile <- 'count_matrix.tsv'
+if (is.null(opt$count_matrix_outfile))
+  opt$count_matrix_outfile <- 'count_matrix.tsv'
+
+if (is.null(opt$library_outfile))
+  opt$library_outfile <- 'library.processed.tsv'
 
 ###############################################################################
 #* --                                                                     -- *#
@@ -60,6 +64,9 @@ library_annotation_object <-
     filepath = opt$library,
     id_column = opt$library_id_column_index,
     gene_column = opt$library_gene_column_index,
+    chr_column = opt$library_chr_column_index,
+    chr_start_column = opt$library_start_column_index,
+    chr_end_column = opt$library_end_column_index,
     file_separator = opt$library_delim,
     file_header = ifelse(opt$no_library_header,FALSE,TRUE),
     check.names = FALSE
@@ -119,15 +126,28 @@ mat_lib_match <- compare_count_matrix_to_library(
 
 # Write count matrix to output file
 message("Writing count matrix to file...")
-outfile <- write_dataframe_to_file(data = sample_count_matrix,
-                                   outfile = opt$outfile,
-                                   outdir = opt$outdir,
-                                   prefix = opt$prefix,
-                                   suffix = opt$suffix,
-                                   row.names = FALSE,
-                                   quote = FALSE,
-                                   sep = "\t")
-message(paste("Count matrix written to:", outfile))
+count_matrix_outfile <- write_dataframe_to_file( data = sample_count_matrix,
+                                                 outfile = opt$count_matrix_outfile,
+                                                 outdir = opt$outdir,
+                                                 prefix = opt$prefix,
+                                                 suffix = opt$suffix,
+                                                 row.names = FALSE,
+                                                 quote = FALSE,
+                                                 sep = "\t")
+message(paste("Count matrix written to:", count_matrix_outfile))
+
+# Write processed library to output file
+message("Writing processed library to file...")
+processed_library <- get_library_annotations(library_annotation_object, processed = TRUE)
+library_outfile <- write_dataframe_to_file(data = processed_library,
+                                           outfile = opt$library_outfile,
+                                           outdir = opt$outdir,
+                                           prefix = opt$prefix,
+                                           suffix = opt$suffix,
+                                           row.names = FALSE,
+                                           quote = FALSE,
+                                           sep = "\t")
+message(paste("Processed library written to:", library_outfile))
 
 # Write processed data to .Rdata
 if (!is.null(opt$rdata)) {
@@ -138,6 +158,7 @@ if (!is.null(opt$rdata)) {
                                        outfile = opt$rdata,
                                        data = list(sample_count_objects,
                                                    library_annotation_object,
+                                                   processed_library,
                                                    sample_metadata_object,
                                                    sample_count_matrix))
   message(paste("R data written to:", rdata_outfile))

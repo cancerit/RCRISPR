@@ -9,7 +9,7 @@ prepare_filepath(
   outdir = NULL,
   prefix = NULL,
   suffix = NULL,
-  create_dir = FALSE
+  create_dir = TRUE
 )
 }
 \arguments{
