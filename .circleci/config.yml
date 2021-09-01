@@ -109,7 +109,7 @@ workflows:
           filters:
             tags:
               only: /.+/
-      - delpoy:
+      - deploy:
           requires:
             - build_docker
             - unittests
