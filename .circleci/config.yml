@@ -47,11 +47,11 @@ jobs:
             LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
             docker load -i /tmp/workspace/dev-image.tar
             container_id=$(docker run -u root -w /build -d --rm ${LC_REPO}:${CIRCLE_SHA1} sleep 10000)
-            docker exec ${container_id} r -e 'if (!identical(devtools::check(document = FALSE, args = "--no-tests")[["notes"]], character(0))) stop("Check with Notes")' || \
+            docker exec ${container_id} r -e 'if (!identical(devtools::check(document = FALSE, quiet = TRUE, args = "--no-tests")[["notes"]], character(0))) stop("Check with Notes")' || \
               docker exec ${container_id} cat /tmp/rcrispr.Rcheck/00check.log
-            docker exec ${container_id} r -e 'if (!identical(devtools::check(document = FALSE, args = "--no-tests")[["warnings"]], character(0))) stop("Check with Warnings")' || \
+            docker exec ${container_id} r -e 'if (!identical(devtools::check(document = FALSE, quiet = TRUE, args = "--no-tests")[["warnings"]], character(0))) stop("Check with Warnings")' || \
               docker exec ${container_id} cat /tmp/rcrispr.Rcheck/00check.log
-            docker exec ${container_id} r -e 'if (!identical(devtools::check(document = FALSE, args = "--no-tests")[["errors"]], character(0))) stop("Check with Errors")' ; res=$?
+            docker exec ${container_id} r -e 'if (!identical(devtools::check(document = FALSE, quiet = TRUE, args = "--no-tests")[["errors"]], character(0))) stop("Check with Errors")' ; res=$?
             if [ "$res" -ne "0" ]; then
               docker exec ${container_id} cat /tmp/rcrispr.Rcheck/00check.log
             fi
