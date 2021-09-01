@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  build_dev_docker:
+  build_docker:
     machine:
       image: ubuntu-2004:202107-02
     steps:
@@ -99,19 +99,19 @@ workflows:
               only: /.+/
       - unittests:
           requires:
-            - build_dev_docker
+            - build_docker
           filters:
             tags:
               only: /.+/
       - devtools_checks:
           requires:
-            - build_dev_docker
+            - build_docker
           filters:
             tags:
               only: /.+/
       - delpoy:
           requires:
-            - build_dev_docker
+            - build_docker
             - unittests
             - devtools_checks
           filters:

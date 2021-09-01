@@ -26,8 +26,6 @@ WORKDIR $BUILD
 
 RUN R -e "install.packages('devtools', lib = Sys.getenv(\"R_LIBS_USER\"))"
 RUN R -e 'devtools::install_deps(dep = T, lib = Sys.getenv("R_LIBS_USER"))'
-
-# WARNING: Up to here should be identical to Dockerfile-ci
 RUN R -e 'devtools::install()'
 
 RUN adduser --disabled-password --gecos '' ubuntu && chsh -s /bin/bash && mkdir -p /home/ubuntu
