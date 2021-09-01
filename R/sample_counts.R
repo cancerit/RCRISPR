@@ -219,7 +219,6 @@ read_count_matrix_file <-
            id_column = 1,
            gene_column = 2,
            count_column = NULL,
-           count_index_increment = 0,
            processed = FALSE,
            ...) {
     # Error out if count matrix has no header as we can't determine the sample names
