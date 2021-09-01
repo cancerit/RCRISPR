@@ -15,12 +15,12 @@ jobs:
             echo "docker build -f Dockerfile-ci -t $LC_REPO:$CIRCLE_SHA1 ."
             docker pull alpine:latest
             docker tag alpine:latest ${LC_REPO}:$CIRCLE_SHA1
-            mkdir -p /tmp/${CIRCLE_SHA1}/workspace
-            docker save -o /tmp/${CIRCLE_SHA1}/workspace/${LC_REPO}_${CIRCLE_SHA1}.tar ${LC_REPO}:$CIRCLE_SHA1
+            mkdir -p workspace
+            docker save -o workspace/dev-image.tar ${LC_REPO}:$CIRCLE_SHA1
       - persist_to_workspace:
-          root: /tmp/${CIRCLE_SHA1}/workspace
+          root: workspace
           paths:
-            - ${LC_REPO}_${CIRCLE_SHA1}.tar
+            - dev-image.tar
   build_binary:
     machine:
       image: ubuntu-2004:202107-02
@@ -31,7 +31,7 @@ jobs:
           name: Building R binary
           command: |
             LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
-            docker load -i /tmp/workspace/${LC_REPO}_${CIRCLE_SHA1}.tar
+            docker load -i /tmp/workspace/dev-image.tar
             docker run -ti --rm ${LC_REPO}_${CIRCLE_SHA1} r -e "devtools::build(binary = TRUE)"
           # this will need to be done via a timed run, and then copy the generated file out
 
