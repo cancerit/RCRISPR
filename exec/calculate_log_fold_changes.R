@@ -41,6 +41,8 @@ if (is.null(opt$sgrna_outfile))
   opt$sgrna_outfile <- 'fold_change_matrix.sgrna.tsv'
 if (is.null(opt$gene_outfile))
   opt$gene_outfile <- 'fold_change_matrix.gene.tsv'
+if (is.null(opt$count_matrix_outfile))
+  opt$count_matrix_outfile <- 'count_matrix.lfc.tsv'
 
 ###############################################################################
 #* --                                                                     -- *#
@@ -54,7 +56,7 @@ sample_count_matrix <- read_count_matrix_file(
   filepath = opt$counts,
   id_column = opt$count_id_column_index,
   gene_column = opt$count_gene_column_index,
-  count_column = c(opt$control_indices, opt$treatment_indices),
+  count_column = opt$count_count_column_index,
   file_separator = opt$counts_delim,
   file_header = ifelse(opt$no_counts_header,FALSE,TRUE),
   processed = TRUE,
@@ -80,6 +82,7 @@ outfile <- write_dataframe_to_file(data = sgrna_lfc,
                                    outfile = opt$sgrna_outfile,
                                    outdir = opt$outdir,
                                    prefix = opt$prefix,
+                                   suffix = opt$suffix,
                                    row.names = FALSE,
                                    quote = FALSE,
                                    sep = "\t")
@@ -92,15 +95,32 @@ outfile <- write_dataframe_to_file(data = gene_lfc,
                                    outfile = opt$gene_outfile,
                                    outdir = opt$outdir,
                                    prefix = opt$prefix,
+                                   suffix = opt$suffix,
                                    row.names = FALSE,
                                    quote = FALSE,
                                    sep = "\t")
 message(paste("Gene LFCs written to:", outfile))
 
+# Write subset count matrix to file
+message("Writing count matrix to file...")
+control_indices <- process_column_indices(opt$control_indices)
+treatment_indices <- process_column_indices(opt$treatment_indices)
+subset_sample_count_matrix <- sample_count_matrix[,c(1:2, control_indices, treatment_indices)]
+outfile <- write_dataframe_to_file(data = subset_sample_count_matrix,
+                                   outfile = opt$count_matrix_outfile,
+                                   outdir = opt$outdir,
+                                   prefix = opt$prefix,
+                                   suffix = opt$suffix,
+                                   row.names = FALSE,
+                                   quote = FALSE,
+                                   sep = "\t")
+message(paste("Count matrix written to:", outfile))
+
 # Write Rdata to file
 if (!is.null(opt$rdata)) {
   message("Writing R data to file...")
   rdata_outfile <- write_rdata_to_file(prefix = opt$prefix,
+                                       suffix = opt$suffix,
                                        outfile = opt$rdata,
                                        outdir = opt$outdir,
                                        data = list(sample_count_matrix,

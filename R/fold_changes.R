@@ -125,13 +125,13 @@ read_fold_change_matrix_file <-
       }
     } else {
       # Check none of the column indexes overlap
-      if (anyDuplicated(c(id_column, fc_column_indices)) != 0)
+      if (anyDuplicated(c(gene_column, fc_column_indices)) != 0)
         stop(paste("Cannot read fold change matrix, duplicate column indices:",
-                   c(id_column, fc_column_indices)))
+                   c(gene_column, fc_column_indices)))
       # Check indices are within dataframe
       check_dataframe(df, indices = fc_column_indices)
       # Remove unwanted columns
-      df <- df[,c(id_column, fc_column_indices)]
+      df <- df[,c(gene_column, fc_column_indices)]
       # If processed, set the column names for id_column
       if (processed) {
         colnames(df)[1] <- 'gene'

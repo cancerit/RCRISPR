@@ -13,7 +13,7 @@ suppressPackageStartupMessages(library(rcrispr))
 option_list = c(
   basic_infile_options(),
   sample_metadata_options(),
-  scaling_options(),
+  intermediate_qc_options(),
   bagel_gene_infile_options(),
   basic_outfile_options(),
   shared_output_options(),
@@ -58,12 +58,6 @@ if (opt$is_gene) {
 is_fc = FALSE
 if (opt$is_fc) {
   is_fc = TRUE
-}
-
-# Set is_lfc to true if option used
-is_bf = FALSE
-if (opt$is_bf) {
-  is_bf = TRUE
 }
 
 # If is_gene is FALSE expect the infile_gene_column_index to be set

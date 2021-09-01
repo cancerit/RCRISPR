@@ -809,6 +809,12 @@ calculate_lfc_options <- function() {
       metavar = "character"
     ),
     make_option(
+      c("--count_matrix_outfile"),
+      type = "character",
+      help = "output file for count matrix",
+      metavar = "character"
+    ),
+    make_option(
       c("--control_indices"),
       type = "character",
       help = "pseudocount to add to sample counts",
@@ -846,6 +852,29 @@ remove_no_coordinate_guide_options <- function() {
   opts <- list(
     make_option(
       c("--excluded_guides_outfile"),
+      type = "character",
+      default = NULL,
+      help = "file of guides that were remove",
+      metavar = "character"
+    )
+  )
+  return(opts)
+}
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                       FILTER GUIDE OPTIONS                          -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+#' Optparse options for raw guide filter output
+#' @importFrom optparse make_option
+#' @return list of optparse options
+#' @export filtered_guide_output_options
+filtered_guide_output_options <- function() {
+  opts <- list(
+    make_option(
+      c("--filtered_guides_outfile"),
       type = "character",
       default = NULL,
       help = "file of guides that were remove",
