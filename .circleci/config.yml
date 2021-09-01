@@ -46,8 +46,8 @@ jobs:
           command: |
             LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
             docker load -i /tmp/workspace/dev-image.tar
-            docker run -ti --rm ${LC_REPO}:${CIRCLE_SHA1} r -e 'if (!identical(devtools::check(document = FALSE, args = "--no-tests")[["notes"]], character(0))) stop("Check with Notes")'
-            docker run -ti --rm ${LC_REPO}:${CIRCLE_SHA1} r -e 'if (!identical(devtools::check(document = FALSE, args = "--no-tests")[["warnings"]], character(0))) stop("Check with Warnings")'
+            docker run -ti --rm ${LC_REPO}:${CIRCLE_SHA1} r -e 'if (!identical(devtools::check(document = FALSE, args = "--no-tests")[["notes"]], character(0))) stop("Check with Notes")' || true
+            docker run -ti --rm ${LC_REPO}:${CIRCLE_SHA1} r -e 'if (!identical(devtools::check(document = FALSE, args = "--no-tests")[["warnings"]], character(0))) stop("Check with Warnings")' || true
             docker run -ti --rm ${LC_REPO}:${CIRCLE_SHA1} r -e 'if (!identical(devtools::check(document = FALSE, args = "--no-tests")[["errors"]], character(0))) stop("Check with Errors")'
   deploy:
     machine:
