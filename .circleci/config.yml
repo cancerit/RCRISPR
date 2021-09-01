@@ -12,13 +12,54 @@ jobs:
             set -e
             LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
             echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USER" --password-stdin
-            docker build -f Dockerfile-ci -t $LC_REPO:$CIRCLE_SHA1 .
+            echo "docker build -f Dockerfile-ci -t $LC_REPO:$CIRCLE_SHA1 ."
+            echo "HACK START"
+            docker pull keiranmraine/testing:rcrispr_dev
+            docker tag keiranmraine/testing:rcrispr_dev $LC_REPO:$CIRCLE_SHA1
+            echo "HACK END"
             mkdir -p workspace
             docker save -o workspace/dev-image.tar ${LC_REPO}:$CIRCLE_SHA1
       - persist_to_workspace:
           root: workspace
           paths:
             - dev-image.tar
+  unittests:
+    machine:
+      image: ubuntu-2004:202107-02
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Devtools unittests
+          command: |
+            LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
+            docker load -i /tmp/workspace/dev-image.tar
+            docker run -ti --rm ${LC_REPO}:${CIRCLE_SHA1} r -e 'if (any(as.data.frame(devtools::test())[["failed"]] > 0)) stop("Some tests failed.")'
+  check_errors:
+    machine:
+      image: ubuntu-2004:202107-02
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Devtools error check
+          command: |
+            LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
+            docker load -i /tmp/workspace/dev-image.tar
+            docker run -ti --rm ${LC_REPO}:${CIRCLE_SHA1} r -e 'if (!identical(devtools::check(document = FALSE, args = "--no-tests")[["errors"]], character(0))) stop("Check with Errors")'
+  install:
+    machine:
+      image: ubuntu-2004:202107-02
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Devtools install
+          command: |
+            LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
+            docker load -i /tmp/workspace/dev-image.tar
+            docker run -ti --rm ${LC_REPO}:${CIRCLE_SHA1} r -e 'devtools::install()'
+
   build_binary:
     machine:
       image: ubuntu-2004:202107-02
@@ -30,7 +71,6 @@ jobs:
           command: |
             LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
             docker load -i /tmp/workspace/dev-image.tar
-            docker images
             docker run -ti --rm ${LC_REPO}:${CIRCLE_SHA1} r -e "devtools::build(binary = TRUE)"
           # this will need to be done via a timed run, and then copy the generated file out
 
@@ -45,9 +85,32 @@ workflows:
           filters:
             tags:
               only: /.+/
+      - unittests:
+          requires:
+            - build_dev_docker
+          filters:
+            tags:
+              only: /.+/
+      - check_errors:
+          requires:
+            - build_dev_docker
+            - unittests
+          filters:
+            tags:
+              only: /.+/
+      - install:
+          requires:
+            - build_dev_docker
+            - unittests
+          filters:
+            tags:
+              only: /.+/
       - build_binary:
           requires:
             - build_dev_docker
+            - check_errors
+            - unittests
+            - install
           filters:
             tags:
               only: /.+/
