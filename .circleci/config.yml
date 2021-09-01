@@ -12,7 +12,7 @@ jobs:
             set -e
             LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
             echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USER" --password-stdin
-            echo "docker build -f Dockerfile-ci -t $LC_REPO:$CIRCLE_SHA1 ."
+            echo "docker build -f Dockerfile -t $LC_REPO:$CIRCLE_SHA1 ."
             echo "HACK START"
             docker pull keiranmraine/testing:rcrispr_dev
             docker tag keiranmraine/testing:rcrispr_dev $LC_REPO:$CIRCLE_SHA1
@@ -35,7 +35,7 @@ jobs:
             LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
             docker load -i /tmp/workspace/dev-image.tar
             docker run -ti --rm ${LC_REPO}:${CIRCLE_SHA1} r -e 'if (any(as.data.frame(devtools::test())[["failed"]] > 0)) stop("Some tests failed.")'
-  check_errors:
+  devtools_checks:
     machine:
       image: ubuntu-2004:202107-02
     steps:
@@ -46,50 +46,52 @@ jobs:
           command: |
             LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
             docker load -i /tmp/workspace/dev-image.tar
+            docker run -ti --rm ${LC_REPO}:${CIRCLE_SHA1} r -e 'if (!identical(devtools::check(document = FALSE, args = "--no-tests")[["notes"]], character(0))) stop("Check with Notes")'
+            docker run -ti --rm ${LC_REPO}:${CIRCLE_SHA1} r -e 'if (!identical(devtools::check(document = FALSE, args = "--no-tests")[["warnings"]], character(0))) stop("Check with Warnings")'
             docker run -ti --rm ${LC_REPO}:${CIRCLE_SHA1} r -e 'if (!identical(devtools::check(document = FALSE, args = "--no-tests")[["errors"]], character(0))) stop("Check with Errors")'
-  install:
+  deploy:
     machine:
       image: ubuntu-2004:202107-02
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - run:
-          name: Devtools install
-          command: |
-            LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
-            docker load -i /tmp/workspace/dev-image.tar
-            docker run -ti --rm ${LC_REPO}:${CIRCLE_SHA1} r -e 'devtools::install()'
-
-  build_binary:
-    machine:
-      image: ubuntu-2004:202107-02
+    environment:
+      IMAGE_NAME: quay.io/wtsicgp/rcrispr
     steps:
       - attach_workspace:
           at: /tmp/workspace
       - run:
           name: Building R binary
           command: |
-            mkdir -p workspace
+            mkdir -p /tmp/build
             LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
             docker load -i /tmp/workspace/dev-image.tar
             container_id=$(docker run -d --rm ${LC_REPO}:${CIRCLE_SHA1} sleep 1000)
             docker exec $container_id r -e "devtools::build(binary = TRUE, path = './rcrispr_R_x86_64-pc-linux-gnu.tar.gz')" ; res=$?
-            docker cp $container_id:/build/rcrispr_R_x86_64-pc-linux-gnu.tar.gz workspace/.
+            docker cp $container_id:/build/rcrispr_R_x86_64-pc-linux-gnu.tar.gz /tmp/build/.
             docker rm -f $container_id
-            exit $res
-      - persist_to_workspace:
-          root: workspace
-          # we can't include the version due to lack of wildcard support
-          paths:
-            - rcrispr_R_x86_64-pc-linux-gnu.tar.gz
-            # to publish automatically: https://circleci.com/blog/publishing-to-github-releases-via-circleci/
+            if [ "$res" -ne "0" ];
+              exit $res
+            fi
+            BRANCH_OR_TAG="${CIRCLE_TAG:-$CIRCLE_BRANCH}"
+            CLEAN_BRANCH=$(echo $BRANCH_OR_TAG | tr / -)
+            if [ "$CIRCLE_TAG" = "$BRANCH_OR_TAG" ]; then
+              docker tag ${LC_REPO}:${CIRCLE_SHA1} $IMAGE_NAME:$CLEAN_BRANCH
+              echo "$QUAYIO_PASSWORD" | docker login -u "$QUAYIO_USER" --password-stdin quay.io
+              echo 'Pushing image'
+              docker push $IMAGE_NAME:$CLEAN_BRANCH
+            else
+              echo "I am not a tag so not pushing image"
+            fi
+      # to publish R tar to github automatically: https://circleci.com/blog/publishing-to-github-releases-via-circleci/
+      - store_artifacts:
+          path: /tmp/build/rcrispr_R_x86_64-pc-linux-gnu.tar.gz
+          destination: rcrispr_R_x86_64-pc-linux-gnu.tar.gz
+
 
 
 workflows:
   version: 2.1
   build_test_publish:
     jobs:
-      - build_dev_docker:
+      - build_docker:
           context:
             - dockerhub-casmservice
           filters:
@@ -101,26 +103,17 @@ workflows:
           filters:
             tags:
               only: /.+/
-      - check_errors:
+      - devtools_checks:
           requires:
             - build_dev_docker
-            - unittests
           filters:
             tags:
               only: /.+/
-      - install:
+      - delpoy:
           requires:
             - build_dev_docker
             - unittests
-          filters:
-            tags:
-              only: /.+/
-      - build_binary:
-          requires:
-            - build_dev_docker
-            - check_errors
-            - unittests
-            - install
+            - devtools_checks
           filters:
             tags:
               only: /.+/

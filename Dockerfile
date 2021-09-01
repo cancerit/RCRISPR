@@ -1,4 +1,4 @@
-FROM rocker/r-base:4.0.5
+FROM rocker/r-ubuntu:20.04
 
 USER root
 
@@ -8,6 +8,12 @@ ENV LANG C.UTF-8
 ENV DISPLAY=:0
 ENV DEBIAN_FRONTEND=noninteractive
 
+ENV OPT /opt/wsi-t113
+ENV R_LIBS $OPT/R-lib
+ENV R_LIBS_USER $R_LIBS
+ENV BUILD /build
+RUN mkdir -p $R_LIBS_USER $BUILD
+
 RUN apt-get update && \
   apt-get install -yq --no-install-recommends \
   libssl-dev \
@@ -15,21 +21,14 @@ RUN apt-get update && \
   libxml2-dev \
   pandoc
 
-ENV OPT /opt/wsi-t113
-RUN mkdir -p "$OPT"
+COPY . $BUILD/
+WORKDIR $BUILD
 
-ENV R_LIBS $OPT/R-lib
-ENV R_LIBS_USER $R_LIBS
-RUN mkdir -p $R_LIBS_USER
+RUN R -e "install.packages('devtools', lib = Sys.getenv(\"R_LIBS_USER\"))"
+RUN R -e 'devtools::install_deps(dep = T, lib = Sys.getenv("R_LIBS_USER"))'
 
-RUN mkdir $OPT/rcrispr
-COPY . $OPT/rcrispr
-
-RUN mkdir /data
-RUN R CMD build --no-build-vignettes --no-manual $OPT/rcrispr && mv rcrispr*gz /data/rcrispr.tar.gz
-RUN chmod -R 777 /opt/wsi-t113
-RUN Rscript -e "install.packages(c('optparse', 'devtools', 'testthat', 'htmltools', 'DT', 'covr'), repos = 'https://www.stats.bris.ac.uk/R/', lib = \"${R_LIBS_USER}\")"
-RUN R CMD INSTALL -l "${R_LIBS_USER}" /data/rcrispr.tar.gz
+# WARNING: Up to here should be identical to Dockerfile-ci
+RUN R -e 'devtools::install()'
 
 RUN adduser --disabled-password --gecos '' ubuntu && chsh -s /bin/bash && mkdir -p /home/ubuntu
 WORKDIR /home/ubuntu
