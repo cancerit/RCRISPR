@@ -12,11 +12,7 @@ jobs:
             set -e
             LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
             echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USER" --password-stdin
-            echo "docker build -f Dockerfile -t $LC_REPO:$CIRCLE_SHA1 ."
-            echo "HACK START"
-            docker pull keiranmraine/testing:rcrispr_dev
-            docker tag keiranmraine/testing:rcrispr_dev $LC_REPO:$CIRCLE_SHA1
-            echo "HACK END"
+            docker build -f Dockerfile -t $LC_REPO:$CIRCLE_SHA1 .
             mkdir -p workspace
             docker save -o workspace/dev-image.tar ${LC_REPO}:$CIRCLE_SHA1
       - persist_to_workspace:
