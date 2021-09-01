@@ -69,19 +69,19 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run:
-          name: Building R binary
+          name: Build R binary, push docker-image
           command: |
             mkdir -p /tmp/build
             LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
             docker load -i /tmp/workspace/dev-image.tar
             container_id=$(docker run -d --rm ${LC_REPO}:${CIRCLE_SHA1} sleep 1000)
             docker exec $container_id r -e "devtools::build(binary = TRUE, path = './')" ; res=$?
+            docker exec $container_id bash -c 'mkdir -p dist && mv rcrispr*.tar.gz dist/.'
+            docker cp $container_id:/build/dist /tmp/build
             docker rm -f $container_id
             if [ "$res" -ne "0" ]; then
               exit $res
             fi
-            docker exec $container_id bash -c 'mkdir -p dist && mv rcrispr*.tar.gz dist/.'
-            docker cp $container_id:/build/dist /tmp/build
             BRANCH_OR_TAG="${CIRCLE_TAG:-$CIRCLE_BRANCH}"
             CLEAN_BRANCH=$(echo $BRANCH_OR_TAG | tr / -)
             if [ "$CIRCLE_TAG" = "$BRANCH_OR_TAG" ]; then
