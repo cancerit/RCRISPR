@@ -32,7 +32,8 @@ jobs:
           command: |
             LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
             docker load -i /tmp/workspace/dev-image.tar
-            docker run -ti --rm ${LC_REPO}_${CIRCLE_SHA1} r -e "devtools::build(binary = TRUE)"
+            docker images
+            docker run -ti --rm ${LC_REPO}:${CIRCLE_SHA1} r -e "devtools::build(binary = TRUE)"
           # this will need to be done via a timed run, and then copy the generated file out
 
 
