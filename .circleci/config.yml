@@ -69,10 +69,20 @@ jobs:
       - run:
           name: Building R binary
           command: |
+            mkdir -p workspace
             LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
             docker load -i /tmp/workspace/dev-image.tar
-            docker run -ti --rm ${LC_REPO}:${CIRCLE_SHA1} r -e "devtools::build(binary = TRUE)"
-          # this will need to be done via a timed run, and then copy the generated file out
+            container_id=$(docker run -d --rm $IMAGE_NAME:$CLEAN_BRANCH sleep 1000)
+            docker exec $container_id r -e "devtools::build(binary = TRUE, path = './rcrispr_R_x86_64-pc-linux-gnu.tar.gz')" ; res=$?
+            docker cp $container_id:/build/rcrispr_R_x86_64-pc-linux-gnu.tar.gz workspace/.
+            docker rm -f $container_id
+            exit $res
+      - persist_to_workspace:
+          root: workspace
+          # we can't include the version due to lack of wildcard support
+          paths:
+            - rcrispr_R_x86_64-pc-linux-gnu.tar.gz
+            # to publish automatically: https://circleci.com/blog/publishing-to-github-releases-via-circleci/
 
 
 workflows:
