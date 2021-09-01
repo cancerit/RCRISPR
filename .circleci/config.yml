@@ -72,7 +72,7 @@ jobs:
             mkdir -p workspace
             LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
             docker load -i /tmp/workspace/dev-image.tar
-            container_id=$(docker run -d --rm $IMAGE_NAME:$CLEAN_BRANCH sleep 1000)
+            container_id=$(docker run -d --rm ${LC_REPO}:${CIRCLE_SHA1} sleep 1000)
             docker exec $container_id r -e "devtools::build(binary = TRUE, path = './rcrispr_R_x86_64-pc-linux-gnu.tar.gz')" ; res=$?
             docker cp $container_id:/build/rcrispr_R_x86_64-pc-linux-gnu.tar.gz workspace/.
             docker rm -f $container_id
