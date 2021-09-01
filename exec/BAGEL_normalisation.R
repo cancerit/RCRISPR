@@ -56,10 +56,12 @@ sample_count_matrix <- read_count_matrix_file(
   count_column = opt$count_count_column_index,
   file_separator = opt$counts_delim,
   file_header = ifelse(opt$no_counts_header,FALSE,TRUE),
-  processed = T
+  processed = TRUE,
+  check.names = FALSE
 )
 
 # Normalise counts
+message("Normalising counts...")
 normalised_count_matrix <- bagel_normalise_counts(sample_count_matrix,
                                                   pseudocount = opt$pseudocount,
                                                   scaling_factor = opt$scaling_factor)

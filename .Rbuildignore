@@ -3,5 +3,6 @@
 ^\.github$
 ^README\.Rmd$
 ^.covrignore
-^Dockerfile*
 ^\.circleci$
+^Dockerfile
+.licenserc.yaml

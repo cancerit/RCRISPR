@@ -1,3 +1,32 @@
+# Copyright (c) 2021 Genome Research Ltd
+#
+# Author: CASM/Cancer IT <cgphelp@sanger.ac.uk>
+#
+# This file is part of RCRISPR.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+# 1. The usage of a range of years within a copyright statement contained within
+# this distribution should be interpreted as being equivalent to a list of years
+# including the first and last year specified and all consecutive years between
+# them. For example, a copyright statement that reads ‘Copyright (c) 2005, 2007-
+# 2009, 2011-2012’ should be interpreted as being identical to a statement that
+# reads ‘Copyright (c) 2005, 2007, 2008, 2009, 2011, 2012’ and a copyright
+# statement that reads ‘Copyright (c) 2005-2012’ should be interpreted as being
+# identical to a statement that reads ‘Copyright (c) 2005, 2006, 2007, 2008,
+# 2009, 2010, 2011, 2012’.
+#
 ################################################################################
 #* --                                                                      -- *#
 #* --                         check_directory()                            -- *#
@@ -96,6 +125,7 @@ get_file_class <- function(file = NULL) {
 #' @param filepath delimited file to be read.
 #' @param file_separator field separator.
 #' @param file_header logical stating whether file has header.
+#' @param column_indices columns to include
 #' @param ... additional read.delim parameters.
 #'
 #' @importFrom utils read.delim
@@ -107,6 +137,7 @@ read_file_to_dataframe <-
   function(filepath = NULL,
            file_separator = "\t",
            file_header = T,
+           column_indices = NULL,
            ...) {
     # Get file class
     file_class <-  get_file_class(filepath)
@@ -133,6 +164,18 @@ read_file_to_dataframe <-
     }
     # Validate data frame
     check_dataframe(df)
+    # If column indices is not null
+    if (!is.null(column_indices)) {
+      column_indices_to_include <- process_column_indices(column_indices)
+      # Check indices are within data frame
+      check_dataframe(df, indices = column_indices_to_include)
+      # Subset data frame
+      colnames_to_include <- colnames(df)[column_indices_to_include]
+      df <- as.data.frame(df[,column_indices_to_include], check.names =  FALSE)
+      colnames(df) <- colnames_to_include
+      # Validate data frame
+      check_dataframe(df)
+    }
     # Return data frame
     return(df)
   }
@@ -317,7 +360,7 @@ save_plot_with_ggsave <-
                ...))
     }, error = function(e) {
       # Stop if there is an error
-      stop("Could not save plot with ggsave.")
+      stop(paste("Could not save plot with ggsave:", e))
     })
     # Check output file exists
     check_file(filepath)
@@ -352,35 +395,38 @@ save_plot_list <-
     # Check data is valid
     if (is.null(plot_list))
       stop("Cannot save plot list, plot_list is null.")
-    # Check plot_list is valid
-    if (length(plot_list) == 0)
-      stop("Cannot save plot list, plot_list is empty.")
     # Create list of filepaths
     plot_filepaths <- vector()
-    # Loop over plot list
-    for (pn in names(plot_list)) {
-      # Check name isn't null or numeric
-      if (is.numeric(pn) || is.null(pn))
-        stop(paste("Could not save plot from list, name is numeric or null:", pn))
-      # Check list item is a plot
-      if(!is.ggplot(plot_list[[pn]]))
-        stop(paste("Could not save plot from list, item is not a plot:", pn))
-      # Get plot file path
-      outfile <- paste0(gsub(" ", "_", pn), '.png')
-      # Save plot
-      filepath <- tryCatch({
-        save_plot_with_ggsave(
-          data = plot_list[[pn]],
-          outfile = outfile,
-          outdir = outdir,
-          prefix = prefix,
-          suffix = suffix,
-          ...)
-      }, error = function(e) {
-        # Stop if there is an error
-        stop(paste("Could not save plot from list with ggsave:", e))
-      })
-      plot_filepaths <- c(plot_filepaths, filepath)
+    # Check plot_list is valid
+    if (length(plot_list) == 0) {
+       message("Cannot save plot list, plot_list is empty.")
+    } else {
+      # Loop over plot list
+      for (pn in names(plot_list)) {
+        message(paste("Saving plot:", pn))
+        # Check name isn't null or numeric
+        if (is.numeric(pn) || is.null(pn))
+          stop(paste("Could not save plot from list, name is numeric or null:", pn))
+        # Check list item is a plot
+        if(!is.ggplot(plot_list[[pn]]))
+          stop(paste("Could not save plot from list, item is not a plot:", pn))
+        # Get plot file path
+        outfile <- paste0(gsub(" ", "_", pn), '.png')
+        # Save plot
+        filepath <- tryCatch({
+          save_plot_with_ggsave(
+            data = plot_list[[pn]],
+            outfile = outfile,
+            outdir = outdir,
+            prefix = prefix,
+            suffix = suffix,
+            ...)
+        }, error = function(e) {
+          # Stop if there is an error
+          stop(paste("Could not save plot from list with ggsave:", e))
+        })
+        plot_filepaths <- c(plot_filepaths, filepath)
+      }
     }
     return(plot_filepaths)
   }

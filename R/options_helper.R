@@ -1,3 +1,32 @@
+# Copyright (c) 2021 Genome Research Ltd
+#
+# Author: CASM/Cancer IT <cgphelp@sanger.ac.uk>
+#
+# This file is part of RCRISPR.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+# 1. The usage of a range of years within a copyright statement contained within
+# this distribution should be interpreted as being equivalent to a list of years
+# including the first and last year specified and all consecutive years between
+# them. For example, a copyright statement that reads ‘Copyright (c) 2005, 2007-
+# 2009, 2011-2012’ should be interpreted as being identical to a statement that
+# reads ‘Copyright (c) 2005, 2007, 2008, 2009, 2011, 2012’ and a copyright
+# statement that reads ‘Copyright (c) 2005-2012’ should be interpreted as being
+# identical to a statement that reads ‘Copyright (c) 2005, 2006, 2007, 2008,
+# 2009, 2010, 2011, 2012’.
+#
 ###############################################################################
 #* --                                                                     -- *#
 #* --                        OPTION VALIDATION                            -- *#
@@ -1107,6 +1136,119 @@ intermediate_qc_options <- function() {
        default = FALSE,
        action = "store_true",
        help = "whether to check sample names exist in metadata"
+     ),
+    make_option(
+      c("--no_plot"),
+      default = FALSE,
+      action = "store_true",
+      help = "do not produce plots"
+    )
+  )
+  return(opts)
+}
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                         BAGEL GENE INFILE OPTIONS                   -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+#' Optparse options for BAGEL
+#'
+#' @importFrom optparse make_option
+#' @return list of optparse options
+#' @export bagel_gene_infile_options
+bagel_gene_infile_options <- function() {
+  opts <- list(
+    make_option(
+       c("--ess"),
+       type = "character",
+       default = NULL,
+       metavar = "character",
+       help = "file containing essential gene names"
+     ),
+    make_option(
+      c("--ess_gene_column_index"),
+      type = "integer",
+      default = 1,
+      help = "index of column containing gene names in essential gene file [Default: 1]",
+      metavar = "integer"
+    ),
+    make_option(
+       c("--no_ess_header"),
+       default = FALSE,
+       action = "store_true",
+       help = "essential gene file has no header"
+     ),
+     make_option(
+       c("--ess_delim"),
+       type = "character",
+       default = "\t",
+       help = "essential gene file delimiter [Default: \\t]",
+       metavar = "character"
+     ),
+    make_option(
+       c("--noness"),
+       type = "character",
+       default = NULL,
+       metavar = "character",
+       help = "file containing non-essential gene names"
+     ),
+    make_option(
+      c("--noness_gene_column_index"),
+      type = "integer",
+      default = 1,
+      help = "index of column containing gene names in non-essential gene file [Default: 1]",
+      metavar = "integer"
+    ),
+    make_option(
+       c("--no_noness_header"),
+       default = FALSE,
+       action = "store_true",
+       help = "non-essential gene file has no header"
+     ),
+     make_option(
+       c("--noness_delim"),
+       type = "character",
+       default = "\t",
+       help = "non-essential gene file delimiter [Default: \\t]",
+       metavar = "character"
+     )
+  )
+  return(opts)
+}
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                          SCALING OPTIONS                            -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+#' Optparse options for scaling LFCs and BFs
+#'
+#' @importFrom optparse make_option
+#' @return list of optparse options
+#' @export scaling_options
+scaling_options <- function() {
+  opts <- list(
+    make_option(
+      c( "-t", "--threshold" ),
+      type = "numeric",
+      default = 0.05,
+      help = "threshold [Default: 0.05]",
+      metavar = "numeric"
+    ),
+    make_option(
+       c("--is_fc"),
+       default = FALSE,
+       action = "store_true",
+       help = "whether input is a fold change matrix"
+     ),
+    make_option(
+       c("--is_bf"),
+       default = FALSE,
+       action = "store_true",
+       help = "whether input is Bayes factors"
      ),
     make_option(
       c("--no_plot"),

@@ -7,7 +7,7 @@
 plot_common_violin(df = NULL, ycol = NULL, ylab = NULL)
 }
 \arguments{
-\item{df}{a count statisitic summary produced by \code{count_matrix_stats} with read mapping stats.}
+\item{df}{a data frame.}
 
 \item{ycol}{column from data to plot}
 

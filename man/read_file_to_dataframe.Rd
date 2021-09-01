@@ -8,6 +8,7 @@ read_file_to_dataframe(
   filepath = NULL,
   file_separator = "\\t",
   file_header = T,
+  column_indices = NULL,
   ...
 )
 }
@@ -17,6 +18,8 @@ read_file_to_dataframe(
 \item{file_separator}{field separator.}
 
 \item{file_header}{logical stating whether file has header.}
+
+\item{column_indices}{columns to include}
 
 \item{...}{additional read.delim parameters.}
 }
