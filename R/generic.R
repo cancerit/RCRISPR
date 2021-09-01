@@ -135,11 +135,11 @@ process_column_indices <-
     processed_columns <- vector()
     for (i in 1:length(columns)) {
       # If the input is a range, expand the range
-      if (grepl("[:-,]", columns[i])) {
+      if (grepl("[:-]", columns[i])) {
         # Split the start and end values
         numeric_column_range <- suppressWarnings(
           as.numeric(
-            str_split(columns[i], "[\\:\\-\\,]", n = 2, simplify = T)))
+            str_split(columns[i], "[\\:\\-]", n = 2, simplify = T)))
         # Check the range values are integers
         if (!check_is_numeric_and_is_integer(numeric_column_range[1]) ||
             !check_is_numeric_and_is_integer(numeric_column_range[2]))
