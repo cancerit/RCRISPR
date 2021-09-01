@@ -18,7 +18,7 @@ jobs:
       - persist_to_workspace:
           root: workspace
           paths:
-            - $CIRCLE_SHA1.tar
+            - ${LC_REPO}_${CIRCLE_SHA1}.tar
   build_binary:
     machine:
       image: ubuntu-2004:202107-02
