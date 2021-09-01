@@ -75,12 +75,13 @@ jobs:
             LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
             docker load -i /tmp/workspace/dev-image.tar
             container_id=$(docker run -d --rm ${LC_REPO}:${CIRCLE_SHA1} sleep 1000)
-            docker exec $container_id r -e "devtools::build(binary = TRUE, path = './rcrispr_R_x86_64-pc-linux-gnu.tar.gz')" ; res=$?
-            docker cp $container_id:/build/rcrispr_R_x86_64-pc-linux-gnu.tar.gz /tmp/build/.
+            docker exec $container_id r -e "devtools::build(binary = TRUE, path = './')" ; res=$?
             docker rm -f $container_id
             if [ "$res" -ne "0" ]; then
               exit $res
             fi
+            docker exec $container_id bash -c 'mkdir -p dist && mv rcrispr*.tar.gz dist/.'
+            docker cp $container_id:/build/dist /tmp/build
             BRANCH_OR_TAG="${CIRCLE_TAG:-$CIRCLE_BRANCH}"
             CLEAN_BRANCH=$(echo $BRANCH_OR_TAG | tr / -)
             if [ "$CIRCLE_TAG" = "$BRANCH_OR_TAG" ]; then
@@ -93,8 +94,9 @@ jobs:
             fi
       # to publish R tar to github automatically: https://circleci.com/blog/publishing-to-github-releases-via-circleci/
       - store_artifacts:
-          path: /tmp/build/rcrispr_R_x86_64-pc-linux-gnu.tar.gz
-          destination: rcrispr_R_x86_64-pc-linux-gnu.tar.gz
+        path: /tmp/build
+          #path: /tmp/build/rcrispr_R_x86_64-pc-linux-gnu.tar.gz
+          #destination: rcrispr_R_x86_64-pc-linux-gnu.tar.gz
 
 
 
