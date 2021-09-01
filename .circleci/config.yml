@@ -30,7 +30,7 @@ jobs:
           command: |
             LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
             docker load -i /tmp/workspace/dev-image.tar
-            docker run -ti --rm ${LC_REPO}:${CIRCLE_SHA1} r -e 'if (any(as.data.frame(devtools::test())[["failed"]] > 0)) stop("Some tests failed.")'
+            docker run -u root -w /build -ti --rm ${LC_REPO}:${CIRCLE_SHA1} r -e 'if (any(as.data.frame(devtools::test())[["failed"]] > 0)) stop("Some tests failed.")'
   devtools_checks:
     machine:
       image: ubuntu-2004:202107-02
