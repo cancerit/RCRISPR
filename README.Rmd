@@ -39,6 +39,18 @@ library(rcrispr)
 
 ## Development
 
+### Keeping Rmd and md in sync
+
+You should not edit `README.md`, only `README.Rmd`.  Once edited you can update with:
+
+```bash
+# native R
+r -e 'library(knitr); knit("README.Rmd", "README.md")'
+
+# docker
+docker run -ti --rm -v $PWD:/md:rw rocker/r-rmd r -e 'library(knitr); knit("/md/README.Rmd", "/md/README.md")'
+```
+
 ### Updating licence headers
 
 Please use [skywalking-eyes](https://github.com/apache/skywalking-eyes).
