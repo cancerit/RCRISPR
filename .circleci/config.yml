@@ -12,8 +12,8 @@ jobs:
       - run:
           name: Run pre-commit checks
           command: |
-            apt-get update
-            apt-get install -yq python3
+            sudo apt-get update
+            sudo apt-get install -yq python3
             export PATH=/home/circleci/bin:$PATH
             curl https://pre-commit.com/install-local.py | python -
             pre-commit run --all-files
