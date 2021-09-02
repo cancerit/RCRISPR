@@ -4,7 +4,6 @@ repos:
     hooks:
     -   id: check-added-large-files
         args: ['--maxkb=3000']
-    -   id: check-ast
     -   id: check-executables-have-shebangs
     -   id: check-shebang-scripts-are-executable
     -   id: check-merge-conflict
@@ -16,8 +15,6 @@ repos:
     # disabled to protect R generated files
     # -   id: end-of-file-fixer
     # -   id: trailing-whitespace
-    -   id: name-tests-test
-    -   id: requirements-txt-fixer
 
 # disabled to protect R generated markdown files
 # -   repo: https://github.com/executablebooks/mdformat
