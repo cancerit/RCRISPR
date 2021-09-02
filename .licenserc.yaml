@@ -64,6 +64,7 @@ header:
     - '.circleci'
     - '.covrignore'
     - '.licenserc.yaml'
+    - '.pre-commit-config.yaml'
     - '.Rbuildignore'
     - '.gitignore'
     - 'exec/'
