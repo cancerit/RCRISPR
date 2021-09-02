@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   precommit_chk:
     docker:
-      - image: circleci/python:3.6.4  # primary container for the build job
+      - image: circleci/buildpack-deps:stretch  # primary container for the build job
         auth:
           username: $DOCKERHUB_USER
           password: $DOCKERHUB_PASSWORD
