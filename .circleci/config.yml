@@ -1,6 +1,17 @@
 version: 2.1
 
 jobs:
+  precommit_chk:
+    machine:
+      # need machine as want to mount a volume
+      image: ubuntu-2004:202107-02
+    steps:
+      - checkout
+      - run:
+          name: Run pre-commit checks
+          command: |
+            curl https://pre-commit.com/install-local.py | python -
+            pre-commit run --all-files
   license_chk:
     machine:
       # need machine as want to mount a volume
@@ -115,6 +126,7 @@ workflows:
   version: 2.1
   build_test_publish:
     jobs:
+      - precommit_chk
       - license_chk:
           context:
             - dockerhub-casmservice
@@ -138,6 +150,7 @@ workflows:
               only: /.+/
       - deploy:
           requires:
+            - precommit_chk
             - license_chk
             - build_docker
             - unittests
