@@ -25,7 +25,11 @@ jobs:
             set -e
             LC_REPO=$(echo $CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
             echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USER" --password-stdin
-            docker build -f Dockerfile -t $LC_REPO:$CIRCLE_SHA1 .
+            echo "docker build -f Dockerfile -t $LC_REPO:$CIRCLE_SHA1 ."
+            echo "HACK START"
+            docker pull keiranmraine/testing:rcrispr_dev
+            docker tag keiranmraine/testing:rcrispr_dev $LC_REPO:$CIRCLE_SHA1
+            echo "HACK END"
             mkdir -p workspace
             docker save -o workspace/dev-image.tar ${LC_REPO}:$CIRCLE_SHA1
       - persist_to_workspace:
@@ -59,6 +63,7 @@ jobs:
             docker load -i /tmp/workspace/dev-image.tar
             container_id=$(docker run -u root -w /build -d --rm ${LC_REPO}:${CIRCLE_SHA1} sleep 10000)
             set +e
+            set -x
             docker exec ${container_id} r -e 'if (!identical(devtools::check(document = FALSE, quiet = TRUE, args = "--no-tests")[["notes"]], character(0))) stop("Check with Notes")' || \
               docker exec ${container_id} cat /tmp/rcrispr.Rcheck/00check.log
             docker exec ${container_id} r -e 'if (!identical(devtools::check(document = FALSE, quiet = TRUE, args = "--no-tests")[["warnings"]], character(0))) stop("Check with Warnings")' || \

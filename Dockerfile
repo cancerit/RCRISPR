@@ -24,8 +24,10 @@ RUN apt-get update && \
 COPY . $BUILD/
 WORKDIR $BUILD
 
-RUN R -e "install.packages('devtools', lib = Sys.getenv(\"R_LIBS_USER\"))"
-RUN R -e 'devtools::install_deps(dep = T, lib = Sys.getenv("R_LIBS_USER"))'
+ENV INST_NCPU=$(nproc)
+
+RUN R -e "install.packages('devtools', lib = Sys.getenv(\"R_LIBS_USER\"), Ncpus = Sys.getenv(\"INST_NCPU\"))"
+RUN R -e "devtools::install_deps(dep = T, lib = Sys.getenv(\"R_LIBS_USER\"), threads = Sys.getenv(\"INST_NCPU\"))"
 RUN R -e 'devtools::install()'
 
 RUN adduser --disabled-password --gecos '' ubuntu && chsh -s /bin/bash && mkdir -p /home/ubuntu
