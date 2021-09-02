@@ -12,6 +12,7 @@ jobs:
       - run:
           name: Run pre-commit checks
           command: |
+            export PATH=/home/circleci/bin:$PATH
             curl https://pre-commit.com/install-local.py | python -
             pre-commit run --all-files
   # license_chk:
