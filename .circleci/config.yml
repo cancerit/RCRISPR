@@ -63,15 +63,10 @@ jobs:
             docker load -i /tmp/workspace/dev-image.tar
             container_id=$(docker run -u root -w /build -d --rm ${LC_REPO}:${CIRCLE_SHA1} sleep 10000)
             set +e
-            set -x
-            docker exec ${container_id} r -e 'if (!identical(devtools::check(document = FALSE, quiet = TRUE, args = "--no-tests")[["notes"]], character(0))) stop("Check with Notes")' || \
-              docker exec ${container_id} cat /tmp/rcrispr.Rcheck/00check.log
-            docker exec ${container_id} r -e 'if (!identical(devtools::check(document = FALSE, quiet = TRUE, args = "--no-tests")[["warnings"]], character(0))) stop("Check with Warnings")' || \
-              docker exec ${container_id} cat /tmp/rcrispr.Rcheck/00check.log
-            docker exec ${container_id} r -e 'if (!identical(devtools::check(document = FALSE, quiet = TRUE, args = "--no-tests")[["errors"]], character(0))) stop("Check with Errors")' ; res=$?
+            docker exec ${container_id} r -e 'devtools::check(document = FALSE, quiet = TRUE, args = "--no-tests", error_on = c("never"))'
+            docker exec ${container_id} grep -P '^Status:.*ERROR' /tmp/rcrispr.Rcheck/00check.log; res=$?
             if [ "$res" -ne "0" ]; then
               docker exec ${container_id} cat /tmp/rcrispr.Rcheck/00check.log
-            fi
             docker rm -f $container_id
             if [ "$res" -ne "0" ]; then
               exit $res
