@@ -75,6 +75,7 @@ header:
     - 'Dockerfile'
     - 'LICENSE'
     - 'NAMESPACE'
+    - 'NEWS.md'
     - 'rcrispr.Rproj'
     - 'README.*md'
     - '**/_snaps/*'
