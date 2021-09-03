@@ -9,6 +9,9 @@ output: github_document
 # rcrispr
 
 <!-- badges: start -->
+
+[![cancerit](https://circleci.com/gh/cancerit/RCRISPR.svg?style=svg)](https://circleci.com/gh/cancerit/RCRISPR)
+
 <!-- badges: end -->
 
 The goal of rcrispr is to ...
