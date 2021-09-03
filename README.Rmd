@@ -23,7 +23,12 @@ knitr::opts_chunk$set(
 
 <!-- badges: end -->
 
-The goal of rcrispr is to ...
+RCRISPR is an R package for single guide CRISPR screen data transformation, analysis and visualisation. It includes functions
+for importing count data, calculating log fold changes, generating quality control metrics, parsing MAGeCK and BAGEL results
+and producing a variety of summary plots.
+
+RCRISPR forms the basis of the single guide analysis pipeline, [C-SAR](https://github.com/cancerit/C-SAR). Included in RCRISPR
+are the scripts run at various stages of the pipeline, allowing them to be used and extended outside of the pipeline.
 
 ## Installation
 
