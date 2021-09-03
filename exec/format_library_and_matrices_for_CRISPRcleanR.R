@@ -78,7 +78,8 @@ sample_count_matrix <- read_count_matrix_file(
   count_column = opt$count_count_column_index,
   file_separator = opt$counts_delim,
   file_header = ifelse(opt$no_counts_header,FALSE,TRUE),
-  processed = T
+  processed = TRUE,
+  check.names = FALSE
 )
 
 # Read in fold change matrix
@@ -90,7 +91,8 @@ fold_change_matrix <- read_count_matrix_file(
   count_column = opt$lfc_lfc_column_index,
   file_separator = opt$lfc_delim,
   file_header = ifelse(opt$no_lfc_header,FALSE,TRUE),
-  processed = T
+  processed = TRUE,
+  check.names = FALSE
 )
 
 # Compare sgRNA IDs and gene names between count matrix and library
@@ -129,6 +131,7 @@ outfile <- write_dataframe_to_file(data = processed_count_matrix,
                                    outfile = opt$count_matrix_outfile,
                                    outdir = opt$outdir,
                                    prefix = opt$prefix,
+                                   suffix = opt$suffix,
                                    row.names = FALSE,
                                    quote = FALSE,
                                    sep = "\t")
@@ -140,6 +143,7 @@ outfile <- write_dataframe_to_file(data = processed_fold_change_matrix,
                                    outfile = opt$lfc_matrix_outfile,
                                    outdir = opt$outdir,
                                    prefix = opt$prefix,
+                                   suffix = opt$suffix,
                                    row.names = FALSE,
                                    quote = FALSE,
                                    sep = "\t")
@@ -151,6 +155,7 @@ outfile <- write_dataframe_to_file(data = processed_library,
                                    outfile = opt$library_outfile,
                                    outdir = opt$outdir,
                                    prefix = opt$prefix,
+                                   suffix = opt$suffix,
                                    row.names = FALSE,
                                    quote = FALSE,
                                    sep = "\t")
@@ -160,6 +165,7 @@ message(paste("Fold change matrix written to:", outfile))
 if (!is.null(opt$rdata)) {
   message("Writing R data to file...")
   rdata_outfile <- write_rdata_to_file(prefix = opt$prefix,
+                                       suffix = opt$suffix,
                                        outfile = opt$rdata,
                                        outdir = opt$outdir,
                                        data = list(sample_count_matrix,

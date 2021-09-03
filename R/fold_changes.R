@@ -1,3 +1,32 @@
+# Copyright (c) 2021 Genome Research Ltd
+#
+# Author: CASM/Cancer IT <cgphelp@sanger.ac.uk>
+#
+# This file is part of RCRISPR.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+# 1. The usage of a range of years within a copyright statement contained within
+# this distribution should be interpreted as being equivalent to a list of years
+# including the first and last year specified and all consecutive years between
+# them. For example, a copyright statement that reads ‘Copyright (c) 2005, 2007-
+# 2009, 2011-2012’ should be interpreted as being identical to a statement that
+# reads ‘Copyright (c) 2005, 2007, 2008, 2009, 2011, 2012’ and a copyright
+# statement that reads ‘Copyright (c) 2005-2012’ should be interpreted as being
+# identical to a statement that reads ‘Copyright (c) 2005, 2006, 2007, 2008,
+# 2009, 2010, 2011, 2012’.
+#
 ###############################################################################
 #* --                                                                     -- *#
 #* --                 read_fold_change_matrix_file()                      -- *#
@@ -96,13 +125,13 @@ read_fold_change_matrix_file <-
       }
     } else {
       # Check none of the column indexes overlap
-      if (anyDuplicated(c(id_column, fc_column_indices)) != 0)
+      if (anyDuplicated(c(gene_column, fc_column_indices)) != 0)
         stop(paste("Cannot read fold change matrix, duplicate column indices:",
-                   c(id_column, fc_column_indices)))
+                   c(gene_column, fc_column_indices)))
       # Check indices are within dataframe
       check_dataframe(df, indices = fc_column_indices)
       # Remove unwanted columns
-      df <- df[,c(id_column, fc_column_indices)]
+      df <- df[,c(gene_column, fc_column_indices)]
       # If processed, set the column names for id_column
       if (processed) {
         colnames(df)[1] <- 'gene'
@@ -186,14 +215,14 @@ calculate_lfc <-
     # Get mean of control indices
     data <- data.frame(data[1:2],
                        'control_means' = apply(data[3:(4 + (ncontrol - 2))], 1, function(x) mean(x)),
-                       data[treatment_indices])
+                       data[treatment_indices], check.names = FALSE)
     # Add pseudocount to counts
     data <- add_pseudocount(data,
                             pseudocount = pseudocount,
                             indices = c(3:(3 + ntreatment)))
     # Calculate log fold changes
     data <- data.frame(data[1:2],
-                       log2(data[,4:(3 + ntreatment)] / data[,3]))
+                       log2(data[,4:(3 + ntreatment)] / data[,3]), check.names = FALSE)
     return(data)
   }
 

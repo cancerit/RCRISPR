@@ -4,12 +4,22 @@
 \alias{plot_common_barplot}
 \title{Generate bar plot}
 \usage{
-plot_common_barplot(df = NULL, ycol = NULL, ylab = NULL)
+plot_common_barplot(
+  df = NULL,
+  xcol = NULL,
+  xlab = NULL,
+  ycol = NULL,
+  ylab = NULL
+)
 }
 \arguments{
 \item{df}{a count statisitic summary produced by \code{count_matrix_stats} with read mapping stats.}
 
-\item{ycol}{column from count statistics to plot}
+\item{xcol}{column from count statistics to plot on x axis}
+
+\item{xlab}{label for x axis}
+
+\item{ycol}{column from count statistics to plot on y axis}
 
 \item{ylab}{label for y axis}
 }

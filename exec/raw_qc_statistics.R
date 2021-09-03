@@ -1,5 +1,6 @@
 suppressPackageStartupMessages(library(optparse))
 suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(tibble))
 suppressPackageStartupMessages(library(rcrispr))
 
 ###############################################################################
@@ -71,7 +72,8 @@ sample_count_matrix <- read_count_matrix_file(
   count_column = opt$count_count_column_index,
   file_separator = opt$counts_delim,
   file_header = ifelse(opt$no_counts_header,FALSE,TRUE),
-  processed = T
+  processed = T,
+  check.names = F
 )
 
 # Read in sample metadata (optional)
@@ -92,6 +94,10 @@ sample_metadata_object <-
   )
 sample_metadata <- get_sample_metadata(sample_metadata_object, processed = T)
 
+# Get ordered sample labels
+ordered_sample_metadata <- sample_metadata %>%
+  arrange(desc(plasmid), desc(control), desc(treatment), desc(label))
+
 # If read counts then get them in their own vector
 total_reads <- NULL
 if (!is.null(opt$info_reads_column_index)) {
@@ -109,12 +115,16 @@ raw_qc_stats <- count_matrix_stats(count_matrix = sample_count_matrix,
                                    low_counts = low_counts,
                                    total_reads = total_reads)
 
+# Get number of samples
+num_sample_columns <- length(raw_qc_stats$sample)
+
 # Write raw count statistics to output file
 message("Writing raw count statistics to file...")
 outfile <- write_dataframe_to_file(data = raw_qc_stats,
                                    outfile = opt$outfile,
                                    outdir = opt$outdir,
                                    prefix = opt$prefix,
+                                   suffix = opt$suffix,
                                    row.names = FALSE,
                                    quote = FALSE,
                                    sep = "\t")
@@ -143,6 +153,11 @@ if (opt$no_plot) {
       left_join(sample_metadata %>%
                   select('sample' = label, group), by = 'sample')
   }
+  # Check that the union of sample_order and sample is the right length
+  message("Ordering sample names...")
+  if (length(intersect(ordered_sample_metadata$label, raw_qc_stats$sample)) != length(raw_qc_stats$sample))
+    stop("Cannot apply sample order, sample names do not match.")
+  raw_qc_stats$sample <- factor(raw_qc_stats$sample, levels = intersect(ordered_sample_metadata$label, raw_qc_stats$sample))
   # Generate list of plots for saving
   plot_list <- list()
   if (is.null(opt$info_reads_column_index)) {
@@ -157,20 +172,65 @@ if (opt$no_plot) {
   message("Generating zero sgRNA statistics plot...")
   plot_list[['percentage_zero_guides_per_sample']] <- plot_common_barplot(
                                                         raw_qc_stats,
+                                                        xcol = 'sample',
                                                         ycol = 'pct_zero_sgrnas',
                                                         ylab = 'Guides with no reads assigned (%)')
   # Plot percent low sgRNAs
   message("Generating low sgRNA statistics plot...")
   plot_list[['percentage_low_guides_per_sample']] <- plot_common_barplot(
                                                       raw_qc_stats,
+                                                      xcol = 'sample',
                                                       ycol = 'pct_low_sgrnas',
                                                       ylab = paste0("Guides with <", low_counts, " reads assigned (%)"))
   # Plot percent low sgRNAs
   message("Generating gini index statistics plot...")
   plot_list[['gini_index_per_sample']] <- plot_common_barplot(
                                                       raw_qc_stats,
+                                                      xcol = 'sample',
                                                       ycol = 'gini_index',
                                                       ylab = paste0("Gini index"))
+  # Only prepare and plot PCA if there are 2 or more samples
+  if (num_sample_columns < 2) {
+    message("Cannot generate PCA plot as there are less than 2 sample columns.")
+    pca_data <- NULL
+  } else {
+    message("Preparing data for PCA plots...")
+    # Get only sample columns
+    sample_data_pca <- sample_count_matrix %>%
+      select(-sgRNA, -gene)
+    # Prepare data for PCA plots
+    pca_data <- prepare_pca(df = sample_data_pca, transform = TRUE, log_transform = TRUE)
+    # Set groups for PCA plots
+    pca_data[['processed_data']] <- pca_data[['data']]$x %>% as.data.frame()
+    if (!is.null(opt$info_group_column_index)) {
+      message("Adding groups to PCA data...")
+       pca_data[['processed_data']] <- pca_data[['processed_data']] %>%
+        rownames_to_column('sample') %>%
+        left_join(sample_metadata %>% select('sample' = label, 'color' = group, plasmid, control, treatment), by = 'sample')
+    }
+    message("Adding plasmid, control and treatment to PCA data...")
+    pca_data[['processed_data']] <- pca_data[['processed_data']] %>%
+      mutate('shape' = case_when(plasmid == 1 ~ 'plasmid',
+                                 control == 1 ~ 'control',
+                                 treatment == 1 ~ 'treatment')) %>%
+      select(-control, -plasmid, -treatment)
+    if (length(unique(pca_data[['processed_data']]$color)) == 1 && length(unique(pca_data[['processed_data']]$shape)) == 1) {
+      message("Samples are all in one group and of one type, skipping PCA plot.")
+    } else {
+      # Plot PC scree
+      message("Generating PCA scree plot...")
+      pca_scree_plot_name <- 'raw_count_matrix.PCA_scree'
+      plot_list[[pca_scree_plot_name]] <- plot_common_barplot(pca_data[['variance_explained']],
+                                                      xcol = 'PC',
+                                                      ycol = 'variance_explained',
+                                                      ylab = 'Variance explained (%)')
+      # Plot PCA
+      message("Plot PCA...")
+      pca_plot_name <- 'raw_count_matrix.PCA'
+      plot_list[[pca_plot_name]] <- plot_pca(pca_data[['processed_data']])
+    }
+  }
+
   # Save plots
   message("Saving plots...")
   plot_files <- save_plot_list(plot_list = plot_list,
@@ -184,6 +244,7 @@ if (opt$no_plot) {
 if (!is.null(opt$rdata)) {
   message("Writing R data to file...")
   rdata_outfile <- write_rdata_to_file(prefix = opt$prefix,
+                                       suffix = opt$suffix,
                                        outfile = opt$rdata,
                                        outdir = opt$outdir,
                                        data = list(sample_count_matrix,

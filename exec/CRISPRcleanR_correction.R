@@ -81,7 +81,8 @@ sample_count_matrix <- read_count_matrix_file(
   count_column = opt$count_count_column_index,
   file_separator = opt$counts_delim,
   file_header = ifelse(opt$no_counts_header,FALSE,TRUE),
-  processed = T
+  processed = T,
+  check.names = FALSE
 )
 
 # Read in fold change matrix
@@ -181,7 +182,9 @@ message(paste("Count matrix written to:", outfile))
 
 # Write CRISPRcleanR sgRNA fold change matrix to file
 message("Writing fold change matrix to file...")
-outfile <- write_dataframe_to_file(data = correctedFCs$corrected_logFCs %>% rownames_to_column('id'),
+outfile <- write_dataframe_to_file(data = correctedFCs$corrected_logFCs %>%
+                                            rownames_to_column('id') %>%
+                                            select(id, genes, CHR, startp, endp, avgFC, BP, correction, correctedFC),
                                    outfile = opt$lfc_matrix_outfile,
                                    outdir = opt$outdir,
                                    prefix = opt$prefix,
