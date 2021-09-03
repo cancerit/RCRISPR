@@ -12,6 +12,8 @@ output: github_document
 
 [![cancerit](https://circleci.com/gh/cancerit/RCRISPR.svg?style=svg)](https://circleci.com/gh/cancerit/RCRISPR)
 
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+
 <!-- badges: end -->
 
 The goal of rcrispr is to ...
@@ -36,6 +38,18 @@ library(rcrispr)
 ```
 
 ## Development
+
+### pre-commit
+
+Please install a pre-commit to your user environment (not a venv):
+
+```bash
+curl https://pre-commit.com/install-local.py | python3 -
+# may need to add to PATH
+
+# in repo folder, enable pre-commit hooks
+pre-commit install
+```
 
 ### Keeping Rmd and md in sync
 
