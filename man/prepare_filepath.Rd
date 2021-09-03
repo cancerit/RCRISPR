@@ -4,7 +4,13 @@
 \alias{prepare_filepath}
 \title{Prepare file path}
 \usage{
-prepare_filepath(outfile = NULL, outdir = NULL, prefix = NULL, suffix = NULL)
+prepare_filepath(
+  outfile = NULL,
+  outdir = NULL,
+  prefix = NULL,
+  suffix = NULL,
+  create_dir = TRUE
+)
 }
 \arguments{
 \item{outfile}{the name of the output file.}
@@ -14,6 +20,8 @@ prepare_filepath(outfile = NULL, outdir = NULL, prefix = NULL, suffix = NULL)
 \item{prefix}{a prefix to be added to the file name.}
 
 \item{suffix}{a suffix to be added to the file name (before file extension).}
+
+\item{create_dir}{whether to create directory if it does not exist}
 }
 \value{
 A file path.

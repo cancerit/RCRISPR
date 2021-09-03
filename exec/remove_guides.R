@@ -11,11 +11,13 @@ option_list = c(
   count_path_options(),
   library_annotation_options(),
   remove_guide_options(),
+  count_library_outfile_options(),
   shared_output_options(),
   count_format_options(),
   count_column_index_options(),
   library_annotation_format_options(),
-  library_annotation_column_index_options()
+  library_annotation_column_index_options(),
+  library_annotation_genomic_column_index_options()
 )
 opt_parser <- OptionParser(option_list = option_list)
 opt <- tryCatch({
@@ -64,6 +66,9 @@ library_annotations_object <-
     filepath = opt$library,
     id_column = opt$library_id_column_index,
     gene_column = opt$library_gene_column_index,
+    chr_column = opt$library_chr_column_index,
+    chr_start_column = opt$library_start_column_index,
+    chr_end_column = opt$library_end_column_index,
     file_separator = opt$library_delim,
     file_header = ifelse(opt$no_library_header,FALSE,TRUE),
     check.names = FALSE

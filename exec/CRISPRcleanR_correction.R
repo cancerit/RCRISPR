@@ -182,7 +182,9 @@ message(paste("Count matrix written to:", outfile))
 
 # Write CRISPRcleanR sgRNA fold change matrix to file
 message("Writing fold change matrix to file...")
-outfile <- write_dataframe_to_file(data = correctedFCs$corrected_logFCs %>% rownames_to_column('id'),
+outfile <- write_dataframe_to_file(data = correctedFCs$corrected_logFCs %>%
+                                            rownames_to_column('id') %>%
+                                            select(id, genes, CHR, startp, endp, avgFC, BP, correction, correctedFC),
                                    outfile = opt$lfc_matrix_outfile,
                                    outdir = opt$outdir,
                                    prefix = opt$prefix,

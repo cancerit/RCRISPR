@@ -630,6 +630,37 @@ sample_metadata_sample_read_count_column_index_options <- function() {
 
 ###############################################################################
 #* --                                                                     -- *#
+#* --                       CONVERT COUNTS OR MATRIX OPTIONS              -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+#' Optparse options for count and library output paths
+#'
+#' @importFrom optparse make_option
+#' @return list of optparse options
+#' @export count_library_outfile_options
+count_library_outfile_options <- function() {
+  opts <- list(
+    make_option(
+        c("--count_matrix_outfile"),
+        type = "character",
+        default = NULL,
+        help = "output file for count matrix",
+        metavar = "character"
+      ),
+      make_option(
+        c("--library_outfile"),
+        type = "character",
+        default = NULL,
+        help = "output file for processed library",
+        metavar = "character"
+      )
+  )
+  return(opts)
+}
+
+###############################################################################
+#* --                                                                     -- *#
 #* --                       DUPLICATE GUIDE OPTIONS                       -- *#
 #* --                                                                     -- *#
 ###############################################################################
@@ -646,20 +677,6 @@ duplicate_guide_options <- function() {
       type = "character",
       default = NULL,
       help = "output file for duplicate guides",
-      metavar = "character"
-    ),
-    make_option(
-      c("--count_matrix_outfile"),
-      type = "character",
-      default = NULL,
-      help = "output file for processed count matrix",
-      metavar = "character"
-    ),
-    make_option(
-      c("--library_outfile"),
-      type = "character",
-      default = NULL,
-      help = "output file for processed library",
       metavar = "character"
     )
   )
@@ -684,20 +701,6 @@ remove_guide_options <- function() {
       type = "character",
       default = NULL,
       help = "file of guides to remove",
-      metavar = "character"
-    ),
-    make_option(
-      c("--count_matrix_outfile"),
-      type = "character",
-      default = NULL,
-      help = "output file for processed count matrix",
-      metavar = "character"
-    ),
-    make_option(
-      c("--library_outfile"),
-      type = "character",
-      default = NULL,
-      help = "output file for processed library",
       metavar = "character"
     )
   )
@@ -765,7 +768,7 @@ bagel_normalisation_options <- function() {
     make_option(
       c("--pseudocount"),
       type = "numeric",
-      default = 0.05,
+      default = 5,
       help = "pseudocount to add to sample counts",
       metavar = "numeric"
     ),
@@ -803,6 +806,12 @@ calculate_lfc_options <- function() {
       c("--gene_outfile"),
       type = "character",
       help = "output file for gene-level fold change matrix",
+      metavar = "character"
+    ),
+    make_option(
+      c("--count_matrix_outfile"),
+      type = "character",
+      help = "output file for count matrix",
       metavar = "character"
     ),
     make_option(
@@ -847,19 +856,28 @@ remove_no_coordinate_guide_options <- function() {
       default = NULL,
       help = "file of guides that were remove",
       metavar = "character"
-    ),
+    )
+  )
+  return(opts)
+}
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                       FILTER GUIDE OPTIONS                          -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+#' Optparse options for raw guide filter output
+#' @importFrom optparse make_option
+#' @return list of optparse options
+#' @export filtered_guide_output_options
+filtered_guide_output_options <- function() {
+  opts <- list(
     make_option(
-      c("--count_matrix_outfile"),
+      c("--filtered_guides_outfile"),
       type = "character",
       default = NULL,
-      help = "output file for processed count matrix",
-      metavar = "character"
-    ),
-    make_option(
-      c("--library_outfile"),
-      type = "character",
-      default = NULL,
-      help = "output file for processed library",
+      help = "file of guides that were remove",
       metavar = "character"
     )
   )
@@ -898,20 +916,6 @@ filter_by_index_options <- function() {
       type = "character",
       default = 30,
       help = "minimum number of reads for filtering [Default: 30]",
-      metavar = "character"
-    ),
-    make_option(
-      c("--count_matrix_outfile"),
-      type = "character",
-      default = NULL,
-      help = "output file for processed count matrix",
-      metavar = "character"
-    ),
-    make_option(
-      c("--library_outfile"),
-      type = "character",
-      default = NULL,
-      help = "output file for processed library",
       metavar = "character"
     )
   )
