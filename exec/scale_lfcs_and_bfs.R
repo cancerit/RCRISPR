@@ -100,7 +100,7 @@ if (ncol(sample_data) > 2) {
   message("Averaging replicates...")
   avg_sample_data <- average_replicates(data = sample_data,
                                         gene_column = 1,
-                                        data_columns = 2:(ncol(sample_data) - 1))
+                                        data_columns = 2:(ncol(sample_data)))
 } else {
   message("Only one data column, skipping averaging replicates.")
   avg_sample_data <- sample_data

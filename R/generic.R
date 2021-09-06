@@ -130,7 +130,7 @@ process_column_indices <-
     if (length(columns) < 1 || is.null(columns))
       stop("Cannot process columns (<1 or null).")
     # Split character into a vector
-    columns <- columns %>% str_split(',', simplify = T)
+    columns <- columns %>% paste(collapse = ",") %>% str_split(',', simplify = T)
     # Loop through values and expand ranges
     processed_columns <- vector()
     for (i in 1:length(columns)) {
