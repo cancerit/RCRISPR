@@ -74,6 +74,7 @@ read_sample_count_file <-
            count_column = 3,
            file_separator = "\t",
            file_header = TRUE,
+           stripIDs = FALSE,
            ...) {
     # Try reading sample counts into dataframe
     sample_counts <- tryCatch({
@@ -91,6 +92,10 @@ read_sample_count_file <-
     for (i in c('id_column', 'gene_column', 'count_column')) {
       if (!is.null(get(i)))
         assign(i, convert_variable_to_integer(get(i)))
+    }
+    #strip ID column if requested
+    if(stripIDs){
+      sample_counts[,id_column]<-gsub("[.]","",make.names(sample_counts[,id_column]))
     }
     # Try converting sample counts into a SampleCounts object
     sample_counts_object <- tryCatch({
@@ -220,6 +225,7 @@ read_count_matrix_file <-
            gene_column = 2,
            count_column = NULL,
            processed = FALSE,
+           stripIDs= FALSE,
            ...) {
     # Error out if count matrix has no header as we can't determine the sample names
     if (file_header == FALSE) {
@@ -238,6 +244,10 @@ read_count_matrix_file <-
       # Stop if there is an error
       stop(e)
     })
+    #strip ID column if requested:
+    if(stripIDs){
+      df[,id_column]<-gsub("[.]","",make.names(df[,id_column]))
+    }
     # Validate data frame
     check_dataframe(df, check_na = TRUE)
     # Try to make each column an integer if it isn't already
@@ -309,6 +319,7 @@ read_sample_count_files <-
            count_column = 3,
            file_separator = "\t",
            file_header = TRUE,
+           stripIDs = FALSE,
            sample_metadata_object = NULL,
            ...) {
     # Try to make each column an integer if it isn't already
@@ -339,6 +350,7 @@ read_sample_count_files <-
                                                     count_column = count_column,
                                                     file_header = file_header,
                                                     file_separator = file_separator,
+                                                    stripIDs = stripIDs,
                                                     ...)
       # Add SampleCount object to list
       sample_count_objects <- c(sample_count_objects, sample_count_object)

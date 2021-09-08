@@ -55,6 +55,7 @@ read_library_annotation_file <-
            chr_end_column = NULL,
            file_separator = "\t",
            file_header = TRUE,
+           stripIDs = FALSE,
            ...) {
     check_file(filepath)
     library_annotations <-
@@ -67,6 +68,10 @@ read_library_annotation_file <-
     for (i in c('id_column', 'gene_column', 'chr_column', 'chr_start_column', 'chr_end_column')) {
       if (!is.null(get(i)))
         assign(i, convert_variable_to_integer(get(i)))
+    }
+    #strip guide IDs if requested
+    if(stripIDs){
+      library_annotations[,id_column]<-gsub("[.]","",make.names(library_annotations[,id_column]))
     }
     # Try reading library annotation into dataframe
     library_annotation_object <- tryCatch({
