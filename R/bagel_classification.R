@@ -177,6 +177,7 @@ get_bagel_statistics <-
 #' @param gene_column index of column containing gene names.
 #' @param data_column index of column containing values.
 #' @param classification_column index of column containing BAGEL classifications.
+#' @param threshold cutoff value (Default: 0.05).
 #'
 #' @import dplyr
 #' @return dataframe

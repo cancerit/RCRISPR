@@ -20,6 +20,8 @@ prepare_essentiality_data(
 \item{data_column}{index of column containing values.}
 
 \item{classification_column}{index of column containing BAGEL classifications.}
+
+\item{threshold}{cutoff value (Default: 0.05).}
 }
 \value{
 dataframe
