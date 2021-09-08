@@ -17,6 +17,7 @@ jobs:
   build_docker:
     machine:
       image: ubuntu-2004:202107-02
+    resource_class: xlarge
     steps:
       - checkout
       - run:
