@@ -338,7 +338,8 @@ read_sample_count_files <-
                                                     gene_column = gene_column,
                                                     count_column = count_column,
                                                     file_header = file_header,
-                                                    file_separator = file_separator)
+                                                    file_separator = file_separator,
+                                                    ...)
       # Add SampleCount object to list
       sample_count_objects <- c(sample_count_objects, sample_count_object)
     }

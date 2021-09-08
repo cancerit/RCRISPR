@@ -238,6 +238,30 @@ count_column_index_options <- function() {
 
 ###############################################################################
 #* --                                                                     -- *#
+#* --                     COUNT READ LINE SKIP OPTIONS                    -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+#' Optparse options for skipping lines when reading files
+#'
+#' @importFrom optparse make_option
+#' @return list of optparse options
+#' @export count_skip_options
+count_skip_options <- function() {
+  opts <- list(
+    make_option(
+      c( "--count_skip" ),
+      type = "numeric",
+      default = 0,
+      help = "number of lines to skip when reading file [Default: 0]",
+      metavar = "numeric"
+    )
+  )
+  return(opts)
+}
+
+###############################################################################
+#* --                                                                     -- *#
 #* --                         FOLD CHANGE OPTIONS                         -- *#
 #* --                                                                     -- *#
 ###############################################################################
@@ -1263,3 +1287,5 @@ scaling_options <- function() {
   )
   return(opts)
 }
+
+
