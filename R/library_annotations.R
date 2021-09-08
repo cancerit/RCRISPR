@@ -40,6 +40,7 @@
 #' @param chr_end_column index of column containing chromosome position.
 #' @param file_separator library annotation file separator.
 #' @param file_header whether library annotation file contains a header.
+#' @param strip_ids whether to make syntactically valid id names.
 #' @param ... additional read.delim parameters.
 #'
 #' @return a data frame containing library annotations.
@@ -55,7 +56,7 @@ read_library_annotation_file <-
            chr_end_column = NULL,
            file_separator = "\t",
            file_header = TRUE,
-           stripIDs = FALSE,
+           strip_ids = FALSE,
            ...) {
     check_file(filepath)
     library_annotations <-
@@ -70,8 +71,8 @@ read_library_annotation_file <-
         assign(i, convert_variable_to_integer(get(i)))
     }
     #strip guide IDs if requested
-    if(stripIDs){
-      library_annotations[,id_column]<-gsub("[.]","",make.names(library_annotations[,id_column]))
+    if(strip_ids){
+      library_annotations[, id_column] <- gsub("[.]", "", make.names(library_annotations[, id_column]))
     }
     # Try reading library annotation into dataframe
     library_annotation_object <- tryCatch({

@@ -13,6 +13,7 @@ read_library_annotation_file(
   chr_end_column = NULL,
   file_separator = "\\t",
   file_header = TRUE,
+  strip_ids = FALSE,
   ...
 )
 }
@@ -32,6 +33,8 @@ read_library_annotation_file(
 \item{file_separator}{library annotation file separator.}
 
 \item{file_header}{whether library annotation file contains a header.}
+
+\item{strip_ids}{whether to make syntactically valid id names.}
 
 \item{...}{additional read.delim parameters.}
 }

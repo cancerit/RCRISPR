@@ -11,6 +11,7 @@ read_sample_count_files(
   count_column = 3,
   file_separator = "\\t",
   file_header = TRUE,
+  strip_ids = FALSE,
   sample_metadata_object = NULL,
   ...
 )
@@ -27,6 +28,8 @@ read_sample_count_files(
 \item{file_separator}{count file separator.}
 
 \item{file_header}{whether count file(s) contain a header.}
+
+\item{strip_ids}{whether to make syntactically valid id names.}
 
 \item{sample_metadata_object}{a sample metadata object}
 
