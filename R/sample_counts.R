@@ -350,7 +350,8 @@ read_sample_count_files <-
                                                     count_column = count_column,
                                                     file_header = file_header,
                                                     file_separator = file_separator,
-                                                    stripIDs = stripIDs)
+                                                    stripIDs = stripIDs,
+                                                    ...)
       # Add SampleCount object to list
       sample_count_objects <- c(sample_count_objects, sample_count_object)
     }
