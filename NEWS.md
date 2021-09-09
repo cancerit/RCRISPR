@@ -1,13 +1,22 @@
-# RCRISPR 1.0.0.0
+# RCRISPR NEXT
 
 ## Major changes
 
-Primarily documentation corrections
+* Enable guide ID stripping/reformating, see `strip_ids` option.
+
+## Bug fixes
+
+* Clean up check notes
+
+# RCRISPR 1.0.1.0
+
+## Major changes
+
+* Primarily documentation corrections
 
 ## Bug fixes
 
 NA
-
 
 # RCRISPR 1.0.0.0
 
