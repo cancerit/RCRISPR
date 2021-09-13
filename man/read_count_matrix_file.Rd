@@ -12,6 +12,7 @@ read_count_matrix_file(
   gene_column = 2,
   count_column = NULL,
   processed = FALSE,
+  strip_ids = FALSE,
   ...
 )
 }
@@ -29,6 +30,8 @@ read_count_matrix_file(
 \item{count_column}{vector indices of columns containing sample counts.}
 
 \item{processed}{logical of whether to apply predefined column names.}
+
+\item{strip_ids}{whether to make syntactically valid id names.}
 
 \item{...}{additional read.delim parameters.}
 }

@@ -12,6 +12,7 @@ read_sample_count_file(
   count_column = 3,
   file_separator = "\\t",
   file_header = TRUE,
+  strip_ids = FALSE,
   ...
 )
 }
@@ -29,6 +30,8 @@ read_sample_count_file(
 \item{file_separator}{count file separator.}
 
 \item{file_header}{whether count file(s) contain a header.}
+
+\item{strip_ids}{whether to make syntactically valid id names.}
 
 \item{...}{additional read.delim parameters.}
 }
