@@ -16,6 +16,7 @@ option_list = c(
   count_format_options(),
   count_column_index_options(),
   library_annotation_format_options(),
+  strip_id_options(),
   library_annotation_column_index_options(),
   library_annotation_genomic_column_index_options(),
   sample_metadata_format_options(),
@@ -69,6 +70,7 @@ library_annotation_object <-
     chr_end_column = opt$library_end_column_index,
     file_separator = opt$library_delim,
     file_header = ifelse(opt$no_library_header,FALSE,TRUE),
+    strip_ids = ifelse(opt$strip_ids, TRUE, FALSE),
     check.names = FALSE
   )
 
@@ -96,6 +98,7 @@ sample_count_matrix <- read_count_matrix_file(
   count_column = opt$count_count_column_index,
   file_separator = opt$counts_delim,
   file_header = ifelse(opt$no_counts_header,FALSE,TRUE),
+  strip_ids = ifelse(opt$strip_ids, TRUE, FALSE),
   processed = T
 )
 
