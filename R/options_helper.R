@@ -403,6 +403,29 @@ infile_column_index_options <- function() {
 
 ###############################################################################
 #* --                                                                     -- *#
+#* --                           STRIP ID OPTIONS                          -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+#' Optparse options for stripping guide ids
+#'
+#' @importFrom optparse make_option
+#' @return list of optparse options
+#' @export strip_id_options
+strip_id_options <- function() {
+  opts <- list(
+    make_option(
+      c("--strip_ids"),
+      default = FALSE,
+      action = "store_true",
+      help = "remove period and start sgRNA identifiers with character"
+    )
+  )
+  return(opts)
+}
+
+###############################################################################
+#* --                                                                     -- *#
 #* --                    LIBRARY ANNOTATION OPTIONS                       -- *#
 #* --                                                                     -- *#
 ###############################################################################
