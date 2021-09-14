@@ -60,6 +60,7 @@
 #' @param sample_name the sample name.
 #' @param file_separator count file separator.
 #' @param file_header whether count file(s) contain a header.
+#' @param strip_ids whether to make syntactically valid id names.
 #' @param ... additional read.delim parameters.
 #'
 #' @return a `SampleCounts` object.
@@ -74,6 +75,7 @@ read_sample_count_file <-
            count_column = 3,
            file_separator = "\t",
            file_header = TRUE,
+           strip_ids = FALSE,
            ...) {
     # Try reading sample counts into dataframe
     sample_counts <- tryCatch({
@@ -91,6 +93,10 @@ read_sample_count_file <-
     for (i in c('id_column', 'gene_column', 'count_column')) {
       if (!is.null(get(i)))
         assign(i, convert_variable_to_integer(get(i)))
+    }
+    #strip ID column if requested
+    if(strip_ids){
+      sample_counts[,id_column] <- gsub("[.]", "", make.names(sample_counts[, id_column]))
     }
     # Try converting sample counts into a SampleCounts object
     sample_counts_object <- tryCatch({
@@ -208,6 +214,7 @@ convert_sample_counts_objects_to_count_matrix <-
 #' @param gene_column the index of column containing gene symbols.
 #' @param count_column vector indices of columns containing sample counts.
 #' @param processed logical of whether to apply predefined column names.
+#' @param strip_ids whether to make syntactically valid id names.
 #' @param ... additional read.delim parameters.
 #'
 #' @return a data frame containing sample counts.
@@ -220,6 +227,7 @@ read_count_matrix_file <-
            gene_column = 2,
            count_column = NULL,
            processed = FALSE,
+           strip_ids= FALSE,
            ...) {
     # Error out if count matrix has no header as we can't determine the sample names
     if (file_header == FALSE) {
@@ -238,6 +246,10 @@ read_count_matrix_file <-
       # Stop if there is an error
       stop(e)
     })
+    #strip ID column if requested:
+    if(strip_ids){
+      df[, id_column] <- gsub("[.]", "", make.names(df[, id_column]))
+    }
     # Validate data frame
     check_dataframe(df, check_na = TRUE)
     # Try to make each column an integer if it isn't already
@@ -298,6 +310,7 @@ read_count_matrix_file <-
 #' @param file_separator count file separator.
 #' @param file_header whether count file(s) contain a header.
 #' @param sample_metadata_object a sample metadata object
+#' @param strip_ids whether to make syntactically valid id names.
 #' @param ... additional read.delim parameters.
 #'
 #' @return a list of `SampleCounts` objects.
@@ -309,6 +322,7 @@ read_sample_count_files <-
            count_column = 3,
            file_separator = "\t",
            file_header = TRUE,
+           strip_ids = FALSE,
            sample_metadata_object = NULL,
            ...) {
     # Try to make each column an integer if it isn't already
@@ -338,7 +352,9 @@ read_sample_count_files <-
                                                     gene_column = gene_column,
                                                     count_column = count_column,
                                                     file_header = file_header,
-                                                    file_separator = file_separator)
+                                                    file_separator = file_separator,
+                                                    strip_ids = strip_ids,
+                                                    ...)
       # Add SampleCount object to list
       sample_count_objects <- c(sample_count_objects, sample_count_object)
     }

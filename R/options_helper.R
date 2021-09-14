@@ -238,6 +238,30 @@ count_column_index_options <- function() {
 
 ###############################################################################
 #* --                                                                     -- *#
+#* --                     COUNT READ LINE SKIP OPTIONS                    -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+#' Optparse options for skipping lines when reading files
+#'
+#' @importFrom optparse make_option
+#' @return list of optparse options
+#' @export count_skip_options
+count_skip_options <- function() {
+  opts <- list(
+    make_option(
+      c( "--count_skip" ),
+      type = "numeric",
+      default = 0,
+      help = "number of lines to skip when reading file [Default: 0]",
+      metavar = "numeric"
+    )
+  )
+  return(opts)
+}
+
+###############################################################################
+#* --                                                                     -- *#
 #* --                         FOLD CHANGE OPTIONS                         -- *#
 #* --                                                                     -- *#
 ###############################################################################
@@ -372,6 +396,29 @@ infile_column_index_options <- function() {
       default = NULL,
       help = "index of columns containing data for processing in infile (e.g. 3 or 3,4,5 or 3-5 or 3-5,6-8)",
       metavar = "character"
+    )
+  )
+  return(opts)
+}
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                           STRIP ID OPTIONS                          -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+#' Optparse options for stripping guide ids
+#'
+#' @importFrom optparse make_option
+#' @return list of optparse options
+#' @export strip_id_options
+strip_id_options <- function() {
+  opts <- list(
+    make_option(
+      c("--strip_ids"),
+      default = FALSE,
+      action = "store_true",
+      help = "remove period and start sgRNA identifiers with character"
     )
   )
   return(opts)
@@ -1263,3 +1310,5 @@ scaling_options <- function() {
   )
   return(opts)
 }
+
+

@@ -1,6 +1,6 @@
 Package: rcrispr
 Title: R Functions for CRISPR-Related Analyses
-Version: 1.0.1.0
+Version: 1.1.0.0
 Authors@R: person(given = "Victoria", family = "Offord", role = c("aut", "cre"), email = "vo1@sanger.ac.uk")
 Description: A collection of R functions to assist with common CRISPR-related analyses.
 License: file LICENSE

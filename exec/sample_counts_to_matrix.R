@@ -12,10 +12,12 @@ option_list = c(
   library_annotation_options(),
   sample_metadata_options(),
   count_format_options(),
+  count_skip_options(),
   count_library_outfile_options(),
   shared_output_options(),
   count_column_index_options(),
   library_annotation_format_options(),
+  strip_id_options(),
   library_annotation_column_index_options(),
   library_annotation_genomic_column_index_options(),
   sample_metadata_format_options(),
@@ -69,6 +71,7 @@ library_annotation_object <-
     chr_end_column = opt$library_end_column_index,
     file_separator = opt$library_delim,
     file_header = ifelse(opt$no_library_header,FALSE,TRUE),
+    strip_ids = ifelse(opt$strip_ids, TRUE, FALSE),
     check.names = FALSE
   )
 
@@ -97,7 +100,9 @@ sample_count_objects <- read_sample_count_files(
   count_column = opt$count_count_column_index,
   file_separator = opt$counts_delim,
   file_header = ifelse(opt$no_counts_header,FALSE,TRUE),
-  check.names = FALSE
+  strip_ids = ifelse(opt$strip_ids, TRUE, FALSE),
+  check.names = FALSE,
+  skip = opt$count_skip
 )
 
 # Compare sgRNA IDs and gene names between counts and library
