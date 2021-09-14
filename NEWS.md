@@ -1,4 +1,4 @@
-# RCRISPR NEXT
+# RCRISPR 1.1.0.0
 
 ## Major changes
 
