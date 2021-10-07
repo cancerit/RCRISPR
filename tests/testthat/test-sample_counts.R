@@ -58,6 +58,15 @@ gzipped_test_counts <-  read_sample_count_file(
   count_column = 3)
 slot(gzipped_test_counts, 'filepath', check = TRUE) <- 'test.gz'
 
+# Read an unordered sample count file to test with
+test_unordered_counts <-  read_sample_count_file(
+  sample_name = 'HELA_T0',
+  filepath = system.file("testdata", "test_unsorted_counts.tsv", package = 'rcrispr'),
+  id_column = 1,
+  gene_column = 2,
+  count_column = 3)
+slot(test_counts, 'filepath', check = TRUE) <- 'test'
+
 # Add path for sample test counts
 sample_count_dir <- system.file("testdata", package = 'rcrispr')
 # Read test sample metadata to go with test counts
@@ -74,6 +83,29 @@ test_library_file <- system.file("testdata", "test_library_annotation.tsv", pack
 test_library_obj <- read_library_annotation_file(test_library_file,
                                                  id_column = 1,
                                                  gene_column = 7)
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                              counts()                               -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+testthat::test_that("get original counts", {
+  testthat::expect_snapshot(counts(test_unordered_counts))
+})
+
+testthat::test_that("get unsorted processed counts", {
+  testthat::expect_snapshot(counts(test_unordered_counts, processed = T))
+})
+
+testthat::test_that("get sorted processed counts", {
+  testthat::expect_snapshot(counts(test_unordered_counts, processed = T, sort_ids = T))
+})
+
+testthat::test_that("sort_ids cannot be true without processed being true", {
+  testthat::expect_error(counts(test_unordered_counts, processed = F, sort_ids = T),
+                         "Cannot order unprocessed count matrix")
+})
 
 ###############################################################################
 #* --                                                                     -- *#

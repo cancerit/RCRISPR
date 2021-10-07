@@ -4,12 +4,19 @@
 \alias{get_library_annotations}
 \title{Generic for get_library_annotations method}
 \usage{
-get_library_annotations(object, processed = FALSE, crisprcleanr = FALSE)
+get_library_annotations(
+  object,
+  processed = FALSE,
+  sort_ids = FALSE,
+  crisprcleanr = FALSE
+)
 }
 \arguments{
 \item{object}{object}
 
 \item{processed}{logical}
+
+\item{sort_ids}{logical}
 
 \item{crisprcleanr}{logical}
 }

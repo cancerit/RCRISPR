@@ -4,10 +4,15 @@
 \alias{convert_sample_counts_objects_to_count_matrix}
 \title{Convert SampleCounts objects into count matrix.}
 \usage{
-convert_sample_counts_objects_to_count_matrix(sample_counts = NULL)
+convert_sample_counts_objects_to_count_matrix(
+  sample_counts = NULL,
+  sort_ids = FALSE
+)
 }
 \arguments{
 \item{sample_counts}{List of SampleCounts objects}
+
+\item{sort_ids}{whether to order by gene and sgRNA identifier (FALSE)}
 }
 \value{
 a data frame containing sample counts.

@@ -1,3 +1,39 @@
+# get original counts
+
+    Code
+      counts(test_unordered_counts)
+    Output
+                            sgRNA GENE HELA_T0
+      1 A1BG_CACCTTCGAGCTGCTGCGCG A1BG     478
+      2 1000_AAGAGCGCCTCGGTCCCAGC 1000       0
+      3 0001_AAGAGCGCCTCGGTCCCAGC 0001       3
+      4 A1BG_TGGACTTCCAGCTACGGCGC A1BG     274
+      5 AABC_TGGACTTCCAGCTACGGCGC AABC      12
+
+# get unsorted processed counts
+
+    Code
+      counts(test_unordered_counts, processed = T)
+    Output
+                            sgRNA gene HELA_T0
+      1 A1BG_CACCTTCGAGCTGCTGCGCG A1BG     478
+      2 1000_AAGAGCGCCTCGGTCCCAGC 1000       0
+      3 0001_AAGAGCGCCTCGGTCCCAGC 0001       3
+      4 A1BG_TGGACTTCCAGCTACGGCGC A1BG     274
+      5 AABC_TGGACTTCCAGCTACGGCGC AABC      12
+
+# get sorted processed counts
+
+    Code
+      counts(test_unordered_counts, processed = T, sort_ids = T)
+    Output
+                            sgRNA gene HELA_T0
+      3 0001_AAGAGCGCCTCGGTCCCAGC 0001       3
+      2 1000_AAGAGCGCCTCGGTCCCAGC 1000       0
+      1 A1BG_CACCTTCGAGCTGCTGCGCG A1BG     478
+      4 A1BG_TGGACTTCCAGCTACGGCGC A1BG     274
+      5 AABC_TGGACTTCCAGCTACGGCGC AABC      12
+
 # read uncompressed sample count file
 
     Code
