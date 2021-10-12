@@ -102,7 +102,49 @@
       3 A1BG_TGGACTTCCAGCTACGGCGC A1BG            193
       
 
+# read sample count file and strip ids
+
+    Code
+      test_counts_stripped
+    Output
+      An object of class "SampleCounts"
+      Slot "sample_name":
+      [1] "HELA_T0"
+      
+      Slot "filepath":
+      [1] "test"
+      
+      Slot "id_column":
+      [1] 1
+      
+      Slot "gene_column":
+      [1] 2
+      
+      Slot "count_column":
+      [1] 3
+      
+      Slot "file_separator":
+      [1] "\t"
+      
+      Slot "file_header":
+      [1] TRUE
+      
+      Slot "counts":
+          id gene s1
+      1 xy12   g1  1
+      
+
 # combine SampleCounts objects into count matrix
+
+    Code
+      test_count_matrix
+    Output
+                            sgRNA gene HELA_T0 CTRL_HELA_T15A
+      1 A1BG_AAGAGCGCCTCGGTCCCAGC A1BG       0              0
+      2 A1BG_CACCTTCGAGCTGCTGCGCG A1BG     478            519
+      3 A1BG_TGGACTTCCAGCTACGGCGC A1BG     274            193
+
+# combine SampleCounts objects into count matrix and sort ids
 
     Code
       test_count_matrix
@@ -132,6 +174,27 @@
                             sgRNA gene HELA_T0
       1 A1BG_CACCTTCGAGCTGCTGCGCG A1BG     478
       2 A1BG_AAGAGCGCCTCGGTCCCAGC A1BG       0
+      3 A1BG_TGGACTTCCAGCTACGGCGC A1BG     274
+
+# can read count matrix file and strip ids
+
+    Code
+      read_count_matrix_file(filepath = system.file("testdata",
+        "test_counts_strip_ids.tsv", package = "rcrispr"), id_column = 1,
+      gene_column = 2, count_column = "3", processed = T, strip_ids = T)
+    Output
+        sgRNA gene s1
+      1  xy12   g1  1
+
+# can read count matrix file and sort ids
+
+    Code
+      read_count_matrix_file(filepath = test_count_matrix_file, id_column = 1,
+        gene_column = 2, count_column = "3", processed = T, sort_ids = T)
+    Output
+                            sgRNA gene HELA_T0
+      2 A1BG_AAGAGCGCCTCGGTCCCAGC A1BG       0
+      1 A1BG_CACCTTCGAGCTGCTGCGCG A1BG     478
       3 A1BG_TGGACTTCCAGCTACGGCGC A1BG     274
 
 # can read sample count files
@@ -304,4 +367,52 @@
         HELA_T15C_CTRL HELA_T15A_OLA HELA_T15B_OLA HELA_T15C_OLA
       2             52             0            16             0
       3            161            80           393            45
+
+# can compare sample metadata to count matrix
+
+    Code
+      compare_matrix_to_sample_metadata(data = test_count_matrix,
+        sample_metadata_object = test_metadata_obj)
+    Output
+      [1] TRUE
+
+# can get guides failing filter
+
+    Code
+      get_guides_failing_filter(count_matrix = test_count_matrix, count_column = 3:4,
+      filter_indices = 3:4)
+    Output
+      [1] "A1BG_AAGAGCGCCTCGGTCCCAGC"
+
+# get guides failing filter with filter_method any
+
+    Code
+      get_guides_failing_filter(count_matrix = test_count_matrix, count_column = 3:4,
+      filter_indices = 3:4, min_reads = 200, filter_method = "any")
+    Output
+      [1] "A1BG_AAGAGCGCCTCGGTCCCAGC" "A1BG_TGGACTTCCAGCTACGGCGC"
+
+# get guides failing filter with filter_method all
+
+    Code
+      get_guides_failing_filter(count_matrix = test_count_matrix, count_column = 3:4,
+      filter_indices = 3:4, min_reads = 200, filter_method = "all")
+    Output
+      [1] "A1BG_AAGAGCGCCTCGGTCCCAGC"
+
+# get guides failing filter with filter_method mean
+
+    Code
+      get_guides_failing_filter(count_matrix = test_count_matrix, count_column = 3:4,
+      filter_indices = 3:4, min_reads = 200, filter_method = "mean")
+    Output
+      [1] "A1BG_AAGAGCGCCTCGGTCCCAGC"
+
+# get guides failing filter with filter_method median
+
+    Code
+      get_guides_failing_filter(count_matrix = test_count_matrix, count_column = 3:4,
+      filter_indices = 3:4, min_reads = 200, filter_method = "median")
+    Output
+      [1] "A1BG_AAGAGCGCCTCGGTCCCAGC"
 
