@@ -4,24 +4,31 @@
 \alias{calculate_gene_lfc}
 \title{Calculate gene log fold changes.}
 \usage{
-calculate_gene_lfc(data = NULL, id_column = 1, gene_column = 2)
+calculate_gene_lfc(
+  data = NULL,
+  id_column = 1,
+  gene_column = 2,
+  sample_columns = NULL
+)
 }
 \arguments{
-\item{data}{sample count matrix.}
+\item{data}{sample sgRNA fold change matrix.}
 
 \item{id_column}{the index of column containing unique sgRNA identifiers.}
 
 \item{gene_column}{the index of column containing gene symbols.}
+
+\item{sample_columns}{the index of columns containing sample data to process.}
 }
 \value{
-a data frame containing sample log fold changes.
+a data frame containing sample gene-level log fold changes.
 }
 \description{
 Calculate gene log fold changes.
 }
 \details{
-Takes the per-guide mean of control samples, adds a pseduocount to
-all counts (including control mean) and calculates the log2 fold change.
+Takes an sgRNA fold change matrix and averages by gene.
+
 Requires column indices be defined:
 \itemize{
 \item \code{id_column} - column containing guide (sgRNA) identifiers (Default = 1).

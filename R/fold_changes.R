@@ -79,9 +79,17 @@ read_fold_change_matrix_file <-
            is_gene = FALSE,
            processed = FALSE,
            ...) {
-    # Error if level is not sgRNA or gene
+    # Error if level is gene with null gene_column
+    if (is_gene && is.null(gene_column)) {
+      stop("Cannot read in a fold change matrix, is_gene is TRUE with NULL gene_column.", call. = F)
+    }
+    # Error if level is sgRNA with null gene_column
     if (!is_gene && is.null(gene_column)) {
       stop("Cannot read in a fold change matrix, is_gene is FALSE with NULL gene_column.", call. = F)
+    }
+    # Error if level is sgRNA with null gene_column
+    if (!is_gene && is.null(id_column)) {
+      stop("Cannot read in a fold change matrix, is_gene is FALSE with NULL id_column.", call. = F)
     }
     # Error out if fold change matrix has no header as we can't determine the sample names
     if (file_header == FALSE) {
@@ -103,9 +111,9 @@ read_fold_change_matrix_file <-
     # Validate data frame
     check_dataframe(df, check_na = TRUE)
     # Try to make each column an integer if it isn't already
-    assign('id_column', convert_variable_to_integer(get('id_column')))
+    assign('gene_column', convert_variable_to_integer(get('gene_column')))
     if (!is_gene) {
-      assign('gene_column', convert_variable_to_integer(get('gene_column')))
+      assign('id_column', convert_variable_to_integer(get('id_column')))
     }
     # Process indices of fold changes columns
     fc_column_indices <- process_column_indices(fc_column)
@@ -182,11 +190,11 @@ calculate_lfc <-
            pseudocount = 0.5) {
     # Validate input
     if (is.null(data))
-      "Cannot calculate LFCs, data is null."
+      stop("Cannot calculate LFCs, data is null.")
     if (is.null(control_indices))
-      "Cannot calculate LFCs, control_indices is null."
+      stop("Cannot calculate LFCs, control_indices is null.")
     if (is.null(treatment_indices))
-      "Cannot calculate LFCs, treatment_indices is null."
+      stop("Cannot calculate LFCs, treatment_indices is null.")
     if (is.null(pseudocount))
       stop("Cannot calculate LFCs, pseudocount is null.")
     if (!is.numeric(pseudocount))
@@ -208,7 +216,7 @@ calculate_lfc <-
     data <- data[,c(id_column, gene_column, count_indices)]
     # Reformat control indices and get number of samples
     ncontrol <- length(process_column_indices(control_indices))
-    control_indices <- c(3:(ncontrol - 1))
+    control_indices <- c(3:(3 + (ncontrol - 1)))
     ntreatment <- length(process_column_indices(treatment_indices))
     treatment_indices <- c((2 + ncontrol + 1):(2 + ncontrol + ntreatment))
     nsamples <- ncontrol + ntreatment
@@ -221,9 +229,13 @@ calculate_lfc <-
                             pseudocount = pseudocount,
                             indices = c(3:(3 + ntreatment)))
     # Calculate log fold changes
-    data <- data.frame(data[1:2],
-                       log2(data[,4:(3 + ntreatment)] / data[,3]), check.names = FALSE)
-    return(data)
+    lfc <- data.frame(data[1:2],
+                      log2(data[,4:(3 + ntreatment)] / data[,3]), check.names = FALSE)
+    # Preserve column names when only one treatment sample
+    if (length(treatment_indices) == 1) {
+      colnames(lfc)[3] <- colnames(data)[4]
+    }
+    return(lfc)
   }
 
 ###############################################################################
@@ -237,33 +249,44 @@ calculate_lfc <-
 #' @description Calculate gene log fold changes.
 #'
 #' @details
-#' Takes the per-guide mean of control samples, adds a pseduocount to
-#' all counts (including control mean) and calculates the log2 fold change.
+#' Takes an sgRNA fold change matrix and averages by gene.
+#'
 #' Requires column indices be defined:
 #' \itemize{
 #' \item `id_column` - column containing guide (sgRNA) identifiers (Default = 1).
 #' \item `gene_column` - column containing gene symbols/identifiers (Default = 2).
 #' }
 #'
-#' @param data sample count matrix.
+#' @param data sample sgRNA fold change matrix.
 #' @param id_column the index of column containing unique sgRNA identifiers.
 #' @param gene_column the index of column containing gene symbols.
+#' @param sample_columns the index of columns containing sample data to process.
 #'
 #' @import dplyr
 #' @importFrom tidyr spread gather
-#' @return a data frame containing sample log fold changes.
+#' @return a data frame containing sample gene-level log fold changes.
 #' @export calculate_gene_lfc
 calculate_gene_lfc <-
   function(data = NULL,
            id_column = 1,
-           gene_column = 2) {
+           gene_column = 2,
+           sample_columns = NULL) {
     # Validate input
     if (is.null(data))
-      "Cannot calculate gene LFCs, data is null."
+      stop("Cannot calculate gene LFCs, data is null.")
     check_is_numeric_and_is_integer(id_column)
     check_is_numeric_and_is_integer(gene_column)
     # Check data
     check_dataframe(data, check_na = T, check_nan = T)
+    # If sample indices are not null then check them and subset the data
+    if (!is.null(sample_columns)) {
+      # Process control and treatment indices
+      sample_columns <- process_column_indices(sample_columns)
+      # Get subset of data
+      data <- data[, c(id_column, gene_column, sample_columns)]
+      # Check data
+      check_dataframe(data, check_na = T, check_nan = T)
+    }
     # Calculate gene level log fold changes
     id_column <- colnames(data)[id_column]
     gene_column <- colnames(data)[gene_column]
@@ -272,7 +295,9 @@ calculate_gene_lfc <-
               tidyr::gather( sample, sgrna_lfc, -!!gene_column, factor_key = TRUE ) %>%
               dplyr::group_by( sample, !!!syms( gene_column ) ) %>%
               dplyr::summarise( lfc = mean( sgrna_lfc ), .groups = 'keep' ) %>%
-              tidyr::spread( sample, lfc )
+              tidyr::spread( sample, lfc ) %>%
+              dplyr::ungroup() %>%
+              as.data.frame()
     # Check data
     check_dataframe(data)
     return(data)
