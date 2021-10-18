@@ -29,6 +29,12 @@
 #
 ## TODO: move this to a config driven graph set
 
+###############################################################################
+#* --                                                                     -- *#
+#* --                       plot_mapping_statistics()                     -- *#
+#* --                                                                     -- *#
+###############################################################################
+
 #' Plot read mapping statistics
 #'
 #' @description Plot read mapping statistics from count statistic data frame.
@@ -44,7 +50,23 @@ plot_mapping_statistics <-
   function(df = NULL) {
     # Check data frame
     check_dataframe(df)
-    # Process data frame for plot
+    # Check for columns used in calculations
+    for (i in c('total_reads', 'total_counts', 'pct_mapped_reads')) {
+      if (!i %in% colnames(df))
+        stop(paste("Column", i , "does not exist in data frame."))
+    }
+    # Get NA values from total_reads
+    missing_data <- df %>% filter(is.na(total_reads))
+    # Warnings and errors for NA values
+    if (nrow(missing_data) == nrow(df))
+      stop("Cannot plot mapping statistics, all total_reads are NA.")
+    if (nrow(missing_data) > 0)
+      warning(paste("Removed", nrow(missing_data), "rows containing missing values"))
+    # Remove NA values from total_reads
+    df <- df %>% filter(!is.na(total_reads))
+    # Check data frame
+    check_dataframe(df)
+    # Process data frame for plot))
     processed_df <- tryCatch({
       df %>%
         mutate('unmapped' = total_reads - total_counts,
@@ -75,6 +97,12 @@ plot_mapping_statistics <-
     })
     return(p)
   }
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                         plot_common_barplot()                       -- *#
+#* --                                                                     -- *#
+###############################################################################
 
 #' Generate bar plot
 #'
@@ -110,6 +138,17 @@ plot_common_barplot <-
       stop("Cannot generate bar plot, xcol is null.")
     if (!xcol %in% colnames(df))
       stop(paste("Cannot generate bar plot, xcol is not in data frame:", xcol))
+    # Get NA values from total_reads
+    missing_data <- df %>% filter(is.na(get(xcol)) | is.na(get(ycol)))
+    # Warnings and errors for NA values
+    if (nrow(missing_data) == nrow(df))
+      stop("Cannot plot mapping statistics, all total_reads are NA.")
+    if (nrow(missing_data) > 0)
+      warning(paste("Removed", nrow(missing_data), "rows containing missing values"))
+    # Remove NA values from total_reads
+    df <- df %>% filter(!is.na(get(xcol)) & !is.na(get(ycol)))
+    # Check data frame
+    check_dataframe(df)
     # Set use_groups to FALSE by default
     groups <- FALSE
     # If group is in column names, set it to TRUE
