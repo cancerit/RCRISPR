@@ -142,10 +142,10 @@ plot_common_barplot <-
     missing_data <- df %>% filter(is.na(get(xcol)) | is.na(get(ycol)))
     # Warnings and errors for NA values
     if (nrow(missing_data) == nrow(df))
-      stop("Cannot plot mapping statistics, all total_reads are NA.")
+      stop("Cannot plot mapping statistics, all rows contain NAs.")
     if (nrow(missing_data) > 0)
       warning(paste("Removed", nrow(missing_data), "rows containing missing values"))
-    # Remove NA values from total_reads
+    # Remove NA values
     df <- df %>% filter(!is.na(get(xcol)) & !is.na(get(ycol)))
     # Check data frame
     check_dataframe(df)

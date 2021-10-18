@@ -144,7 +144,7 @@ testthat::test_that("can plot common barplot, remove NA", {
   testthat::expect_error(plot_common_barplot(df = test_all_na_raw_stats,
                                                xcol = 'sample',
                                                ycol = 'pct_zero_sgrnas'),
-                           "Cannot plot mapping statistics, all total_reads are NA")
+                           "Cannot plot mapping statistics, all rows contain NAs")
 })
 
 testthat::test_that("can plot common barplot, with xlab and ylab", {
