@@ -26,14 +26,12 @@
       count_matrix_stats(count_matrix = test_count_matrix, count_column = c(3, 5),
       total_reads = c(HELA_T0 = 2000, HELA_T15B_CTRL = 5120))
     Output
-      # A tibble: 2 x 11
-      # Rowwise: 
-        sample total_reads prop_mapped_rea~ pct_mapped_reads total_counts total_sgrnas
-        <chr>        <dbl>            <dbl>            <dbl>        <int>        <int>
-      1 HELA_~        2000            0.376             37.6          752            3
-      2 HELA_~        5120            0.118             11.8          602            3
-      # ... with 5 more variables: zero_sgrnas <int>, pct_zero_sgrnas <dbl>,
-      #   low_sgrnas <int>, pct_low_sgrnas <dbl>, gini_index <dbl>
+                sample total_reads prop_mapped_reads pct_mapped_reads total_counts
+      1        HELA_T0        2000           0.37600            37.60          752
+      2 HELA_T15B_CTRL        5120           0.11758            11.76          602
+        total_sgrnas zero_sgrnas pct_zero_sgrnas low_sgrnas pct_low_sgrnas gini_index
+      1            3           1           33.33          1          33.33       0.52
+      2            3           1           33.33          1          33.33       0.54
 
 # can generate count matrix stats with zeros
 
