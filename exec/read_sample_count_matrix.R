@@ -99,7 +99,8 @@ sample_count_matrix <- read_count_matrix_file(
   file_separator = opt$counts_delim,
   file_header = ifelse(opt$no_counts_header,FALSE,TRUE),
   strip_ids = ifelse(opt$strip_ids, TRUE, FALSE),
-  processed = T
+  processed = T,
+  sort_ids = T
 )
 
 # Compare sgRNA IDs and gene names between count matrix and library
@@ -129,7 +130,9 @@ message(paste("Count matrix written to:", count_matrix_outfile))
 
 # Write processed library to output file
 message("Writing processed library to file...")
-processed_library <- get_library_annotations(library_annotation_object, processed = TRUE)
+processed_library <- get_library_annotations(library_annotation_object,
+                                             processed = TRUE,
+                                             sort_ids = TRUE)
 library_outfile <- write_dataframe_to_file(data = processed_library,
                                            outfile = opt$library_outfile,
                                            outdir = opt$outdir,

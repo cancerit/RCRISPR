@@ -1,3 +1,15 @@
+# read library annotation and strip ids
+
+    Code
+      get_library_annotations(test_strip_lib_ann_obj)
+    Output
+                           sgRNA                  SEQ                          LOCUS
+      1 A1BGCACCTTCGAGCTGCTGCGCG CACCTTCGAGCTGCTGCGCG chr19:58858890-58858909_A1BG_-
+          CHR    START      END GENE STRAND
+      1 chr19 58858890 58858909 A1BG      -
+                                                       TARGET
+      1 A1BG:ENST00000263100.3:exon_7:chr19:58858700-58859024
+
 # read library annotation
 
     Code
@@ -70,6 +82,20 @@
       1 A1BG_CACCTTCGAGCTGCTGCGCG A1BG chr19 58858890 58858909
       2 A1BG_AAGAGCGCCTCGGTCCCAGC A1BG chr19 58861852 58861871
       3 A1BG_TGGACTTCCAGCTACGGCGC A1BG chr19 58862932 58862951
+
+# get processed library annotations for crisprcleanr
+
+    Code
+      get_library_annotations(test_lib_ann_obj, processed = T, crisprcleanr = T)
+    Output
+                                                     CODE GENES  CHRM STARTpos
+      A1BG_CACCTTCGAGCTGCTGCGCG A1BG_CACCTTCGAGCTGCTGCGCG  A1BG chr19 58858890
+      A1BG_AAGAGCGCCTCGGTCCCAGC A1BG_AAGAGCGCCTCGGTCCCAGC  A1BG chr19 58861852
+      A1BG_TGGACTTCCAGCTACGGCGC A1BG_TGGACTTCCAGCTACGGCGC  A1BG chr19 58862932
+                                  ENDpos
+      A1BG_CACCTTCGAGCTGCTGCGCG 58858909
+      A1BG_AAGAGCGCCTCGGTCCCAGC 58861871
+      A1BG_TGGACTTCCAGCTACGGCGC 58862951
 
 # can remove guides from library object
 
@@ -156,4 +182,11 @@
       2 A1BG:ENST00000263100.3:exon_6:chr19:58861717-58862035
       3 A1BG:ENST00000263100.3:exon_5:chr19:58862738-58863071
       
+
+# can identify guides in library object with no coordinates
+
+    Code
+      get_guides_with_no_coordinates(test_lib_ann_obj_no_coords)
+    Output
+      [1] "sg1" "sg2" "sg3"
 

@@ -58,6 +58,15 @@ gzipped_test_counts <-  read_sample_count_file(
   count_column = 3)
 slot(gzipped_test_counts, 'filepath', check = TRUE) <- 'test.gz'
 
+# Read an unordered sample count file to test with
+test_unordered_counts <-  read_sample_count_file(
+  sample_name = 'HELA_T0',
+  filepath = system.file("testdata", "test_unsorted_counts.tsv", package = 'rcrispr'),
+  id_column = 1,
+  gene_column = 2,
+  count_column = 3)
+slot(test_counts, 'filepath', check = TRUE) <- 'test'
+
 # Add path for sample test counts
 sample_count_dir <- system.file("testdata", package = 'rcrispr')
 # Read test sample metadata to go with test counts
@@ -77,6 +86,29 @@ test_library_obj <- read_library_annotation_file(test_library_file,
 
 ###############################################################################
 #* --                                                                     -- *#
+#* --                              counts()                               -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+testthat::test_that("get original counts", {
+  testthat::expect_snapshot(counts(test_unordered_counts))
+})
+
+testthat::test_that("get unsorted processed counts", {
+  testthat::expect_snapshot(counts(test_unordered_counts, processed = T))
+})
+
+testthat::test_that("get sorted processed counts", {
+  testthat::expect_snapshot(counts(test_unordered_counts, processed = T, sort_ids = T))
+})
+
+testthat::test_that("sort_ids cannot be true without processed being true", {
+  testthat::expect_error(counts(test_unordered_counts, processed = F, sort_ids = T),
+                         "Cannot order unprocessed count matrix")
+})
+
+###############################################################################
+#* --                                                                     -- *#
 #* --                     read_sample_count_file()                        -- *#
 #* --                                                                     -- *#
 ###############################################################################
@@ -89,6 +121,16 @@ testthat::test_that("read gzipped sample count file", {
   testthat::expect_snapshot(gzipped_test_counts)
 })
 
+testthat::test_that("read sample count file and strip ids", {
+  # Read an uncompressed sample count file to test with
+  test_counts_stripped <-  read_sample_count_file(
+    sample_name = 'HELA_T0',
+    filepath = system.file("testdata", "test_counts_strip_ids.tsv", package = 'rcrispr'),
+    strip_ids = T)
+  slot(test_counts_stripped, 'filepath', check = TRUE) <- 'test'
+  testthat::expect_snapshot(test_counts_stripped)
+})
+
 ###############################################################################
 #* --                                                                     -- *#
 #* --           convert_sample_counts_objects_to_count_matrix()           -- *#
@@ -97,6 +139,11 @@ testthat::test_that("read gzipped sample count file", {
 
 testthat::test_that("combine SampleCounts objects into count matrix", {
   test_count_matrix <- convert_sample_counts_objects_to_count_matrix(list(test_counts,gzipped_test_counts))
+  testthat::expect_snapshot(test_count_matrix)
+})
+
+testthat::test_that("combine SampleCounts objects into count matrix and sort ids", {
+  test_count_matrix <- convert_sample_counts_objects_to_count_matrix(list(test_counts,gzipped_test_counts), sort_ids = T)
   testthat::expect_snapshot(test_count_matrix)
 })
 
@@ -140,6 +187,24 @@ testthat::test_that("can read count matrix file returning processed matrix", {
                                                    gene_column = 2,
                                                    count_column = '3',
                                                    processed = T))
+})
+
+testthat::test_that("can read count matrix file and strip ids", {
+  testthat::expect_snapshot(read_count_matrix_file(filepath = system.file("testdata", "test_counts_strip_ids.tsv", package = 'rcrispr'),
+                                                   id_column = 1,
+                                                   gene_column = 2,
+                                                   count_column = '3',
+                                                   processed = T,
+                                                   strip_ids = T))
+})
+
+testthat::test_that("can read count matrix file and sort ids", {
+  testthat::expect_snapshot(read_count_matrix_file(filepath = test_count_matrix_file,
+                                                   id_column = 1,
+                                                   gene_column = 2,
+                                                   count_column = '3',
+                                                   processed = T,
+                                                   sort_ids = T))
 })
 
 testthat::test_that("cannot read count matrix file without header", {
@@ -249,6 +314,7 @@ testthat::test_that("can compare counts to library when ids match", {
                                                   library_annotation_object = test_library_obj))
 })
 
+
 ###############################################################################
 #* --                                                                     -- *#
 #* --                 compare_count_matrix_to_library()                   -- *#
@@ -351,9 +417,9 @@ testthat::test_that("cannot remove guides from sample counts when guides to remo
 
 testthat::test_that("cannot remove guides from sample counts when guide not in counts", {
   testthat::expect_error(suppressWarnings(remove_guides_from_sample_counts(
-                                            sample_counts_object = test_counts,
-                                            guides_to_remove = c('xxx'))),
-                         "Guides not found in counts:")
+    sample_counts_object = test_counts,
+    guides_to_remove = c('xxx'))),
+    "Guides not found in counts:")
 })
 
 testthat::test_that("can remove guides from sample counts", {
@@ -366,8 +432,8 @@ testthat::test_that("can remove guides as dataframe from sample counts", {
   testthat::expect_snapshot(
     remove_guides_from_sample_counts(sample_counts_object = test_counts,
                                      guides_to_remove = data.frame(
-                                                          'guide' = 'A1BG_CACCTTCGAGCTGCTGCGCG',
-                                                          'extra' = 'test')))
+                                       'guide' = 'A1BG_CACCTTCGAGCTGCTGCGCG',
+                                       'extra' = 'test')))
 })
 
 ###############################################################################
@@ -411,8 +477,165 @@ testthat::test_that("can remove guides as dataframe from count matrix", {
     remove_guides_from_count_matrix(count_matrix = test_count_matrix,
                                     id_column = 1,
                                     guides_to_remove = data.frame(
-                                       'guide' = 'A1BG_CACCTTCGAGCTGCTGCGCG',
-                                       'extra' = 'test')))
+                                      'guide' = 'A1BG_CACCTTCGAGCTGCTGCGCG',
+                                      'extra' = 'test')))
 })
 
+###############################################################################
+#* --                                                                     -- *#
+#* --                 compare_matrix_to_sample_metadata()                 -- *#
+#* --                                                                     -- *#
+###############################################################################
 
+testthat::test_that("can compare sample metadata to count matrix", {
+  testthat::expect_snapshot(
+    compare_matrix_to_sample_metadata(data = test_count_matrix,
+                                      sample_metadata_object = test_metadata_obj))
+})
+
+testthat::test_that("cannot compare sample metadata to count matrix, data is null", {
+  testthat::expect_error(
+    compare_matrix_to_sample_metadata(data = NULL,
+                                      sample_metadata_object = test_metadata_obj),
+    "Cannot compare sample column names to sample metadata, data is null")
+})
+
+testthat::test_that("cannot compare sample metadata to count matrix, data is null", {
+  testthat::expect_error(
+    compare_matrix_to_sample_metadata(data = test_count_matrix,
+                                      sample_metadata_object = NULL),
+    "Cannot compare sample column names to sample metadata, sample metadata object is null")
+})
+
+testthat::test_that("cannot compare sample metadata to count matrix, sample name not present in metadata", {
+  bad_test_count_matrix <- test_count_matrix
+  colnames(bad_test_count_matrix)[3] <- "BAD"
+  testthat::expect_error(
+    compare_matrix_to_sample_metadata(data = bad_test_count_matrix,
+                                      sample_metadata_object = test_metadata_obj),
+    "Cannot compare sample column names to sample metadata, sample name not in metadata: BAD")
+})
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                    get_guides_failing_filter()                      -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+testthat::test_that("can get guides failing filter", {
+  testthat::expect_snapshot(
+    get_guides_failing_filter(count_matrix = test_count_matrix,
+                              count_column = 3:4,
+                              filter_indices = 3:4))
+})
+
+testthat::test_that("get no guides failing filter", {
+  testthat::expect_silent(
+    get_guides_failing_filter(count_matrix = test_count_matrix[c(1,3),],
+                              count_column = 3:4,
+                              filter_indices = 3:4))
+})
+
+testthat::test_that("cannot get guides failing filter, count_matrix null", {
+  testthat::expect_error(
+    get_guides_failing_filter(count_matrix = NULL,
+                              count_column = 3:4,
+                              filter_indices = 3:4),
+    "Cannot get guides to filter from count matrix, count matrix is null")
+})
+
+testthat::test_that("cannot get guides failing filter, count_column null", {
+  testthat::expect_error(
+    get_guides_failing_filter(count_matrix = test_count_matrix,
+                              count_column = NULL,
+                              filter_indices = 3:4),
+    "Cannot get guides to filter from count matrix, count_column is null")
+})
+
+testthat::test_that("cannot get guides failing filter, filter_indices null", {
+  testthat::expect_error(
+    get_guides_failing_filter(count_matrix = test_count_matrix,
+                              count_column = 3:4,
+                              filter_indices = NULL),
+    "Cannot get guides to filter from count matrix, filter_indices is null")
+})
+
+testthat::test_that("cannot get guides failing filter, min_reads null", {
+  testthat::expect_error(
+    get_guides_failing_filter(count_matrix = test_count_matrix,
+                              count_column = 3:4,
+                              filter_indices = 3:4,
+                              min_reads = NULL),
+    "Cannot get guides to filter from count matrix, min_reads is null")
+})
+
+testthat::test_that("cannot get guides failing filter, min_reads < 0", {
+  testthat::expect_error(
+    get_guides_failing_filter(count_matrix = test_count_matrix,
+                              count_column = 3:4,
+                              filter_indices = 3:4,
+                              min_reads = -1),
+    "Cannot get guides to filter from count matrix, min_reads is < 0")
+})
+
+testthat::test_that("cannot get guides failing filter, filter_method null", {
+  testthat::expect_error(
+    get_guides_failing_filter(count_matrix = test_count_matrix,
+                              count_column = 3:4,
+                              filter_indices = 3:4,
+                              filter_method = NULL),
+    "Cannot get guides to filter from count matrix, filter_method is null")
+})
+
+testthat::test_that("cannot get guides failing filter, filter_method invalid", {
+  testthat::expect_error(
+    get_guides_failing_filter(count_matrix = test_count_matrix,
+                              count_column = 3:4,
+                              filter_indices = 3:4,
+                              filter_method = 'bad'),
+    "Cannot get guides to filter from count matrix, filter_method is not valid")
+})
+
+testthat::test_that("cannot get guides failing filter, filter_indices not in count columns", {
+  testthat::expect_error(
+    get_guides_failing_filter(count_matrix = test_count_matrix,
+                              count_column = 3:4,
+                              filter_indices = 5),
+    "Cannot get guides to filter from count matrix, filter indices not in count columns")
+})
+
+testthat::test_that("get guides failing filter with filter_method any", {
+  testthat::expect_snapshot(
+    get_guides_failing_filter(count_matrix = test_count_matrix,
+                              count_column = 3:4,
+                              filter_indices = 3:4,
+                              min_reads = 200,
+                              filter_method = 'any'))
+})
+
+testthat::test_that("get guides failing filter with filter_method all", {
+  testthat::expect_snapshot(
+    get_guides_failing_filter(count_matrix = test_count_matrix,
+                              count_column = 3:4,
+                              filter_indices = 3:4,
+                              min_reads = 200,
+                              filter_method = 'all'))
+})
+
+testthat::test_that("get guides failing filter with filter_method mean", {
+  testthat::expect_snapshot(
+    get_guides_failing_filter(count_matrix = test_count_matrix,
+                              count_column = 3:4,
+                              filter_indices = 3:4,
+                              min_reads = 200,
+                              filter_method = 'mean'))
+})
+
+testthat::test_that("get guides failing filter with filter_method median", {
+  testthat::expect_snapshot(
+    get_guides_failing_filter(count_matrix = test_count_matrix,
+                              count_column = 3:4,
+                              filter_indices = 3:4,
+                              min_reads = 200,
+                              filter_method = 'median'))
+})

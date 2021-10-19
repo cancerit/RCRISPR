@@ -4,12 +4,14 @@
 \alias{counts}
 \title{Generic for counts method}
 \usage{
-counts(object, processed = FALSE)
+counts(object, processed = FALSE, sort_ids = FALSE)
 }
 \arguments{
 \item{object}{object}
 
 \item{processed}{logical}
+
+\item{sort_ids}{logical}
 }
 \description{
 Generic for counts method

@@ -42,14 +42,56 @@ test_lib_ann_obj <- read_library_annotation_file(
   chr_end_column = 6)
 slot(test_lib_ann_obj, 'filepath', check = TRUE) <- 'test'
 
+test_lib_ann_obj_no_coords <- new("LibraryAnnotations",
+  filepath = system.file("testdata", "test_library_annotation.tsv", package = 'rcrispr'),
+  id_column = 1,
+  gene_column = 2,
+  chr_column = 3,
+  chr_start_column = 4,
+  chr_end_column = 5,
+  annotations = data.frame( 'id' = c('sg1', 'sg2', 'sg3', 'sg4'),
+                            'gene' = rep('g1', 4),
+                            'chr' = c(NA, rep(1, 3)),
+                            'start' = c(1, NA, rep(1, 2)),
+                            'end' =  c(rep(1, 2), NA, 1)))
+slot(test_lib_ann_obj_no_coords, 'filepath', check = TRUE) <- 'test'
+
 ###############################################################################
 #* --                                                                     -- *#
-#* --                   read_library_annotation_file()                    -- *#
+#* --                    read_library_annotation_file()                   -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+testthat::test_that("read library annotation and strip ids", {
+  test_strip_lib_ann_obj <- read_library_annotation_file(
+    filepath = system.file("testdata", "test_library_annotation_with_strip_ids.tsv", package = 'rcrispr'),
+    id_column = 1,
+    gene_column = 7,
+    chr_column = 4,
+    chr_start_column = 5,
+    chr_end_column = 6,
+    strip_ids = T)
+  testthat::expect_snapshot(get_library_annotations(test_strip_lib_ann_obj))
+})
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                    get_library_annotations()                        -- *#
 #* --                                                                     -- *#
 ###############################################################################
 
 testthat::test_that("read library annotation", {
   testthat::expect_snapshot(test_lib_ann_obj)
+})
+
+testthat::test_that("error when trying to sort unprocessed library annotations", {
+  testthat::expect_error(get_library_annotations(test_lib_ann_obj, processed = F, sort_ids = T),
+                         "Cannot order unprocessed annotations")
+})
+
+testthat::test_that("error when trying to format unprocessed library annotations for crisprcleanr", {
+  testthat::expect_error(get_library_annotations(test_lib_ann_obj, processed = F, crisprcleanr = T),
+                         "Cannot format library for CRISPRcleanR when processed is FALSE")
 })
 
 testthat::test_that("get unprocessed library annotations", {
@@ -58,6 +100,31 @@ testthat::test_that("get unprocessed library annotations", {
 
 testthat::test_that("get processed library annotations", {
   testthat::expect_snapshot(get_library_annotations(test_lib_ann_obj, processed = T))
+})
+
+testthat::test_that("error when formatting library annotations for crisprcleanr and chr is null", {
+  bad_test_lib_ann_obj <- test_lib_ann_obj
+  slot(bad_test_lib_ann_obj, 'chr_column', check = TRUE) <- NULL
+  testthat::expect_error(get_library_annotations(bad_test_lib_ann_obj, processed = T, crisprcleanr = T),
+                         "Cannot format library for CRISPRcleanR when chr_column, chr_start_column or chr_end_column is null")
+})
+
+testthat::test_that("error when formatting library annotations for crisprcleanr and chr is null", {
+  bad_test_lib_ann_obj <- test_lib_ann_obj
+  slot(bad_test_lib_ann_obj, 'chr_start_column', check = TRUE) <- NULL
+  testthat::expect_error(get_library_annotations(bad_test_lib_ann_obj, processed = T, crisprcleanr = T),
+                         "Cannot format library for CRISPRcleanR when chr_column, chr_start_column or chr_end_column is null")
+})
+
+testthat::test_that("error when formatting library annotations for crisprcleanr and chr is null", {
+  bad_test_lib_ann_obj <- test_lib_ann_obj
+  slot(bad_test_lib_ann_obj, 'chr_end_column', check = TRUE) <- NULL
+  testthat::expect_error(get_library_annotations(bad_test_lib_ann_obj, processed = T, crisprcleanr = T),
+                         "Cannot format library for CRISPRcleanR when chr_column, chr_start_column or chr_end_column is null")
+})
+
+testthat::test_that("get processed library annotations for crisprcleanr", {
+  testthat::expect_snapshot(get_library_annotations(test_lib_ann_obj, processed = T, crisprcleanr = T))
 })
 
 testthat::test_that("return true when checking library annotation has coordinates", {
@@ -109,4 +176,29 @@ testthat::test_that("can remove guides as dataframe from library object", {
                               guides_to_remove = data.frame(
                                 'guide' = 'A1BG_CACCTTCGAGCTGCTGCGCG',
                                 'extra' = 'test')))
+})
+
+###############################################################################
+#* --                                                                     -- *#
+#* --               get_guides_with_no_coordinates()                      -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+testthat::test_that("can identify guides in library object with no coordinates", {
+  testthat::expect_snapshot(get_guides_with_no_coordinates(test_lib_ann_obj_no_coords))
+})
+
+testthat::test_that("error when all guides in library have no coordinates", {
+  test_lib_ann_obj_all_no_coords <- test_lib_ann_obj_no_coords
+  slot(test_lib_ann_obj_all_no_coords, 'annotations', check = TRUE) <-
+    data.frame( 'id' = c('sg1'), 'gene' = 'g1', 'chr' = NA, 'start' = 1, 'end' = 1)
+  testthat::expect_warning(get_guides_with_no_coordinates(test_lib_ann_obj_all_no_coords),
+                         "All guides have no coordinates")
+})
+
+testthat::test_that("error when all guides in library have no coordinates", {
+  test_lib_ann_obj_all_no_coords <- test_lib_ann_obj_no_coords
+  slot(test_lib_ann_obj_all_no_coords, 'chr_column', check = TRUE) <- NULL
+  testthat::expect_error(get_guides_with_no_coordinates(test_lib_ann_obj_all_no_coords),
+                           "Cannot remove guides with no coordinates")
 })

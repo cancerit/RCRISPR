@@ -173,9 +173,7 @@ get_guides_with_no_coordinates <-
     library_annotations <- get_library_annotations(library_annotations_object, processed = T)
     # Identify guides where there are no or invalid chromosome annotations
     guides_with_no_coordinates <- library_annotations %>%
-      filter(is.na(chr) | is.null(chr) | is.nan(chr)) %>%
-      filter(is.na(start) | is.null(start) | is.nan(start)) %>%
-      filter(is.na(end) | is.null(end) | is.nan(end)) %>%
+      filter(is.na(chr) | is.null(chr) | is.nan(chr) | is.na(start) | is.null(start) | is.nan(start) | is.na(end) | is.null(end) | is.nan(end)) %>%
       pull(sgRNA)
     # Warn if this is all guides
     if (length(guides_with_no_coordinates) == nrow(library_annotations))

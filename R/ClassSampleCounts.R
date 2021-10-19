@@ -79,9 +79,10 @@ setValidity("SampleCounts", function(object) {
 #'
 #' @param object object
 #' @param processed logical
+#' @param sort_ids logical
 #'
 #' @export
-setGeneric("counts", function(object, processed = FALSE) {
+setGeneric("counts", function(object, processed = FALSE, sort_ids = FALSE) {
   standardGeneric("counts")
 })
 
@@ -89,12 +90,15 @@ setGeneric("counts", function(object, processed = FALSE) {
 #'
 #' @param object SampleCounts.
 #' @param processed raw (TRUE) or processed counts (FALSE)
+#' @param sort_ids order count matrix by guide - only applicable when processed = TRUE (FALSE)
 #' @return dataframe containing sample counts
 #' @exportMethod counts
 setMethod("counts",
           signature(object = "SampleCounts"),
-          function(object, processed) {
+          function(object, processed, sort_ids) {
   sample_counts <- object@counts
+  if (sort_ids && !processed)
+    stop(paste("Cannot order unprocessed count matrix (sort_ids can only be TRUE when processed is TRUE)."))
   if (processed) {
     sample_counts <- sample_counts[, c(object@id_column,
                          object@gene_column,
@@ -102,6 +106,9 @@ setMethod("counts",
     if (nrow(sample_counts) == 0)
       stop(paste("Could not generate processed sample counts:", object@sample_name))
     colnames(sample_counts) <- c("sgRNA", "gene", object@sample_name)
+    if (sort_ids) {
+      sample_counts <- sample_counts[order(sample_counts$gene, sample_counts$sgRNA),]
+    }
   }
   return(sample_counts)
 })

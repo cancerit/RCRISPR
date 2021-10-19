@@ -4,10 +4,12 @@
 \alias{calculate_gini_index}
 \title{Calculate gini index}
 \usage{
-calculate_gini_index(x = NULL)
+calculate_gini_index(x = NULL, fail_na = F)
 }
 \arguments{
 \item{x}{a vector of counts.}
+
+\item{fail_na}{stop if NAs are found.}
 }
 \description{
 Calculate gini index.

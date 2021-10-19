@@ -101,42 +101,53 @@ get_bagel_statistics <-
     if (is.null(data))
       stop("Cannot add BAGEL classification, data is null.")
     # Check required column names are present
-    if(length(intersect(c('sample', 'values', 'classification'), colnames(data))) != 3)
-      stop("Cannot add BAGEL classification, required columns (sample, values, classification) not present.")
+    if(length(intersect(c('sample', 'values', 'gene', 'classification'), colnames(data))) != 4)
+      stop("Cannot add BAGEL classification, required columns (sample, values, gene, classification) not present.")
     # Check data
     check_dataframe(data)
     # Summarise sample data
     message("Building BAGEL classification statistics...")
-    sample_stats <- data %>%
-      filter(classification != 'unknown') %>%
+    # Get number of genes per sample
+    gene_stats <- data %>%
+      group_by(sample) %>%
+      summarise('total_genes' = n_distinct(gene)) %>%
+      gather(stat, val, -sample)
+    check_dataframe(gene_stats)
+    # Get numbers of genes per classification
+    gene_classification_stats <- data %>%
       group_by(sample, classification) %>%
-      summarise('n' = n(),
+      summarise('n_genes' = n_distinct(gene),
                 'mean' = round(mean(values), 2),
                 'median' = median(values),
                 'min' = min(values),
-                'max' = max(values), .groups = 'keep') %>%
+                'max' = max(values),
+                .groups = 'keep')
+    check_dataframe(gene_classification_stats)
+    # Gather and add classification as suffix
+    classification_stats_narrow <- gene_classification_stats %>%
       gather(stat, val, -sample, -classification) %>%
-      mutate(stat = paste0(stat, "_", classification)) %>%
-      ungroup() %>%
-      select(-classification) %>%
-      unique() %>%
-      spread(stat, val) %>%
-      mutate('total_essential' = length(ess[,1]),
-             'prop_bagel_essential' = round(n_essential / total_essential, 2)) %>%
-      relocate('n_essential', .after = sample) %>%
-      relocate('total_essential', .before = n_essential) %>%
-      relocate('prop_bagel_essential', .after = n_essential) %>%
-      mutate('total_nonessential' = length(ess[,1]),
-             'prop_bagel_nonessential' = round(n_nonessential / total_nonessential, 2)) %>%
-      relocate('n_nonessential', .after = prop_bagel_essential) %>%
-      relocate('total_nonessential', .before = n_nonessential) %>%
-      relocate('prop_bagel_nonessential', .after = n_nonessential)
-    # If is gene-level and fold changes, calculate NNMD and Glass' delta
+      mutate(stat = paste0(stat, "_", classification))
+    # Add total genes and replace zeros
+    classification_stats_narrow <- rbind(classification_stats_narrow, gene_stats)
+    classification_stats_narrow <- classification_stats_narrow %>%
+      ungroup %>%
+      select(-classification)
+    check_dataframe(gene_classification_stats)
+    # Spread the dataframe
+    classification_stats <- classification_stats_narrow %>% spread(stat, val)
+    classification_stats[is.na(classification_stats)] <- 0
+    check_dataframe(classification_stats)
+    # If input is gene-level and fold changes (i.e. not counts)
+    # Calculate NNMD and Glass' delta
     if (is_fc && is_gene) {
       nnmd_and_glass_delta <- setNames(data.frame(matrix(ncol = 3, nrow = 0)), c('sample', 'NNMD', 'Essential Glass Delta'))
       for (sample_name in unique(data$sample)) {
         essentials <- data %>% filter(sample == sample_name & classification == 'essential') %>% pull(values)
         nonessentials <- data %>% filter(sample == sample_name & classification == 'nonessential') %>% pull(values)
+        if (length(essentials) == 0)
+          stop(paste("Cannot calculate NNMD and Glass' delta as no essential genes were found in:", sample_name))
+        if (length(nonessentials) == 0)
+          stop(paste("Cannot calculate Glass' delta as no non-essential genes were found in:", sample_name))
         mean_fc_essentials <- mean(essentials)
         mean_fc_nonessentials <- mean(nonessentials)
         sd_fc_essentials <- sd(essentials)
@@ -151,16 +162,16 @@ get_bagel_statistics <-
                                                   'NNMD' = nnmd,
                                                   'Essential.Glass.Delta' = glass_delta)
         nnmd_and_glass_delta <- rbind(nnmd_and_glass_delta, sample_nnmd_and_glass_delta)
+        nnmd_and_glass_delta[is.na(nnmd_and_glass_delta)] <- 0
+        check_dataframe(nnmd_and_glass_delta)
       }
-      sample_stats <- sample_stats %>%
+      classification_stats <- classification_stats %>%
         left_join(nnmd_and_glass_delta, by = 'sample') %>%
         relocate(NNMD, .after = sample) %>%
         relocate(Essential.Glass.Delta, .after = NNMD)
+        check_dataframe(classification_stats)
     }
-  # Check dataframe
-  check_dataframe(sample_stats)
-  # Return sample stats
-  return(sample_stats)
+    return(classification_stats)
 }
 
 ###############################################################################
@@ -239,6 +250,7 @@ prepare_essentiality_data <-
 #' @param threshold threshold value.
 #'
 #' @return dataframe
+#' @importFrom pROC coords
 #' @export process_roc
 # Based on code from Clare Pacini
 process_roc <-
@@ -255,7 +267,7 @@ process_roc <-
     if (!is.numeric(predictor_min))
       stop(paste("Cannot process ROC, predictor_min is not numeric:", predictor_min))
     # Get coordinates
-    roc_coords <- coords(roc_obj, ret = c('all'), transpose = T)
+    roc_coords <- pROC::coords(roc_obj, ret = c('all'), transpose = T)
     roc_coords['threshold',] <- roc_coords['threshold',] + predictor_min
     # Add id
     id <- min(which(roc_coords['ppv',] > (1 - threshold)))
@@ -297,7 +309,9 @@ process_roc <-
 #' @export plot_roc
 # Based on code from Clare Pacini
 plot_roc <-
-  function( roc_obj ) {
+  function( roc_obj = NULL ) {
+    if (is.null(roc_obj))
+      stop("Cannot plot ROC, roc_obj is null.")
     roc_obj.coords <- data.frame('FPR' = (1 - roc_obj$specificities),
                                  'TPR' = roc_obj$sensitivities)
     roc_obj.plot <- ggplot(roc_obj.coords, aes(x = FPR, y = TPR)) +

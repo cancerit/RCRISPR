@@ -193,16 +193,21 @@ add_pseudocount <-
       stop("Cannot add pseudocount, pseudocount is not numeric.")
     # Check dataframe
     check_dataframe(data)
-    # Process column indices
-    indices <- process_column_indices(indices)
-    # If no indices given, apply to full data frame
     if (is.null(indices)) {
+      # If no indices given, apply to full data frame
       # Add pseudocount to all data frame columns
       warning("No indices given, adding pseudocount to all indices")
-      data <- data %>% mutate(across(1:ncol(data), ~ . + pseudocount))
-    } else {
-      # Add pseudocount to selected data frame columns
       data <- data %>% mutate(across(indices, ~ . + pseudocount))
+    } else {
+      # Process column indices
+      indices <- process_column_indices(indices)
+      # Add pseudocount to selected data frame columns
+      data <- tryCatch({
+        data %>% mutate(across(indices, ~ . + pseudocount))
+      }, error = function(e) {
+        # Stop if there is an error
+        stop("Cannot add pseudocount to dataframe.")
+      })
     }
     # Check data frame
     check_dataframe(data, ...)
@@ -377,6 +382,7 @@ get_column_indices <-
         stop(paste("Could not get column index for:", cn))
       column_indices <- c(column_indices, column_index)
     }
+    column_indices <- unique(column_indices)
     if (length(column_indices) != length(n))
       stop("Column indices is not the same length as column names.")
     if (sorted)
@@ -416,6 +422,9 @@ average_replicates <-
     column_indices <- process_column_indices(data_columns)
     # Convert gene column to integer
     gene_column <- convert_variable_to_integer(gene_column)
+    # Check gene column not in data_columns
+    if (gene_column %in% column_indices)
+      stop("Cannot average replicates, gene_column is within data_columns.")
     # Process data frame
     processed_data <- tryCatch({
       data.frame('gene' = data[, gene_column],

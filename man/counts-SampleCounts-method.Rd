@@ -4,12 +4,14 @@
 \alias{counts,SampleCounts-method}
 \title{Get counts from SampleCounts object}
 \usage{
-\S4method{counts}{SampleCounts}(object, processed = FALSE)
+\S4method{counts}{SampleCounts}(object, processed = FALSE, sort_ids = FALSE)
 }
 \arguments{
 \item{object}{SampleCounts.}
 
 \item{processed}{raw (TRUE) or processed counts (FALSE)}
+
+\item{sort_ids}{order count matrix by guide - only applicable when processed = TRUE (FALSE)}
 }
 \value{
 dataframe containing sample counts

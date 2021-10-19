@@ -50,11 +50,17 @@ plot_correlation <-
            group_column = NULL,
            method = 'pearson'
            ) {
+  # Check df is not null
+  if (is.null(df))
+    stop("Cannot plot correlation, df is null.")
   # Check columns to correlate are not null
   if (is.null(cor_columns))
     stop("Cannot plot correlation, cor_columns is null.")
   # Process indices of columns to use for correlation
   cor_column_indices <- process_column_indices(cor_columns)
+  # Stop if only one column for correlation
+  if (length(cor_column_indices) == 1)
+    stop("Cannot plot correlation for only one column.")
   # Check indexes are within data frame
   if (!is.null(group_column)) {
     check_dataframe(df, indices = c(cor_column_indices, group_column))

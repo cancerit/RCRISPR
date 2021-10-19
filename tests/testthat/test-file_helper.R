@@ -104,7 +104,8 @@ testthat::test_that("error when directory does not exist", {
 })
 
 testthat::test_that("error when directory is empty", {
-  dir.create(file.path(tmpdir, 'empty_dir'))
+  if (!dir.exists(file.path(tmpdir, 'empty_dir')))
+    dir.create(file.path(tmpdir, 'empty_dir'))
   testthat::expect_error(check_directory(directory = file.path(tmpdir, 'empty_dir')),
                          "Directory is empty.")
 })
@@ -135,11 +136,22 @@ testthat::test_that("can validate directory", {
 ###############################################################################
 
 testthat::test_that("read uncompressed sample count to dataframe", {
-  testthat::expect_snapshot(read_file_to_dataframe(filepath = system.file("testdata", "test_counts.tsv", package = 'rcrispr'), file_separator = "\t", file_header = TRUE))
+  testthat::expect_snapshot(read_file_to_dataframe(filepath = system.file("testdata", "test_counts.tsv", package = 'rcrispr'),
+                                                   file_separator = "\t",
+                                                   file_header = TRUE))
 })
 
 testthat::test_that("read gzipped sample count to dataframe", {
-  testthat::expect_snapshot(read_file_to_dataframe(filepath = system.file("testdata", "test_counts.tsv.gz", package = 'rcrispr'), file_separator = "\t", file_header = TRUE))
+  testthat::expect_snapshot(read_file_to_dataframe(filepath = system.file("testdata", "test_counts.tsv.gz", package = 'rcrispr'),
+                                                   file_separator = "\t",
+                                                   file_header = TRUE))
+})
+
+testthat::test_that("read uncompressed sample count to dataframe with column indices", {
+  testthat::expect_snapshot(read_file_to_dataframe(filepath = system.file("testdata", "test_counts.tsv", package = 'rcrispr'),
+                                                   file_separator = "\t",
+                                                   file_header = TRUE,
+                                                   column_indices = 3))
 })
 
 #testthat::test_that("error reading sample count file which doesn't exist to dataframe", {
@@ -252,18 +264,18 @@ tmpdir <- tempdir(check = TRUE)
 test_plot <- ggplot(data.frame('x' = c(1:2), 'y' = c(1:2)),
                     aes( x = x, y = y)) + geom_point()
 
-testthat::test_that("cannot save plot with ggsave when data is null", {
-  testthat::expect_error(save_plot_with_ggsave(data = NULL,
-                                               outfile = 'test.png',
-                                               outdir = tmpdir),
-                         "Cannot save plot with ggsave, data is null.")
-})
-
 testthat::test_that("can save plot with ggsave", {
   testthat::expect_equal(save_plot_with_ggsave(data = test_plot,
                                                outfile = 'test.png',
                                                outdir = tmpdir),
                          file.path(tmpdir, 'test.png'))
+})
+
+testthat::test_that("cannot save plot with ggsave when data is null", {
+  testthat::expect_error(save_plot_with_ggsave(data = NULL,
+                                               outfile = 'test.png',
+                                               outdir = tmpdir),
+                         "Cannot save plot with ggsave, data is null.")
 })
 
 testthat::test_that("cannot save plot with ggsave with bad data", {
@@ -272,3 +284,30 @@ testthat::test_that("cannot save plot with ggsave with bad data", {
                                                outdir = tmpdir),
                          "Could not save plot with ggsave.")
 })
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                         save_plot_list()                            -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+testthat::test_that("can save plot list", {
+  testthat::expect_equal(suppressMessages(
+                           save_plot_list(plot_list = list('x' = test_plot,
+                                                           'y' = test_plot),
+                                          outdir = tmpdir)),
+                           c(file.path(tmpdir, 'x.png'), file.path(tmpdir, 'y.png')))
+})
+
+testthat::test_that("cannot save plot list, plot_list null", {
+  testthat::expect_error(
+    save_plot_list(plot_list = NULL, outdir = tmpdir),
+    "Cannot save plot list, plot_list is null")
+})
+
+testthat::test_that("cannot save plot list, item is not a plot", {
+  testthat::expect_error(
+    suppressMessages(save_plot_list(plot_list = list('x' = '123'), outdir = tmpdir)),
+    "Could not save plot from list, item is not a plot")
+})
+

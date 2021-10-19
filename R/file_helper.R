@@ -415,9 +415,6 @@ save_plot_list <-
       # Loop over plot list
       for (pn in names(plot_list)) {
         message(paste("Saving plot:", pn))
-        # Check name isn't null or numeric
-        if (is.numeric(pn) || is.null(pn))
-          stop(paste("Could not save plot from list, name is numeric or null:", pn))
         # Check list item is a plot
         if(!is.ggplot(plot_list[[pn]]))
           stop(paste("Could not save plot from list, item is not a plot:", pn))
