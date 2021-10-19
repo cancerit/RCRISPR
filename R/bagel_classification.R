@@ -250,7 +250,7 @@ prepare_essentiality_data <-
 #' @param threshold threshold value.
 #'
 #' @return dataframe
-#' @import pROC::coords
+#' @importFrom pROC coords
 #' @export process_roc
 # Based on code from Clare Pacini
 process_roc <-
