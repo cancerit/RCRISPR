@@ -1,3 +1,11 @@
+# RCRISPR 1.1.1.0
+
+## Minor changes
+
+* Updates to unit tests
+* Order library and counts pre-comparison
+* Clarification of fold change function
+
 # RCRISPR 1.1.0.0
 
 ## Major changes

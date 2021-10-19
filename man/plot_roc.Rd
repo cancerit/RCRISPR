@@ -4,7 +4,7 @@
 \alias{plot_roc}
 \title{Plot ROC}
 \usage{
-plot_roc(roc_obj)
+plot_roc(roc_obj = NULL)
 }
 \arguments{
 \item{roc_obj}{pROC \code{roc} object.}
