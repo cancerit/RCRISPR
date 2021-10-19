@@ -2106,3 +2106,1281 @@
       
       
 
+# basic infile options
+
+    Code
+      basic_infile_options()
+    Output
+      [[1]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--infile"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "character"
+      
+      Slot "dest":
+      [1] "infile"
+      
+      Slot "default":
+      NULL
+      
+      Slot "help":
+      [1] "input file"
+      
+      Slot "metavar":
+      [1] "character"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+
+# count skip options
+
+    Code
+      count_skip_options()
+    Output
+      [[1]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--count_skip"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "double"
+      
+      Slot "dest":
+      [1] "count_skip"
+      
+      Slot "default":
+      [1] 0
+      
+      Slot "help":
+      [1] "number of lines to skip when reading file [Default: 0]"
+      
+      Slot "metavar":
+      [1] "numeric"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+
+# fold change path options
+
+    Code
+      fold_change_path_options()
+    Output
+      [[1]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--fold_changes"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "character"
+      
+      Slot "dest":
+      [1] "fold_changes"
+      
+      Slot "default":
+      NULL
+      
+      Slot "help":
+      [1] "path to fold change matrix"
+      
+      Slot "metavar":
+      [1] "character"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+
+# fold change format options
+
+    Code
+      fold_change_format_options()
+    Output
+      [[1]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--no_fc_header"
+      
+      Slot "action":
+      [1] "store_true"
+      
+      Slot "type":
+      [1] "logical"
+      
+      Slot "dest":
+      [1] "no_fc_header"
+      
+      Slot "default":
+      [1] FALSE
+      
+      Slot "help":
+      [1] "fold change file has no header"
+      
+      Slot "metavar":
+      character(0)
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+      [[2]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--fc_delim"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "character"
+      
+      Slot "dest":
+      [1] "fc_delim"
+      
+      Slot "default":
+      [1] "\t"
+      
+      Slot "help":
+      [1] "fold change file delimiter [Default: \\t]"
+      
+      Slot "metavar":
+      [1] "character"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+
+# fold change column index options
+
+    Code
+      fold_change_column_index_options()
+    Output
+      [[1]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--fc_id_column_index"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "integer"
+      
+      Slot "dest":
+      [1] "fc_id_column_index"
+      
+      Slot "default":
+      [1] 1
+      
+      Slot "help":
+      [1] "index of id column in fold change matrix [Default: 1]"
+      
+      Slot "metavar":
+      [1] "integer"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+      [[2]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--fc_gene_column_index"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "integer"
+      
+      Slot "dest":
+      [1] "fc_gene_column_index"
+      
+      Slot "default":
+      NULL
+      
+      Slot "help":
+      [1] "index of gene column in fold change matrix"
+      
+      Slot "metavar":
+      [1] "integer"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+      [[3]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--fc_column_index"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "character"
+      
+      Slot "dest":
+      [1] "fc_column_index"
+      
+      Slot "default":
+      NULL
+      
+      Slot "help":
+      [1] "index of columns containing fold changes (e.g. 3 or 3,4,5 or 3-5 or 3-5,6-8)"
+      
+      Slot "metavar":
+      [1] "character"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+
+# generic infile options
+
+    Code
+      infile_format_options()
+    Output
+      [[1]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--no_infile_header"
+      
+      Slot "action":
+      [1] "store_true"
+      
+      Slot "type":
+      [1] "logical"
+      
+      Slot "dest":
+      [1] "no_infile_header"
+      
+      Slot "default":
+      [1] FALSE
+      
+      Slot "help":
+      [1] "infile has no header"
+      
+      Slot "metavar":
+      character(0)
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+      [[2]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--infile_delim"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "character"
+      
+      Slot "dest":
+      [1] "infile_delim"
+      
+      Slot "default":
+      [1] "\t"
+      
+      Slot "help":
+      [1] "infile delimiter [Default: \\t]"
+      
+      Slot "metavar":
+      [1] "character"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+
+# generic infile column index options
+
+    Code
+      infile_column_index_options()
+    Output
+      [[1]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--infile_id_column_index"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "integer"
+      
+      Slot "dest":
+      [1] "infile_id_column_index"
+      
+      Slot "default":
+      NULL
+      
+      Slot "help":
+      [1] "index of id column in infile"
+      
+      Slot "metavar":
+      [1] "integer"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+      [[2]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--infile_gene_column_index"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "integer"
+      
+      Slot "dest":
+      [1] "infile_gene_column_index"
+      
+      Slot "default":
+      NULL
+      
+      Slot "help":
+      [1] "index of gene column in infile matrix"
+      
+      Slot "metavar":
+      [1] "integer"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+      [[3]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--infile_data_column_index"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "character"
+      
+      Slot "dest":
+      [1] "infile_data_column_index"
+      
+      Slot "default":
+      NULL
+      
+      Slot "help":
+      [1] "index of columns containing data for processing in infile (e.g. 3 or 3,4,5 or 3-5 or 3-5,6-8)"
+      
+      Slot "metavar":
+      [1] "character"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+
+# strip id options
+
+    Code
+      strip_id_options()
+    Output
+      [[1]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--strip_ids"
+      
+      Slot "action":
+      [1] "store_true"
+      
+      Slot "type":
+      [1] "logical"
+      
+      Slot "dest":
+      [1] "strip_ids"
+      
+      Slot "default":
+      [1] FALSE
+      
+      Slot "help":
+      [1] "remove period and start sgRNA identifiers with character"
+      
+      Slot "metavar":
+      character(0)
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+
+# count library outfile options
+
+    Code
+      count_library_outfile_options()
+    Output
+      [[1]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--count_matrix_outfile"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "character"
+      
+      Slot "dest":
+      [1] "count_matrix_outfile"
+      
+      Slot "default":
+      NULL
+      
+      Slot "help":
+      [1] "output file for count matrix"
+      
+      Slot "metavar":
+      [1] "character"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+      [[2]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--library_outfile"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "character"
+      
+      Slot "dest":
+      [1] "library_outfile"
+      
+      Slot "default":
+      NULL
+      
+      Slot "help":
+      [1] "output file for processed library"
+      
+      Slot "metavar":
+      [1] "character"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+
+# filtered guide outfile options
+
+    Code
+      filtered_guide_output_options()
+    Output
+      [[1]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--filtered_guides_outfile"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "character"
+      
+      Slot "dest":
+      [1] "filtered_guides_outfile"
+      
+      Slot "default":
+      NULL
+      
+      Slot "help":
+      [1] "file of guides that were remove"
+      
+      Slot "metavar":
+      [1] "character"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+
+# sequencing qc options
+
+    Code
+      sequencing_qc_options()
+    Output
+      [[1]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--low_counts"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "double"
+      
+      Slot "dest":
+      [1] "low_counts"
+      
+      Slot "default":
+      [1] 30
+      
+      Slot "help":
+      [1] "threshold for low counts [Default: 30]"
+      
+      Slot "metavar":
+      [1] "numeric"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+      [[2]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--no_plot"
+      
+      Slot "action":
+      [1] "store_true"
+      
+      Slot "type":
+      [1] "logical"
+      
+      Slot "dest":
+      [1] "no_plot"
+      
+      Slot "default":
+      [1] FALSE
+      
+      Slot "help":
+      [1] "do not produce plots"
+      
+      Slot "metavar":
+      character(0)
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+
+# correltion options
+
+    Code
+      correlation_options()
+    Output
+      [[1]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--cor_method"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "character"
+      
+      Slot "dest":
+      [1] "cor_method"
+      
+      Slot "default":
+      [1] "pearson"
+      
+      Slot "help":
+      [1] "which correlation coefficient to compute [Default: pearson]"
+      
+      Slot "metavar":
+      [1] "character"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+
+# intermediate qc options
+
+    Code
+      intermediate_qc_options()
+    Output
+      [[1]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--is_fc"
+      
+      Slot "action":
+      [1] "store_true"
+      
+      Slot "type":
+      [1] "logical"
+      
+      Slot "dest":
+      [1] "is_fc"
+      
+      Slot "default":
+      [1] FALSE
+      
+      Slot "help":
+      [1] "whether input is a fold change matrix"
+      
+      Slot "metavar":
+      character(0)
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+      [[2]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--is_gene"
+      
+      Slot "action":
+      [1] "store_true"
+      
+      Slot "type":
+      [1] "logical"
+      
+      Slot "dest":
+      [1] "is_gene"
+      
+      Slot "default":
+      [1] FALSE
+      
+      Slot "help":
+      [1] "whether input is gene-level"
+      
+      Slot "metavar":
+      character(0)
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+      [[3]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--no_check_names"
+      
+      Slot "action":
+      [1] "store_true"
+      
+      Slot "type":
+      [1] "logical"
+      
+      Slot "dest":
+      [1] "no_check_names"
+      
+      Slot "default":
+      [1] FALSE
+      
+      Slot "help":
+      [1] "whether to check sample names exist in metadata"
+      
+      Slot "metavar":
+      character(0)
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+      [[4]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--no_plot"
+      
+      Slot "action":
+      [1] "store_true"
+      
+      Slot "type":
+      [1] "logical"
+      
+      Slot "dest":
+      [1] "no_plot"
+      
+      Slot "default":
+      [1] FALSE
+      
+      Slot "help":
+      [1] "do not produce plots"
+      
+      Slot "metavar":
+      character(0)
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+
+# BAGEL gene infile options
+
+    Code
+      bagel_gene_infile_options()
+    Output
+      [[1]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--ess"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "character"
+      
+      Slot "dest":
+      [1] "ess"
+      
+      Slot "default":
+      NULL
+      
+      Slot "help":
+      [1] "file containing essential gene names"
+      
+      Slot "metavar":
+      [1] "character"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+      [[2]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--ess_gene_column_index"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "integer"
+      
+      Slot "dest":
+      [1] "ess_gene_column_index"
+      
+      Slot "default":
+      [1] 1
+      
+      Slot "help":
+      [1] "index of column containing gene names in essential gene file [Default: 1]"
+      
+      Slot "metavar":
+      [1] "integer"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+      [[3]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--no_ess_header"
+      
+      Slot "action":
+      [1] "store_true"
+      
+      Slot "type":
+      [1] "logical"
+      
+      Slot "dest":
+      [1] "no_ess_header"
+      
+      Slot "default":
+      [1] FALSE
+      
+      Slot "help":
+      [1] "essential gene file has no header"
+      
+      Slot "metavar":
+      character(0)
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+      [[4]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--ess_delim"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "character"
+      
+      Slot "dest":
+      [1] "ess_delim"
+      
+      Slot "default":
+      [1] "\t"
+      
+      Slot "help":
+      [1] "essential gene file delimiter [Default: \\t]"
+      
+      Slot "metavar":
+      [1] "character"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+      [[5]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--noness"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "character"
+      
+      Slot "dest":
+      [1] "noness"
+      
+      Slot "default":
+      NULL
+      
+      Slot "help":
+      [1] "file containing non-essential gene names"
+      
+      Slot "metavar":
+      [1] "character"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+      [[6]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--noness_gene_column_index"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "integer"
+      
+      Slot "dest":
+      [1] "noness_gene_column_index"
+      
+      Slot "default":
+      [1] 1
+      
+      Slot "help":
+      [1] "index of column containing gene names in non-essential gene file [Default: 1]"
+      
+      Slot "metavar":
+      [1] "integer"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+      [[7]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--no_noness_header"
+      
+      Slot "action":
+      [1] "store_true"
+      
+      Slot "type":
+      [1] "logical"
+      
+      Slot "dest":
+      [1] "no_noness_header"
+      
+      Slot "default":
+      [1] FALSE
+      
+      Slot "help":
+      [1] "non-essential gene file has no header"
+      
+      Slot "metavar":
+      character(0)
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+      [[8]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--noness_delim"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "character"
+      
+      Slot "dest":
+      [1] "noness_delim"
+      
+      Slot "default":
+      [1] "\t"
+      
+      Slot "help":
+      [1] "non-essential gene file delimiter [Default: \\t]"
+      
+      Slot "metavar":
+      [1] "character"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+
+# scaling options
+
+    Code
+      scaling_options()
+    Output
+      [[1]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] "-t"
+      
+      Slot "long_flag":
+      [1] "--threshold"
+      
+      Slot "action":
+      [1] "store"
+      
+      Slot "type":
+      [1] "double"
+      
+      Slot "dest":
+      [1] "threshold"
+      
+      Slot "default":
+      [1] 0.05
+      
+      Slot "help":
+      [1] "threshold [Default: 0.05]"
+      
+      Slot "metavar":
+      [1] "numeric"
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+      [[2]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--is_fc"
+      
+      Slot "action":
+      [1] "store_true"
+      
+      Slot "type":
+      [1] "logical"
+      
+      Slot "dest":
+      [1] "is_fc"
+      
+      Slot "default":
+      [1] FALSE
+      
+      Slot "help":
+      [1] "whether input is a fold change matrix"
+      
+      Slot "metavar":
+      character(0)
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+      [[3]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--is_bf"
+      
+      Slot "action":
+      [1] "store_true"
+      
+      Slot "type":
+      [1] "logical"
+      
+      Slot "dest":
+      [1] "is_bf"
+      
+      Slot "default":
+      [1] FALSE
+      
+      Slot "help":
+      [1] "whether input is Bayes factors"
+      
+      Slot "metavar":
+      character(0)
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+      [[4]]
+      An object of class "OptionParserOption"
+      Slot "short_flag":
+      [1] NA
+      
+      Slot "long_flag":
+      [1] "--no_plot"
+      
+      Slot "action":
+      [1] "store_true"
+      
+      Slot "type":
+      [1] "logical"
+      
+      Slot "dest":
+      [1] "no_plot"
+      
+      Slot "default":
+      [1] FALSE
+      
+      Slot "help":
+      [1] "do not produce plots"
+      
+      Slot "metavar":
+      character(0)
+      
+      Slot "callback":
+      NULL
+      
+      Slot "callback_args":
+      list()
+      
+      
+

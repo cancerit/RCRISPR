@@ -59,6 +59,17 @@ plot_common_violin <-
     # Check ylab exists
     if (is.null(ylab))
       stop("Cannot generate violin plot, ylab is null.")
+    # Get NA values
+    missing_data <- df %>% filter(is.na(get(ycol)))
+    # Warnings and errors for NA values
+    if (nrow(missing_data) == nrow(df))
+      stop("Cannot plot common violin, all rows contain NAs.")
+    if (nrow(missing_data) > 0)
+      warning(paste("Removed", nrow(missing_data), "rows containing missing values."))
+    # Remove NA values from total_reads
+    df <- df %>% filter(!is.na(get(ycol)))
+    # Check data frame
+    check_dataframe(df)
     # Set use_groups to FALSE by default
     groups <- FALSE
     # If group is in column names, set it to TRUE
@@ -129,10 +140,21 @@ plot_common_density_ridges <-
     if (is.null(xcol))
       stop("Cannot generate ridgeline denisty plot, xcol is null.")
     if (!xcol %in% colnames(df))
-      stop(paste("Cannot generate ridgeline denisty plot, ycol is not in data frame:", xcol))
+      stop(paste("Cannot generate ridgeline denisty plot, xcol is not in data frame:", xcol))
     # Check xlab exists
     if (is.null(xlab))
       stop("Cannot generate ridgeline denisty plot, xlab is null.")
+    # Get NA values
+    missing_data <- df %>% filter(is.na(get(xcol)))
+    # Warnings and errors for NA values
+    if (nrow(missing_data) == nrow(df))
+      stop("Cannot plot ridgeline denisty plot , all rows contain NAs.")
+    if (nrow(missing_data) > 0)
+      warning(paste("Removed", nrow(missing_data), "rows containing missing values."))
+    # Remove NA values from total_reads
+    df <- df %>% filter(!is.na(get(xcol)))
+    # Check data frame
+    check_dataframe(df)
     # Set use_groups to FALSE by default
     groups <- FALSE
     # If group is in column names, set it to TRUE

@@ -239,3 +239,153 @@ testthat::test_that("CRISPRcleanR normalisation options", {
 testthat::test_that("CRISPRcleanR correction options", {
   testthat::expect_snapshot(crisprcleanr_correction_options())
 })
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                         BASIC INFILE OPTIONS                        -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+testthat::test_that("basic infile options", {
+  testthat::expect_snapshot(basic_infile_options())
+})
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                          COUNT SKIP OPTIONS                         -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+testthat::test_that("count skip options", {
+  testthat::expect_snapshot(count_skip_options())
+})
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                          FOLD CHANGE PATH OPTIONS                   -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+testthat::test_that("fold change path options", {
+  testthat::expect_snapshot(fold_change_path_options())
+})
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                          FOLD CHANGE FORMAT OPTIONS                 -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+testthat::test_that("fold change format options", {
+  testthat::expect_snapshot(fold_change_format_options())
+})
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                     FOLD CHANGE COLUMN INDEX OPTIONS                -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+testthat::test_that("fold change column index options", {
+  testthat::expect_snapshot(fold_change_column_index_options())
+})
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                         GENERIC INFILE OPTIONS                      -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+testthat::test_that("generic infile options", {
+  testthat::expect_snapshot(infile_format_options())
+})
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                         INFILE COLUMN INDEX OPTIONS                 -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+testthat::test_that("generic infile column index options", {
+  testthat::expect_snapshot(infile_column_index_options())
+})
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                          STRIP ID OPTIONS                           -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+testthat::test_that("strip id options", {
+  testthat::expect_snapshot(strip_id_options())
+})
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                        COUNT LIBRARY OUTFILE OPTIONS                -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+testthat::test_that("count library outfile options", {
+  testthat::expect_snapshot(count_library_outfile_options())
+})
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                        FILTERED GUIDE OUTFILE OPTIONS               -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+testthat::test_that("filtered guide outfile options", {
+  testthat::expect_snapshot(filtered_guide_output_options())
+})
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                        SEQUENCING QC OPTIONS                        -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+testthat::test_that("sequencing qc options", {
+  testthat::expect_snapshot(sequencing_qc_options())
+})
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                         CORRELATION OPTIONS                         -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+testthat::test_that("correltion options", {
+  testthat::expect_snapshot(correlation_options())
+})
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                        INTERMEDIATE QC OPTIONS                      -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+testthat::test_that("intermediate qc options", {
+  testthat::expect_snapshot(intermediate_qc_options())
+})
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                       BAGEL GENE INFILE OPTIONS                     -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+testthat::test_that("BAGEL gene infile options", {
+  testthat::expect_snapshot(bagel_gene_infile_options())
+})
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                           SCALING OPTIONS                           -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+testthat::test_that("scaling options", {
+  testthat::expect_snapshot(scaling_options())
+})

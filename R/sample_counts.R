@@ -140,13 +140,14 @@ read_sample_count_file <-
 #' @seealso \link[rcrispr]{SampleCounts-class}
 #'
 #' @param sample_counts List of SampleCounts objects
+#' @param sort_ids whether to order by gene and sgRNA identifier (FALSE)
 #'
 #' @return a data frame containing sample counts.
 #' @import dplyr
 #' @importFrom utils head
 #' @export convert_sample_counts_objects_to_count_matrix
 convert_sample_counts_objects_to_count_matrix <-
-  function(sample_counts = NULL) {
+  function(sample_counts = NULL, sort_ids = FALSE) {
     tryCatch({
       # Set up empty dataframe
       df <- data.frame()
@@ -156,7 +157,11 @@ convert_sample_counts_objects_to_count_matrix <-
         if (class(sample_counts[[i]])[1] != 'SampleCounts')
           stop(paste("Not a SampleCounts object:", head(sample_counts[[i]])))
         # Extract processed sample counts to a temporary data frame
-        tmp_counts <- counts(sample_counts[[i]], processed = T)
+        if (sort_ids) {
+          tmp_counts <- counts(sample_counts[[i]], processed = T, sort_ids = T)
+        } else {
+          tmp_counts <- counts(sample_counts[[i]], processed = T)
+        }
         # No need to test if empty as we already check for this when processing the counts
         if (nrow(df) == 0) {
           # If this is the first set of counts, set these as the temporary dataframe
@@ -214,6 +219,7 @@ convert_sample_counts_objects_to_count_matrix <-
 #' @param gene_column the index of column containing gene symbols.
 #' @param count_column vector indices of columns containing sample counts.
 #' @param processed logical of whether to apply predefined column names.
+#' @param sort_ids whether to order by gene and sgRNA identifier (FALSE)
 #' @param strip_ids whether to make syntactically valid id names.
 #' @param ... additional read.delim parameters.
 #'
@@ -227,6 +233,7 @@ read_count_matrix_file <-
            gene_column = 2,
            count_column = NULL,
            processed = FALSE,
+           sort_ids = FALSE,
            strip_ids= FALSE,
            ...) {
     # Error out if count matrix has no header as we can't determine the sample names
@@ -270,6 +277,9 @@ read_count_matrix_file <-
     if (processed) {
       colnames(df)[1] <- 'sgRNA'
       colnames(df)[2] <- 'gene'
+    }
+    if (sort_ids) {
+      df <- df[order(df[,2], df[,1]),]
     }
     # Validate data frame
     check_dataframe(df, check_na = TRUE)
@@ -390,10 +400,10 @@ compare_counts_to_library <-
     if (is.null(library_annotation_object))
       stop("Cannot compare counts to library, library annotation object is null.")
     # Get processed library annotation
-    library_annotation <- get_library_annotations(library_annotation_object, processed = TRUE)
+    library_annotation <- get_library_annotations(library_annotation_object, processed = TRUE, sort_ids = TRUE)
     library_annotation <- library_annotation %>% select(sgRNA, gene) %>% arrange(gene, sgRNA)
     # Get processed sample counts
-    sample_counts <- counts(sample_counts_object, processed = TRUE)
+    sample_counts <- counts(sample_counts_object, processed = TRUE, sort_ids = TRUE)
     sample_counts <- sample_counts %>% select(sgRNA, gene) %>% arrange(gene, sgRNA)
     # Check number of guides is equal
     if (nrow(sample_counts) != nrow(library_annotation))
@@ -444,10 +454,12 @@ compare_count_matrix_to_library <-
       if (!is.null(get(i)))
         assign(i, convert_variable_to_integer(get(i)))
     }
+    # Sort count matrix by gene and ids
+    count_matrix <- count_matrix[order(count_matrix[,gene_column], count_matrix[,id_column]),]
     # Check indices are within data frame
     check_dataframe(count_matrix, indices = c(id_column, gene_column))
     # Get processed library annotation
-    library_annotation <- get_library_annotations(library_annotation_object, processed = TRUE)
+    library_annotation <- get_library_annotations(library_annotation_object, processed = TRUE, sort_ids = TRUE)
     library_annotation <- library_annotation %>% select(sgRNA, gene) %>% arrange(gene, sgRNA)
     # Check number of guides is equal
     if (nrow(count_matrix) != nrow(library_annotation))

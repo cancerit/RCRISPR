@@ -89,10 +89,11 @@ setValidity("LibraryAnnotations", function(object) {
 #'
 #' @param object object
 #' @param processed logical
+#' @param sort_ids logical
 #' @param crisprcleanr logical
 #'
 #' @export
-setGeneric("get_library_annotations", function(object, processed = FALSE, crisprcleanr = FALSE) {
+setGeneric("get_library_annotations", function(object, processed = FALSE, sort_ids = FALSE, crisprcleanr = FALSE) {
   standardGeneric("get_library_annotations")
 })
 
@@ -100,13 +101,16 @@ setGeneric("get_library_annotations", function(object, processed = FALSE, crispr
 #'
 #' @param object LibraryAnnotations
 #' @param processed raw (TRUE) or processed annotations (FALSE)
+#' @param sort_ids order annotations by guide - only applicable when processed = TRUE (FALSE)
 #' @param crisprcleanr format for CRISPRcleanR (TRUE) or default to processed annotations (FALSE)
 #' @return dataframe containing library annotations
 #' @exportMethod get_library_annotations
 setMethod("get_library_annotations",
           signature(object = "LibraryAnnotations"),
-          function(object, processed, crisprcleanr) {
+          function(object, processed, sort_ids, crisprcleanr) {
             annotations <- object@annotations
+            if (sort_ids && !processed)
+              stop(paste("Cannot order unprocessed annotations (sort_ids can only be TRUE when processed is TRUE)."))
             if (crisprcleanr && !processed) {
               stop("Cannot format library for CRISPRcleanR when processed is FALSE.")
             }
@@ -130,6 +134,9 @@ setMethod("get_library_annotations",
                 } else {
                   colnames(annotations) <- c("sgRNA", "gene", "chr", "start", "end")
                 }
+              }
+              if (sort_ids) {
+                annotations <- annotations[order(annotations$gene, annotations$sgRNA),]
               }
             }
             return(annotations)

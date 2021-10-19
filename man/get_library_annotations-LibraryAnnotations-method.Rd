@@ -4,12 +4,19 @@
 \alias{get_library_annotations,LibraryAnnotations-method}
 \title{Get library annotations from LibraryAnnotations object}
 \usage{
-\S4method{get_library_annotations}{LibraryAnnotations}(object, processed = FALSE, crisprcleanr = FALSE)
+\S4method{get_library_annotations}{LibraryAnnotations}(
+  object,
+  processed = FALSE,
+  sort_ids = FALSE,
+  crisprcleanr = FALSE
+)
 }
 \arguments{
 \item{object}{LibraryAnnotations}
 
 \item{processed}{raw (TRUE) or processed annotations (FALSE)}
+
+\item{sort_ids}{order annotations by guide - only applicable when processed = TRUE (FALSE)}
 
 \item{crisprcleanr}{format for CRISPRcleanR (TRUE) or default to processed annotations (FALSE)}
 }

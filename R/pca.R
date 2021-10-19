@@ -158,7 +158,7 @@ plot_pca <-
       }
     }, error = function(e) {
       # Stop if there is an error
-      stop(paste("Cannot generate bar plot:", e))
+      stop(paste("Cannot generate pca plot:", e))
     })
     return(pca)
 }

@@ -47,6 +47,21 @@ count_matrix_stats <-
            count_column = 3,
            low_counts = 30,
            total_reads = NULL) {
+    # Exit if count_matrix is null
+    if(is.null(count_matrix))
+      stop("Cannot generate count matrix stats, count_matrix is null.")
+    # Exit if id_column is null
+    if(is.null(id_column))
+      stop("Cannot generate count matrix stats, id_column is null.")
+    # Exit if gene_column is null
+    if(is.null(gene_column))
+      stop("Cannot generate count matrix stats, gene_column is null.")
+    # Exit if count_column is null
+    if(is.null(count_column))
+      stop("Cannot generate count matrix stats, count_column is null.")
+    # Exit if low_counts is null
+    if(is.null(low_counts))
+      stop("Cannot generate count matrix stats, low_counts is null.")
     # Try to convert column indices to integers
     for (i in c('id_column', 'gene_column')) {
       if (!is.null(get(i)))
@@ -58,9 +73,9 @@ count_matrix_stats <-
     check_dataframe(count_matrix, indices = c(id_column, gene_column, count_column))
     # Check that id column and gene column aren't in count columns
     if (id_column %in% count_column)
-      stop(paste("id_column cannot overlap count columns": id_column, paste(count_column, sep = ",")))
+      stop(paste("id_column cannot overlap count columns:", id_column, paste(count_column, sep = ",")))
     if (gene_column %in% count_column)
-      stop(paste("gene_column cannot overlap count columns": gene_column, paste(count_column, sep = ",")))
+      stop(paste("gene_column cannot overlap count columns:", gene_column, paste(count_column, sep = ",")))
     # Get number of guides
     total_sgrnas <- data.frame('sample' = colnames(count_matrix)[count_column],
                                'total_sgrnas' = rep(nrow(count_matrix), length(count_column)))
@@ -96,6 +111,9 @@ count_matrix_stats <-
         mutate('prop_mapped_reads' = round(total_counts / total_reads, 5),
                'pct_mapped_reads' = round(prop_mapped_reads * 100, 2 ), .after = total_reads)
     }
+    count_stats <- as.data.frame(count_stats)
+    # Replace NAs with 0s
+    count_stats[is.na(count_stats)] <- 0
     # Check data frame
     check_dataframe(count_stats)
     # Check data frame
@@ -133,22 +151,34 @@ low_counts_per_sample <-
     check_dataframe(count_matrix, indices = c(id_column, gene_column, count_column))
     # Check that id column and gene column aren't in count columns
     if (id_column %in% count_column)
-      stop(paste("id_column cannot overlap count columns": id_column, paste(count_column, sep = ",")))
+      stop(paste("id_column cannot overlap count columns:", id_column, paste(count_column, sep = ",")))
     if (gene_column %in% count_column)
-      stop(paste("gene_column cannot overlap count columns": gene_column, paste(count_column, sep = ",")))
+      stop(paste("gene_column cannot overlap count columns:", gene_column, paste(count_column, sep = ",")))
     # Get zero count guides
     sample_order <- colnames(count_matrix)[count_column]
-    count_matrix <- count_matrix[,c(count_column)]
-    check_dataframe(count_matrix)
-    low_counts <- count_matrix %>%
-      tidyr::gather(sample, counts) %>%
-      dplyr::filter(counts < threshold) %>%
-      dplyr::group_by(sample) %>%
-      dplyr::summarise(!!filter_label := n(), .groups = 'keep')
-    low_counts <- low_counts[match(sample_order, low_counts$sample),]
-      # Return number of zero guides per sample
-      return(low_counts)
+    count_matrix_subset <- count_matrix[,c(count_column)]
+    # Replace NAs with 0s
+    count_matrix_subset[is.na(count_matrix_subset)] <- 0
+    if (length(count_column) > 1) {
+      check_dataframe(count_matrix_subset)
+      low_counts <- count_matrix_subset %>%
+        tidyr::gather(sample, counts) %>%
+        dplyr::filter(counts < threshold) %>%
+        dplyr::group_by(sample) %>%
+        dplyr::summarise(!!filter_label := n(), .groups = 'keep')
+    } else {
+      low_counts <- data.frame('sample' = colnames(count_matrix)[count_column], 'counts' = count_matrix_subset)
+      low_counts <- low_counts %>%
+        dplyr::group_by(sample) %>%
+        dplyr::filter(counts < threshold) %>%
+        dplyr::group_by(sample) %>%
+        dplyr::summarise(!!filter_label := n(), .groups = 'keep')
     }
+    low_counts <- as.data.frame(low_counts)
+    low_counts <- low_counts[match(sample_order, low_counts$sample),]
+    # Return number of zero guides per sample
+    return(low_counts)
+  }
 
 #' Gini index per sample
 #'
@@ -165,22 +195,40 @@ gini_index_per_sample <-
             id_column = 1,
             gene_column = 2,
             count_column = 3) {
+    # Exit if id_column is NULL
+    if (is.null(id_column))
+      stop("Cannot calculate gini index per sample, id_column is null.")
+    # Exit if gene_column is NULL
+    if (is.null(gene_column))
+      stop("Cannot calculate gini index per sample, gene_column is null.")
+    # Exit if count_column is NULL
+    if (is.null(count_column))
+      stop("Cannot calculate gini index per sample, count_column is null.")
     # Process count columns
     count_column <- process_column_indices(count_column)
     # Validate count matrix
     check_dataframe(count_matrix, indices = c(id_column, gene_column, count_column))
     # Check that id column and gene column aren't in count columns
     if (id_column %in% count_column)
-      stop(paste("id_column cannot overlap count columns": id_column, paste(count_column, sep = ",")))
+      stop(paste("id_column cannot overlap count columns:", id_column, paste(count_column, sep = ",")))
     if (gene_column %in% count_column)
-      stop(paste("gene_column cannot overlap count columns": gene_column, paste(count_column, sep = ",")))
+      stop(paste("gene_column cannot overlap count columns:", gene_column, paste(count_column, sep = ",")))
     # Get zero count guides
     sample_order <- colnames(count_matrix)[count_column]
-    count_matrix <- count_matrix[,c(count_column)]
-    gini_index <- count_matrix %>%
-      tidyr::gather(sample, counts) %>%
-      dplyr::group_by(sample) %>%
-      dplyr::summarise(gini_index = calculate_gini_index(counts))
+    count_matrix_subset <- count_matrix[,c(count_column)]
+    if (length(count_column) > 1) {
+      gini_index <- count_matrix_subset %>%
+        tidyr::gather(sample, counts) %>%
+        dplyr::group_by(sample) %>%
+        dplyr::summarise(gini_index = calculate_gini_index(counts))
+    } else {
+      gini_index <- data.frame('sample' = colnames(count_matrix)[count_column], 'counts' = count_matrix_subset)
+      gini_index <- gini_index %>%
+        dplyr::group_by(sample) %>%
+        dplyr::summarise(gini_index = calculate_gini_index(counts))
+    }
+    gini_index <- as.data.frame(gini_index)
+    check_dataframe(gini_index)
     return(gini_index)
   }
 
@@ -205,16 +253,28 @@ total_counts_per_sample <-
     check_dataframe(count_matrix, indices = c(id_column, gene_column, count_column))
     # Check that id column and gene column aren't in count columns
     if (id_column %in% count_column)
-      stop(paste("id_column cannot overlap count columns": id_column, paste(count_column, sep = ",")))
+      stop(paste("id_column cannot overlap count columns:", id_column, paste(count_column, sep = ",")))
     if (gene_column %in% count_column)
-      stop(paste("gene_column cannot overlap count columns": gene_column, paste(count_column, sep = ",")))
+      stop(paste("gene_column cannot overlap count columns:", gene_column, paste(count_column, sep = ",")))
     # Get zero count guides
     sample_order <- colnames(count_matrix)[count_column]
-    count_matrix <- count_matrix[,c(count_column)]
-    total_counts <- count_matrix %>%
-      tidyr::gather(sample, counts) %>%
-      dplyr::group_by(sample) %>%
-      dplyr::summarise(total_counts = sum(counts))
+    count_matrix_subset <- count_matrix[,c(count_column)]
+    # Replace NAs with 0s
+    count_matrix_subset[is.na(count_matrix_subset)] <- 0
+    if (length(count_column) > 1) {
+      total_counts <- count_matrix_subset %>%
+        tidyr::gather(sample, counts) %>%
+        dplyr::group_by(sample) %>%
+        dplyr::summarise(total_counts = sum(counts))
+    } else {
+      total_counts <- data.frame('sample' = colnames(count_matrix)[count_column], 'counts' = count_matrix_subset)
+      total_counts <- total_counts %>%
+        dplyr::group_by(sample) %>%
+        dplyr::summarise(total_counts = sum(counts))
+    }
+    total_counts <- as.data.frame(total_counts)
+    # Check data frame
+    check_dataframe(total_counts)
     return(total_counts)
   }
 
@@ -223,24 +283,37 @@ total_counts_per_sample <-
 #' @description Calculate gini index.
 #'
 #' @param x a vector of counts.
+#' @param fail_na stop if NAs are found.
 #'
 #' @export calculate_gini_index
 calculate_gini_index <-
-  function(x = NULL) {
+  function(x = NULL, fail_na = F) {
     # Function derived from:
     # https://github.com/ebartom/NGSbartom/blob/master/lib/python2.7/site-packages/mageck/mageckCountIO.py
+    # Stop if x is null
     if (is.null(x))
       stop("Cannot calculate gini index on null value.")
+    # Check vector has values
+    if (length(x) == 0)
+      stop("Cannot calculate gini index, x is empty.")
+    # Process NAs
+    nas <- sum(is.na(x))
+    # If x is all NAs
+    if (nas == length(x))
+      stop("Cannot calculate gini index, x only contains NAs.")
+    if (nas > 0 && fail_na)
+      stop("Cannot calculate gini index, x contains NAs.")
+    x <- na.omit(x)
+    # If length x is 1, return 0
+    if (length(x) == 1)
+      return(0)
     df <- data.frame('count' = x) %>%
-      mutate(nrdcnt = case_when(
-        count > 0 ~ log(count + 1),
-        count == 0 ~ log(1)
-      ) )
+      mutate(nrdcnt = log(count + 1))
     xs <- sort(df$nrdcnt)
     n <- length(xs)
     gssum <- 0
     for (i in 1:n) {
-      gssum <- gssum + ((i + 1) * xs[i])
+      gssum <- gssum + (i * xs[i])
     }
     ysum <- sum(xs)
     if (ysum == 0) {
