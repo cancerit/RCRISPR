@@ -329,3 +329,57 @@ plot_roc <-
     return( roc_obj.plot )
 }
 
+################################################################################
+#* --                                                                      -- *#
+#* --                     average_guide_bfs()                              -- *#
+#* --                                                                      -- *#
+################################################################################
+
+#' Get average sgRNA BF per gene
+#'
+#' @description
+#' Calculate average of guide Bayes factors per gene
+#'
+#' @param data data frame
+#' @param gene_column index of column for genes
+#' @param data_columns index of columns to average
+#'
+#' @export average_guide_bfs
+average_guide_bfs <-
+  function(data = NULL,
+           gene_column = NULL,
+           data_columns = NULL) {
+    # Error if gene_column is null
+    if (is.null(gene_column))
+      stop("Cannot average guide BFs, gene_column is null.")
+    # Error if data_columns is null
+    if (is.null(data_columns))
+      stop("Cannot average guide BFs, data_columns is null.")
+    # Check data frame
+    check_dataframe(data, check_na = TRUE, check_nan = TRUE)
+    # Process column indices
+    column_indices <- process_column_indices(data_columns)
+    # Convert columns to integer
+    for (i in c('gene_column')) {
+      if (!is.null(get(i)))
+        assign(i, convert_variable_to_integer(get(i)))
+    }
+    # Check gene column not in data_columns
+    if (gene_column %in% column_indices)
+      stop("Cannot average guide BFs, gene_column is within data_columns.")
+
+    # Process data frame
+    processed_data <- tryCatch({
+        data %>%
+          group_by_at(gene_column) %>%
+          summarise(across(all_of(data_columns - 1), ~ mean(.x, na.rm = TRUE)), .groups = 'keep') %>%
+          ungroup()
+    }, error = function(e) {
+      stop(paste("Cannot average guide BFs:", e))
+    })
+    # Check data frame
+    check_dataframe(processed_data)
+    # Return data frame
+    return(processed_data)
+  }
+

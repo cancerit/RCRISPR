@@ -577,3 +577,14 @@
       position_identity 
       
 
+# can average guide BFs
+
+    Code
+      average_guide_bfs(data = test_bf_matrix, gene_column = 1, data_columns = 2)
+    Output
+      # A tibble: 2 x 2
+        gene   mean
+        <chr> <dbl>
+      1 ABCC3 -1.26
+      2 ABL1  -1.71
+

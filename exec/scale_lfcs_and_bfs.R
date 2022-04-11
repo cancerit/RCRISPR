@@ -77,7 +77,8 @@ message("Reading input file...")
 sample_data <- read_file_to_dataframe(filepath = opt$infile,
                                       file_separator = opt$infile_delim,
                                       file_header = ifelse(opt$no_infile_header, FALSE, TRUE),
-                                      column_indices = c(opt$infile_gene_column_index,
+                                      column_indices = c(opt$infile_sgrna_column_index,
+                                                         opt$infile_gene_column_index,
                                                          opt$infile_data_column_index),
                                       check.names = FALSE)
 
@@ -104,6 +105,13 @@ if (ncol(sample_data) > 2) {
 } else {
   message("Only one data column, skipping averaging replicates.")
   avg_sample_data <- sample_data
+}
+
+# Average across guides
+if (is_bf) {
+  avg_sample_data <- average_guide_bfs(data = avg_sample_data,
+                                       gene_column = 1,
+                                       data_columns = 2)
 }
 
 # Add BAGEL classifications
@@ -153,11 +161,11 @@ message(paste("Thresholds written to:", outfile))
 
 # Scaled data
 message("Scaling data...")
-avg_sample_mat <- matrix(avg_sample_data[,2])
+avg_sample_mat <- as.matrix(avg_sample_data[,2])
 scaled_data <- matrix(avg_sample_mat - (perfTH[[1]][1]),
                       nrow(avg_sample_data),
                       1,
-                      dimnames = list(avg_sample_data[,1], ifelse(is_fc, 'LFC', 'BF')))
+                      dimnames = list(avg_sample_data %>% pull(gene), ifelse(is_fc, 'LFC', 'BF')))
 scaled_data <- scaled_data %>%
   as.data.frame() %>%
   rownames_to_column('gene')

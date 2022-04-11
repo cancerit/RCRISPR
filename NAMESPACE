@@ -2,6 +2,7 @@
 
 export(add_bagel_classifications)
 export(add_pseudocount)
+export(average_guide_bfs)
 export(average_replicates)
 export(bagel_gene_infile_options)
 export(bagel_normalisation_options)
