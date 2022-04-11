@@ -232,3 +232,39 @@ testthat::test_that("cannot plot ROC, roc_obj is null", {
   testthat::expect_error(plot_roc(roc_obj = NULL),
                          "Cannot plot ROC, roc_obj is null")
 })
+
+###############################################################################
+#* --                                                                     -- *#
+#* --                         average_guide_bfs()                         -- *#
+#* --                                                                     -- *#
+###############################################################################
+
+test_bf_matrix_file <- system.file("testdata", "test_bf_gene.tsv", package = 'rcrispr')
+test_bf_matrix <- read.delim(test_bf_matrix_file, check.names =F, header = T, sep = "\t")
+
+testthat::test_that("cannot average guide BFs, gene_column null", {
+  testthat::expect_error(average_guide_bfs(data = data.frame(),
+                                           gene_column = NULL),
+                         "Cannot average guide BFs, gene_column is null")
+})
+
+testthat::test_that("cannot average guide BFs, data_columns null", {
+  testthat::expect_error(average_guide_bfs(data = data.frame(),
+                                           gene_column = 1,
+                                           data_columns = NULL),
+                         "Cannot average guide BFs, data_columns is null")
+})
+
+testthat::test_that("cannot average guide BFs, data_columns null", {
+  testthat::expect_error(average_guide_bfs(data = test_count_matrix,
+                                           gene_column = 1,
+                                           data_columns = 1),
+                         "Cannot average guide BFs, gene_column is within data_columns")
+})
+
+testthat::test_that("can average guide BFs", {
+  testthat::expect_snapshot(average_guide_bfs(data = test_bf_matrix,
+                                              gene_column = 1,
+                                              data_columns = 2))
+})
+
