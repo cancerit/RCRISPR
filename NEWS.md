@@ -1,3 +1,10 @@
+# RCRISPR 1.2.0.0
+
+## Major changes
+
+* Updates to unit tests
+* Add function for averaging guide BFs for gene-level BFs
+
 # RCRISPR 1.1.1.0
 
 ## Minor changes
