@@ -44,7 +44,7 @@ utils::globalVariables(c("sgRNA", "gene", "Gene", 'sgrna',
                          "mean", "values", "median", "val", "ess", "median", "n_essential",
                          "total_essential", "n_nonessential", "total_essential", "n_nonessential",
                          "total_nonessential", "prop_bagel_essential", "setNames", "sd", "NNMD",
-                         "Essential.Glass.Delta", "FPR", "TPR", "coords", "na.omit"))
+                         "Essential.Glass.Delta", "FPR", "TPR", "coords", "na.omit", "BF"))
 
 
 
