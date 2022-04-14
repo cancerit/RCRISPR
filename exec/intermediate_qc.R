@@ -278,10 +278,11 @@ if (opt$no_plot) {
 
     # Set groups for PCA plots
     pca_data[['processed_data']] <- pca_data[['data']]$x %>% as.data.frame()
+    pca_data[['processed_data']] <- pca_data[['processed_data']] %>% rownames_to_column('sample')
+
     if (!is.null(opt$info_group_column_index)) {
       message("Adding groups to PCA data...")
        pca_data[['processed_data']] <- pca_data[['processed_data']] %>%
-        rownames_to_column('sample') %>%
         left_join(sample_metadata %>% select('sample' = label, 'color' = group), by = 'sample')
     }
     message("Adding plasmid, control and treatment to PCA data...")
