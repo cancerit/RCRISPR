@@ -1,3 +1,9 @@
+# RCRISPR 1.2.1.0
+
+## Minor changes
+
+* QC update to allow shapes in PCA when plasmid not present
+
 # RCRISPR 1.2.0.0
 
 ## Major changes
