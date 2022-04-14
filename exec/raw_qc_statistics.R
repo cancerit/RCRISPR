@@ -202,20 +202,19 @@ if (opt$no_plot) {
     pca_data <- prepare_pca(df = sample_data_pca, transform = TRUE, log_transform = TRUE)
     # Set groups for PCA plots
     pca_data[['processed_data']] <- pca_data[['data']]$x %>% as.data.frame()
+    pca_data[['processed_data']] <- pca_data[['processed_data']] %>% rownames_to_column('sample')
     if (!is.null(opt$info_group_column_index)) {
       message("Adding groups to PCA data...")
        pca_data[['processed_data']] <- pca_data[['processed_data']] %>%
-        rownames_to_column('sample') %>%
-        left_join(sample_metadata %>% select('sample' = label, 'color' = group, plasmid, control, treatment), by = 'sample')
+        left_join(sample_metadata %>% select('sample' = label, 'color' = group), by = 'sample')
     }
-    if (!is.null(opt$info_group_column_index)) {
-      message("Adding plasmid, control and treatment to PCA data...")
-      pca_data[['processed_data']] <- pca_data[['processed_data']] %>%
-        mutate('shape' = case_when(plasmid == 1 ~ 'plasmid',
-                                  control == 1 ~ 'control',
-                                  treatment == 1 ~ 'treatment')) %>%
-        select(-control, -plasmid, -treatment)
-    }
+    message("Adding plasmid, control and treatment to PCA data...")
+    pca_data[['processed_data']] <- pca_data[['processed_data']] %>%
+      left_join(sample_metadata %>% select('sample' = label, plasmid, control, treatment), by = 'sample') %>%
+      mutate('shape' = case_when(plasmid == 1 ~ 'plasmid',
+                                control == 1 ~ 'control',
+                                treatment == 1 ~ 'treatment')) %>%
+      select(-control, -plasmid, -treatment)
     if (length(unique(pca_data[['processed_data']]$color)) == 1 && length(unique(pca_data[['processed_data']]$shape)) == 1) {
       message("Samples are all in one group and of one type, skipping PCA plot.")
     } else {
