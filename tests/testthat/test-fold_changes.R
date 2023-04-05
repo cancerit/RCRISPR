@@ -266,3 +266,13 @@ testthat::test_that("cannot calculate gene lfc, gene-level indices overlap", {
                                                       is_gene = T),
                          "Cannot read fold change matrix, duplicate column indices")
 })
+
+testthat::test_that("can read gene-level fold change matrix file with numeric sample name", {
+  test_count_matrix_file_with_numeric_sample <- system.file("testdata", "test_count_matrix_with_numeric_sample.tsv", package = 'rcrispr')
+  testthat::expect_snapshot(read_fold_change_matrix_file(test_count_matrix_file_with_numeric_sample,
+                                                         id_column = 1,
+                                                         gene_column = 2,
+                                                         fc_column = 3:5,
+                                                         is_gene = T,
+                                                         processed = T))
+})

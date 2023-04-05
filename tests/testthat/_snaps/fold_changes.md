@@ -42,3 +42,14 @@
       2 A1BG       0              0              0
       3 A1BG     274            193            163
 
+# can read gene-level fold change matrix file with numeric sample name
+
+    Code
+      read_fold_change_matrix_file(test_count_matrix_file_with_numeric_sample,
+        id_column = 1, gene_column = 2, fc_column = 3:5, is_gene = T, processed = T)
+    Output
+        gene 1HELA_T0 2HELA_T15A_CTRL 3HELA_T15B_CTRL
+      1 A1BG      478             519             439
+      2 A1BG        0               0               0
+      3 A1BG      274             193             163
+

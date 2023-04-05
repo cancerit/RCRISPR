@@ -4,7 +4,7 @@
       add_bagel_classifications(data = test_count_matrix, gene_column = 2, ess = ess,
         noness = noness)
     Output
-                                   sgRNA    gene T0_. T3_A T3_B T3_C T18_A T18_B
+                                   sgRNA    gene T0_- T3_A T3_B T3_C T18_A T18_B
       2007     PPA1_TTTAGACTTGGGAAGACCCA    PPA1  277   92   64   67    10    27
       2008     PPA1_GTTGCATGAAGACATACCTG    PPA1  267  143  108   46    62     2
       2009     PPA1_TGGTAGTTGAAGTACCACGC    PPA1   98   45   85   60    72    75
@@ -413,7 +413,7 @@
       # A tibble: 10 x 17
          sample        max_e~1 max_n~2 max_u~3 mean_~4 mean_~5 mean_~6 media~7 media~8
          <chr>           <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
-       1 T0_.             1182     915     931   343.     378.    342.   318.     332 
+       1 T0_-             1182     915     931   343.     378.    342.   318.     332 
        2 T18_A             314     793     925    50.2    239.    245.    29      240.
        3 T18_A_Starved     304     584     542    49.0    200.    203.    25.5    164 
        4 T18_B             294     636     761    43.6    215.    240.    29.5    206.
@@ -440,7 +440,7 @@
       # A tibble: 10 x 17
          sample        max_e~1 max_n~2 max_u~3 mean_~4 mean_~5 mean_~6 media~7 media~8
          <chr>           <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
-       1 T0_.             1182     915     931   343.     378.    342.   318.     332 
+       1 T0_-             1182     915     931   343.     378.    342.   318.     332 
        2 T18_A             314     793     925    50.2    239.    245.    29      240.
        3 T18_A_Starved     304     584     542    49.0    200.    203.    25.5    164 
        4 T18_B             294     636     761    43.6    215.    240.    29.5    206.

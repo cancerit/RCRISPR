@@ -102,6 +102,7 @@ read_fold_change_matrix_file <-
         filepath = filepath,
         file_separator = file_separator,
         file_header = file_header,
+        check.names = F,
         ...
       )
     }, error = function(e) {

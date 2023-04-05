@@ -247,6 +247,7 @@ read_count_matrix_file <-
         filepath = filepath,
         file_separator = file_separator,
         file_header = file_header,
+        check.names = F,
         ...
       )
     }, error = function(e) {
@@ -364,6 +365,7 @@ read_sample_count_files <-
                                                     file_header = file_header,
                                                     file_separator = file_separator,
                                                     strip_ids = strip_ids,
+                                                    check.names = F,
                                                     ...)
       # Add SampleCount object to list
       sample_count_objects <- c(sample_count_objects, sample_count_object)
