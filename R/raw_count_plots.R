@@ -163,7 +163,7 @@ plot_common_barplot <-
     # Build common bar plot
     if (groups == TRUE) {
       p <- tryCatch({
-        ggplot(df, aes_string(x = xcol, y = ycol, fill = 'group')) +
+        ggplot(df, aes(x = get(xcol), y = get(ycol), fill = group)) +
           geom_col(colour="gray30") +
           scale_fill_brewer(palette = 'Set3') +
           scale_y_continuous(breaks = pretty_breaks(10)) +
@@ -175,7 +175,7 @@ plot_common_barplot <-
       })
     } else {
       p <- tryCatch({
-        ggplot(df, aes_string(x = xcol, y = ycol)) +
+        ggplot(df, aes(x = get(xcol), y = get(ycol))) +
           geom_col(colour="gray30") +
           scale_fill_brewer(palette = 'Set3') +
           scale_y_continuous(breaks = pretty_breaks(10)) +

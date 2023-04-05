@@ -134,6 +134,40 @@
       1 xy12   g1  1
       
 
+# read sample count file with numeric sample names
+
+    Code
+      test_counts_numeric_sample
+    Output
+      An object of class "SampleCounts"
+      Slot "sample_name":
+      [1] "1HELA_T0"
+      
+      Slot "filepath":
+      [1] "test"
+      
+      Slot "id_column":
+      [1] 1
+      
+      Slot "gene_column":
+      [1] 2
+      
+      Slot "count_column":
+      [1] 3
+      
+      Slot "file_separator":
+      [1] "\t"
+      
+      Slot "file_header":
+      [1] TRUE
+      
+      Slot "counts":
+                            sgRNA GENE 1HELA_T0
+      1 A1BG_CACCTTCGAGCTGCTGCGCG A1BG      478
+      2 A1BG_AAGAGCGCCTCGGTCCCAGC A1BG        0
+      3 A1BG_TGGACTTCCAGCTACGGCGC A1BG      274
+      
+
 # combine SampleCounts objects into count matrix
 
     Code

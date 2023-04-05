@@ -73,7 +73,7 @@ bagel_normalise_counts <-
                                      indices = c(3:ncol(sample_counts)))
     # Total normalisation with scaling factor
     sample_counts <- sample_counts %>%
-      mutate(across(3:ncol(sample_counts), ~ (. / sum(.)) * scaling_factor))
+      mutate(across(all_of(3:ncol(sample_counts)), ~ (. / sum(.)) * scaling_factor))
     # Check dataframe
     check_dataframe(sample_counts, check_na = T, check_nan = T)
     return(sample_counts)
