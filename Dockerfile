@@ -1,4 +1,4 @@
-FROM rocker/r-ubuntu:20.04
+FROM rocker/r-ubuntu:22.04
 
 USER root
 
