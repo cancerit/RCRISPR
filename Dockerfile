@@ -23,6 +23,8 @@ RUN apt-get update && \
   libxml2-dev \
   libnlopt-dev \
   libfontconfig1-dev \
+  libfribidi-dev \
+  libharfbuzz-dev \
   pandoc \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
