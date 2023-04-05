@@ -127,12 +127,12 @@ plot_pca <-
     }
     pca <- tryCatch({
       if (shape && color) {
-        ggplot(df) +
+        ggplot(df, aes(x = get(pc_x), y = get(pc_y), color = color, shape = shape)) +
+        geom_point(size = 4) +
         scale_color_brewer(palette = 'Dark2') +
         scale_x_continuous(breaks = pretty_breaks(10)) +
         scale_y_continuous(breaks = pretty_breaks(10)) +
         theme_pubr(base_size = 16) +
-        geom_point(aes_string(x = pc_x, y = pc_y, color = 'color', shape = 'shape'), size = 4) +
         theme(legend.box="vertical")
       } else if (shape) {
         ggplot(df) +
@@ -140,21 +140,21 @@ plot_pca <-
         scale_x_continuous(breaks = pretty_breaks(10)) +
         scale_y_continuous(breaks = pretty_breaks(10)) +
         theme_pubr(base_size = 16) +
-        geom_point(aes_string(x = pc_x, y = pc_y, shape = 'shape'), size = 4)
+        geom_point(aes(x = get(pc_x), y = get(pc_y), shape = shape), size = 4)
       } else if (color) {
         ggplot(df) +
         scale_color_brewer(palette = 'Dark2') +
         scale_x_continuous(breaks = pretty_breaks(10)) +
         scale_y_continuous(breaks = pretty_breaks(10)) +
         theme_pubr(base_size = 16) +
-        geom_point(aes_string(x = pc_x, y = pc_y, color = 'color'), size = 4)
+        geom_point(aes(x = get(pc_x), y = get(pc_y), color = color), size = 4)
       } else {
         ggplot(df) +
         scale_color_brewer(palette = 'Dark2') +
         scale_x_continuous(breaks = pretty_breaks(10)) +
         scale_y_continuous(breaks = pretty_breaks(10)) +
         theme_pubr(base_size = 16) +
-        geom_point(aes_string(x = pc_x, y = pc_y), size = 4)
+        geom_point(aes(x = get(pc_x), y = get(pc_y)), size = 4)
       }
     }, error = function(e) {
       # Stop if there is an error

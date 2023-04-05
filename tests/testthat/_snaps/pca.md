@@ -622,7 +622,7 @@
       p$layers
     Output
       [[1]]
-      mapping: x = ~PC1, y = ~PC2 
+      mapping: x = ~get(pc_x), y = ~get(pc_y) 
       geom_point: na.rm = FALSE
       stat_identity: na.rm = FALSE
       position_identity 
@@ -673,7 +673,7 @@
       p$layers
     Output
       [[1]]
-      mapping: colour = ~color, x = ~PC1, y = ~PC2 
+      mapping: x = ~get(pc_x), y = ~get(pc_y), colour = ~color 
       geom_point: na.rm = FALSE
       stat_identity: na.rm = FALSE
       position_identity 
@@ -724,7 +724,7 @@
       p$layers
     Output
       [[1]]
-      mapping: shape = ~shape, x = ~PC1, y = ~PC2 
+      mapping: x = ~get(pc_x), y = ~get(pc_y), shape = ~shape 
       geom_point: na.rm = FALSE
       stat_identity: na.rm = FALSE
       position_identity 
@@ -775,7 +775,6 @@
       p$layers
     Output
       [[1]]
-      mapping: colour = ~color, shape = ~shape, x = ~PC1, y = ~PC2 
       geom_point: na.rm = FALSE
       stat_identity: na.rm = FALSE
       position_identity 

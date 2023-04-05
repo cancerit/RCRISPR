@@ -26,7 +26,7 @@
     Output
       [[1]]
       mapping: fill = ~category 
-      geom_col: width = NULL, na.rm = FALSE
+      geom_col: just = 0.5, width = NULL, na.rm = FALSE
       stat_identity: na.rm = FALSE
       position_stack 
       
@@ -47,7 +47,7 @@
     Output
       [[1]]
       mapping: fill = ~category 
-      geom_col: width = NULL, na.rm = FALSE
+      geom_col: just = 0.5, width = NULL, na.rm = FALSE
       stat_identity: na.rm = FALSE
       position_stack 
       
@@ -68,7 +68,7 @@
       p$layers
     Output
       [[1]]
-      geom_col: width = NULL, na.rm = FALSE
+      geom_col: just = 0.5, width = NULL, na.rm = FALSE
       stat_identity: na.rm = FALSE
       position_stack 
       
@@ -101,7 +101,7 @@
       p$layers
     Output
       [[1]]
-      geom_col: width = NULL, na.rm = FALSE
+      geom_col: just = 0.5, width = NULL, na.rm = FALSE
       stat_identity: na.rm = FALSE
       position_stack 
       
@@ -134,7 +134,7 @@
       p$layers
     Output
       [[1]]
-      geom_col: width = NULL, na.rm = FALSE
+      geom_col: just = 0.5, width = NULL, na.rm = FALSE
       stat_identity: na.rm = FALSE
       position_stack 
       
@@ -175,7 +175,7 @@
       p$layers
     Output
       [[1]]
-      geom_col: width = NULL, na.rm = FALSE
+      geom_col: just = 0.5, width = NULL, na.rm = FALSE
       stat_identity: na.rm = FALSE
       position_stack 
       
