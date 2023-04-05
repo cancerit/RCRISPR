@@ -411,23 +411,24 @@
       Building BAGEL classification statistics...
     Output
       # A tibble: 10 x 17
-         sample        max_essential max_nonessential max_unknown mean_essential
-         <chr>                 <dbl>            <dbl>       <dbl>          <dbl>
-       1 T0_.                   1182              915         931          343. 
-       2 T18_A                   314              793         925           50.2
-       3 T18_A_Starved           304              584         542           49.0
-       4 T18_B                   294              636         761           43.6
-       5 T18_B_Starved           363              661         565           50.7
-       6 T18_C                   205              665         648           42.8
-       7 T18_C_Starved           159              557         529           39.6
-       8 T3_A                    360              492         431          113. 
-       9 T3_B                    249              328         354           80.1
-      10 T3_C                    250              409         388           95.2
-      # ... with 12 more variables: mean_nonessential <dbl>, mean_unknown <dbl>,
-      #   median_essential <dbl>, median_nonessential <dbl>, median_unknown <dbl>,
-      #   min_essential <dbl>, min_nonessential <dbl>, min_unknown <dbl>,
-      #   n_genes_essential <dbl>, n_genes_nonessential <dbl>, n_genes_unknown <dbl>,
-      #   total_genes <dbl>
+         sample        max_e~1 max_n~2 max_u~3 mean_~4 mean_~5 mean_~6 media~7 media~8
+         <chr>           <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
+       1 T0_.             1182     915     931   343.     378.    342.   318.     332 
+       2 T18_A             314     793     925    50.2    239.    245.    29      240.
+       3 T18_A_Starved     304     584     542    49.0    200.    203.    25.5    164 
+       4 T18_B             294     636     761    43.6    215.    240.    29.5    206.
+       5 T18_B_Starved     363     661     565    50.7    242.    260.    29.5    194.
+       6 T18_C             205     665     648    42.8    245.    250.    24.5    222.
+       7 T18_C_Starved     159     557     529    39.6    208.    208.    25      168 
+       8 T3_A              360     492     431   113.     205.    190.    94.5    197 
+       9 T3_B              249     328     354    80.1    146.    139.    66      131 
+      10 T3_C              250     409     388    95.2    169.    156.    78      153 
+      # ... with 8 more variables: median_unknown <dbl>, min_essential <dbl>,
+      #   min_nonessential <dbl>, min_unknown <dbl>, n_genes_essential <dbl>,
+      #   n_genes_nonessential <dbl>, n_genes_unknown <dbl>, total_genes <dbl>, and
+      #   abbreviated variable names 1: max_essential, 2: max_nonessential,
+      #   3: max_unknown, 4: mean_essential, 5: mean_nonessential, 6: mean_unknown,
+      #   7: median_essential, 8: median_nonessential
 
 # can get bagel statistics gene-level
 
@@ -437,23 +438,24 @@
       Building BAGEL classification statistics...
     Output
       # A tibble: 10 x 17
-         sample        max_essential max_nonessential max_unknown mean_essential
-         <chr>                 <dbl>            <dbl>       <dbl>          <dbl>
-       1 T0_.                   1182              915         931          343. 
-       2 T18_A                   314              793         925           50.2
-       3 T18_A_Starved           304              584         542           49.0
-       4 T18_B                   294              636         761           43.6
-       5 T18_B_Starved           363              661         565           50.7
-       6 T18_C                   205              665         648           42.8
-       7 T18_C_Starved           159              557         529           39.6
-       8 T3_A                    360              492         431          113. 
-       9 T3_B                    249              328         354           80.1
-      10 T3_C                    250              409         388           95.2
-      # ... with 12 more variables: mean_nonessential <dbl>, mean_unknown <dbl>,
-      #   median_essential <dbl>, median_nonessential <dbl>, median_unknown <dbl>,
-      #   min_essential <dbl>, min_nonessential <dbl>, min_unknown <dbl>,
-      #   n_genes_essential <dbl>, n_genes_nonessential <dbl>, n_genes_unknown <dbl>,
-      #   total_genes <dbl>
+         sample        max_e~1 max_n~2 max_u~3 mean_~4 mean_~5 mean_~6 media~7 media~8
+         <chr>           <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
+       1 T0_.             1182     915     931   343.     378.    342.   318.     332 
+       2 T18_A             314     793     925    50.2    239.    245.    29      240.
+       3 T18_A_Starved     304     584     542    49.0    200.    203.    25.5    164 
+       4 T18_B             294     636     761    43.6    215.    240.    29.5    206.
+       5 T18_B_Starved     363     661     565    50.7    242.    260.    29.5    194.
+       6 T18_C             205     665     648    42.8    245.    250.    24.5    222.
+       7 T18_C_Starved     159     557     529    39.6    208.    208.    25      168 
+       8 T3_A              360     492     431   113.     205.    190.    94.5    197 
+       9 T3_B              249     328     354    80.1    146.    139.    66      131 
+      10 T3_C              250     409     388    95.2    169.    156.    78      153 
+      # ... with 8 more variables: median_unknown <dbl>, min_essential <dbl>,
+      #   min_nonessential <dbl>, min_unknown <dbl>, n_genes_essential <dbl>,
+      #   n_genes_nonessential <dbl>, n_genes_unknown <dbl>, total_genes <dbl>, and
+      #   abbreviated variable names 1: max_essential, 2: max_nonessential,
+      #   3: max_unknown, 4: mean_essential, 5: mean_nonessential, 6: mean_unknown,
+      #   7: median_essential, 8: median_nonessential
 
 # can get bagel statistics gene-level fold changes
 
@@ -463,16 +465,17 @@
       Building BAGEL classification statistics...
     Output
       # A tibble: 3 x 19
-        sample NNMD   Essential.Glass.Delta max_essential max_nonessential max_unknown
-        <chr>  <chr>  <chr>                         <dbl>            <dbl>       <dbl>
-      1 T3_A   -2.502 2.553                        -0.290           0.0318      -0.655
-      2 T3_B   -2.430 4.084                        -0.848          -0.732       -1.16 
-      3 T3_C   -1.807 3.606                        -0.488          -0.486       -1.06 
-      # ... with 13 more variables: mean_essential <dbl>, mean_nonessential <dbl>,
-      #   mean_unknown <dbl>, median_essential <dbl>, median_nonessential <dbl>,
-      #   median_unknown <dbl>, min_essential <dbl>, min_nonessential <dbl>,
-      #   min_unknown <dbl>, n_genes_essential <dbl>, n_genes_nonessential <dbl>,
-      #   n_genes_unknown <dbl>, total_genes <dbl>
+        sample NNMD   Essent~1 max_e~2 max_n~3 max_u~4 mean_~5 mean_~6 mean_~7 media~8
+        <chr>  <chr>  <chr>      <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
+      1 T3_A   -2.502 2.553     -0.290  0.0318  -0.655   -1.81   -0.83   -0.79   -1.73
+      2 T3_B   -2.430 4.084     -0.848 -0.732   -1.16    -2.23   -1.31   -1.3    -2.19
+      3 T3_C   -1.807 3.606     -0.488 -0.486   -1.06    -1.95   -1.13   -1.19   -1.78
+      # ... with 9 more variables: median_nonessential <dbl>, median_unknown <dbl>,
+      #   min_essential <dbl>, min_nonessential <dbl>, min_unknown <dbl>,
+      #   n_genes_essential <dbl>, n_genes_nonessential <dbl>, n_genes_unknown <dbl>,
+      #   total_genes <dbl>, and abbreviated variable names 1: Essential.Glass.Delta,
+      #   2: max_essential, 3: max_nonessential, 4: max_unknown, 5: mean_essential,
+      #   6: mean_nonessential, 7: mean_unknown, 8: median_essential
 
 # can prepare essentiality data
 

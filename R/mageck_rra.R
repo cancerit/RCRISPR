@@ -277,8 +277,8 @@ plot_mageck_rra_sgrna_barplot <-
       xlab('') +
       ylab('Log fold change') +
       theme_classic() +
-      theme(panel.border = element_rect(color = "black", fill = NA, size = 1),
-            strip.background = element_rect(color = "black", size = 1))
+      theme(panel.border = element_rect(color = "black", fill = NA, linewidth = 1),
+            strip.background = element_rect(color = "black", linewidth = 1))
     # Return plot
     return(mageck_rra_sgrna_barplot)
   }
