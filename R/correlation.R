@@ -91,7 +91,7 @@ plot_correlation <-
         ggpairs(
           data = df,
           columns = cor_column_indices,
-          mapping = ggplot2::aes_string(color = group_column),
+          mapping = aes(color = !!group_column),
           progress = FALSE,
           diag = list(continuous = wrap("densityDiag", alpha = 0.5)),
           upper = list(continuous = wrap('cor', fontface = 'bold', size = 1.2, method = method)),

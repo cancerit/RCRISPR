@@ -18,10 +18,10 @@
       p$gg
     Output
       $theme
-      List of 93
+      List of 97
        $ line                      :List of 6
         ..$ colour       : chr "black"
-        ..$ size         : num 0.5
+        ..$ linewidth    : num 0.5
         ..$ linetype     : num 1
         ..$ lineend      : chr "butt"
         ..$ arrow        : logi FALSE
@@ -30,7 +30,7 @@
        $ rect                      :List of 5
         ..$ fill         : chr "white"
         ..$ colour       : chr "black"
-        ..$ size         : num 0.5
+        ..$ linewidth    : num 0.5
         ..$ linetype     : num 1
         ..$ inherit.blank: logi TRUE
         ..- attr(*, "class")= chr [1:2] "element_rect" "element"
@@ -182,7 +182,7 @@
         ..- attr(*, "class")= chr [1:2] "element_text" "element"
        $ axis.ticks                :List of 6
         ..$ colour       : chr "grey70"
-        ..$ size         : 'rel' num 0.5
+        ..$ linewidth    : 'rel' num 0.5
         ..$ linetype     : NULL
         ..$ lineend      : NULL
         ..$ arrow        : logi FALSE
@@ -213,7 +213,7 @@
        $ legend.background         :List of 5
         ..$ fill         : NULL
         ..$ colour       : logi NA
-        ..$ size         : NULL
+        ..$ linewidth    : NULL
         ..$ linetype     : NULL
         ..$ inherit.blank: logi TRUE
         ..- attr(*, "class")= chr [1:2] "element_rect" "element"
@@ -226,7 +226,7 @@
        $ legend.key                :List of 5
         ..$ fill         : chr "white"
         ..$ colour       : logi NA
-        ..$ size         : NULL
+        ..$ linewidth    : NULL
         ..$ linetype     : NULL
         ..$ inherit.blank: logi TRUE
         ..- attr(*, "class")= chr [1:2] "element_rect" "element"
@@ -276,14 +276,14 @@
        $ panel.background          :List of 5
         ..$ fill         : chr "white"
         ..$ colour       : logi NA
-        ..$ size         : NULL
+        ..$ linewidth    : NULL
         ..$ linetype     : NULL
         ..$ inherit.blank: logi TRUE
         ..- attr(*, "class")= chr [1:2] "element_rect" "element"
        $ panel.border              :List of 5
         ..$ fill         : logi NA
         ..$ colour       : chr "grey70"
-        ..$ size         : 'rel' num 1
+        ..$ linewidth    : 'rel' num 1
         ..$ linetype     : NULL
         ..$ inherit.blank: logi TRUE
         ..- attr(*, "class")= chr [1:2] "element_rect" "element"
@@ -293,7 +293,7 @@
        $ panel.spacing.y           : NULL
        $ panel.grid                :List of 6
         ..$ colour       : chr "grey87"
-        ..$ size         : NULL
+        ..$ linewidth    : NULL
         ..$ linetype     : NULL
         ..$ lineend      : NULL
         ..$ arrow        : logi FALSE
@@ -301,7 +301,7 @@
         ..- attr(*, "class")= chr [1:2] "element_line" "element"
        $ panel.grid.major          :List of 6
         ..$ colour       : NULL
-        ..$ size         : 'rel' num 0.5
+        ..$ linewidth    : 'rel' num 0.5
         ..$ linetype     : NULL
         ..$ lineend      : NULL
         ..$ arrow        : logi FALSE
@@ -309,7 +309,7 @@
         ..- attr(*, "class")= chr [1:2] "element_line" "element"
        $ panel.grid.minor          :List of 6
         ..$ colour       : NULL
-        ..$ size         : 'rel' num 0.25
+        ..$ linewidth    : 'rel' num 0.25
         ..$ linetype     : NULL
         ..$ lineend      : NULL
         ..$ arrow        : logi FALSE
@@ -323,7 +323,7 @@
        $ plot.background           :List of 5
         ..$ fill         : NULL
         ..$ colour       : chr "white"
-        ..$ size         : NULL
+        ..$ linewidth    : NULL
         ..$ linetype     : NULL
         ..$ inherit.blank: logi TRUE
         ..- attr(*, "class")= chr [1:2] "element_rect" "element"
@@ -391,6 +391,7 @@
         ..- attr(*, "class")= chr [1:2] "element_blank" "element"
        $ strip.background.x        : NULL
        $ strip.background.y        : NULL
+       $ strip.clip                : chr "inherit"
        $ strip.placement           : chr "inside"
        $ strip.text                :List of 11
         ..$ family       : NULL
@@ -419,6 +420,8 @@
         ..$ debug        : NULL
         ..$ inherit.blank: logi FALSE
         ..- attr(*, "class")= chr [1:2] "element_text" "element"
+       $ strip.text.x.bottom       : NULL
+       $ strip.text.x.top          : NULL
        $ strip.text.y              :List of 11
         ..$ family       : NULL
         ..$ face         : chr "bold"
@@ -432,10 +435,6 @@
         ..$ debug        : NULL
         ..$ inherit.blank: logi FALSE
         ..- attr(*, "class")= chr [1:2] "element_text" "element"
-       $ strip.switch.pad.grid     : 'simpleUnit' num 2.75points
-        ..- attr(*, "unit")= int 8
-       $ strip.switch.pad.wrap     : 'simpleUnit' num 2.75points
-        ..- attr(*, "unit")= int 8
        $ strip.text.y.left         :List of 11
         ..$ family       : NULL
         ..$ face         : NULL
@@ -449,6 +448,11 @@
         ..$ debug        : NULL
         ..$ inherit.blank: logi TRUE
         ..- attr(*, "class")= chr [1:2] "element_text" "element"
+       $ strip.text.y.right        : NULL
+       $ strip.switch.pad.grid     : 'simpleUnit' num 2.75points
+        ..- attr(*, "unit")= int 8
+       $ strip.switch.pad.wrap     : 'simpleUnit' num 2.75points
+        ..- attr(*, "unit")= int 8
        - attr(*, "class")= chr [1:2] "theme" "gg"
        - attr(*, "complete")= logi TRUE
        - attr(*, "validate")= logi TRUE
@@ -475,10 +479,10 @@
       p$gg
     Output
       $theme
-      List of 93
+      List of 97
        $ line                      :List of 6
         ..$ colour       : chr "black"
-        ..$ size         : num 0.5
+        ..$ linewidth    : num 0.5
         ..$ linetype     : num 1
         ..$ lineend      : chr "butt"
         ..$ arrow        : logi FALSE
@@ -487,7 +491,7 @@
        $ rect                      :List of 5
         ..$ fill         : chr "white"
         ..$ colour       : chr "black"
-        ..$ size         : num 0.5
+        ..$ linewidth    : num 0.5
         ..$ linetype     : num 1
         ..$ inherit.blank: logi TRUE
         ..- attr(*, "class")= chr [1:2] "element_rect" "element"
@@ -639,7 +643,7 @@
         ..- attr(*, "class")= chr [1:2] "element_text" "element"
        $ axis.ticks                :List of 6
         ..$ colour       : chr "grey70"
-        ..$ size         : 'rel' num 0.5
+        ..$ linewidth    : 'rel' num 0.5
         ..$ linetype     : NULL
         ..$ lineend      : NULL
         ..$ arrow        : logi FALSE
@@ -670,7 +674,7 @@
        $ legend.background         :List of 5
         ..$ fill         : NULL
         ..$ colour       : logi NA
-        ..$ size         : NULL
+        ..$ linewidth    : NULL
         ..$ linetype     : NULL
         ..$ inherit.blank: logi TRUE
         ..- attr(*, "class")= chr [1:2] "element_rect" "element"
@@ -683,7 +687,7 @@
        $ legend.key                :List of 5
         ..$ fill         : chr "white"
         ..$ colour       : logi NA
-        ..$ size         : NULL
+        ..$ linewidth    : NULL
         ..$ linetype     : NULL
         ..$ inherit.blank: logi TRUE
         ..- attr(*, "class")= chr [1:2] "element_rect" "element"
@@ -733,14 +737,14 @@
        $ panel.background          :List of 5
         ..$ fill         : chr "white"
         ..$ colour       : logi NA
-        ..$ size         : NULL
+        ..$ linewidth    : NULL
         ..$ linetype     : NULL
         ..$ inherit.blank: logi TRUE
         ..- attr(*, "class")= chr [1:2] "element_rect" "element"
        $ panel.border              :List of 5
         ..$ fill         : logi NA
         ..$ colour       : chr "grey70"
-        ..$ size         : 'rel' num 1
+        ..$ linewidth    : 'rel' num 1
         ..$ linetype     : NULL
         ..$ inherit.blank: logi TRUE
         ..- attr(*, "class")= chr [1:2] "element_rect" "element"
@@ -750,7 +754,7 @@
        $ panel.spacing.y           : NULL
        $ panel.grid                :List of 6
         ..$ colour       : chr "grey87"
-        ..$ size         : NULL
+        ..$ linewidth    : NULL
         ..$ linetype     : NULL
         ..$ lineend      : NULL
         ..$ arrow        : logi FALSE
@@ -758,7 +762,7 @@
         ..- attr(*, "class")= chr [1:2] "element_line" "element"
        $ panel.grid.major          :List of 6
         ..$ colour       : NULL
-        ..$ size         : 'rel' num 0.5
+        ..$ linewidth    : 'rel' num 0.5
         ..$ linetype     : NULL
         ..$ lineend      : NULL
         ..$ arrow        : logi FALSE
@@ -766,7 +770,7 @@
         ..- attr(*, "class")= chr [1:2] "element_line" "element"
        $ panel.grid.minor          :List of 6
         ..$ colour       : NULL
-        ..$ size         : 'rel' num 0.25
+        ..$ linewidth    : 'rel' num 0.25
         ..$ linetype     : NULL
         ..$ lineend      : NULL
         ..$ arrow        : logi FALSE
@@ -780,7 +784,7 @@
        $ plot.background           :List of 5
         ..$ fill         : NULL
         ..$ colour       : chr "white"
-        ..$ size         : NULL
+        ..$ linewidth    : NULL
         ..$ linetype     : NULL
         ..$ inherit.blank: logi TRUE
         ..- attr(*, "class")= chr [1:2] "element_rect" "element"
@@ -848,6 +852,7 @@
         ..- attr(*, "class")= chr [1:2] "element_blank" "element"
        $ strip.background.x        : NULL
        $ strip.background.y        : NULL
+       $ strip.clip                : chr "inherit"
        $ strip.placement           : chr "inside"
        $ strip.text                :List of 11
         ..$ family       : NULL
@@ -876,6 +881,8 @@
         ..$ debug        : NULL
         ..$ inherit.blank: logi FALSE
         ..- attr(*, "class")= chr [1:2] "element_text" "element"
+       $ strip.text.x.bottom       : NULL
+       $ strip.text.x.top          : NULL
        $ strip.text.y              :List of 11
         ..$ family       : NULL
         ..$ face         : chr "bold"
@@ -889,10 +896,6 @@
         ..$ debug        : NULL
         ..$ inherit.blank: logi FALSE
         ..- attr(*, "class")= chr [1:2] "element_text" "element"
-       $ strip.switch.pad.grid     : 'simpleUnit' num 2.75points
-        ..- attr(*, "unit")= int 8
-       $ strip.switch.pad.wrap     : 'simpleUnit' num 2.75points
-        ..- attr(*, "unit")= int 8
        $ strip.text.y.left         :List of 11
         ..$ family       : NULL
         ..$ face         : NULL
@@ -906,6 +909,11 @@
         ..$ debug        : NULL
         ..$ inherit.blank: logi TRUE
         ..- attr(*, "class")= chr [1:2] "element_text" "element"
+       $ strip.text.y.right        : NULL
+       $ strip.switch.pad.grid     : 'simpleUnit' num 2.75points
+        ..- attr(*, "unit")= int 8
+       $ strip.switch.pad.wrap     : 'simpleUnit' num 2.75points
+        ..- attr(*, "unit")= int 8
        - attr(*, "class")= chr [1:2] "theme" "gg"
        - attr(*, "complete")= logi TRUE
        - attr(*, "validate")= logi TRUE

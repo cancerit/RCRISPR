@@ -197,13 +197,13 @@ add_pseudocount <-
       # If no indices given, apply to full data frame
       # Add pseudocount to all data frame columns
       warning("No indices given, adding pseudocount to all indices")
-      data <- data %>% mutate(across(indices, ~ . + pseudocount))
+      data <- data %>% mutate(across(all_of(indices), ~ . + pseudocount))
     } else {
       # Process column indices
       indices <- process_column_indices(indices)
       # Add pseudocount to selected data frame columns
       data <- tryCatch({
-        data %>% mutate(across(indices, ~ . + pseudocount))
+        data %>% mutate(across(all_of(indices), ~ . + pseudocount))
       }, error = function(e) {
         # Stop if there is an error
         stop("Cannot add pseudocount to dataframe.")

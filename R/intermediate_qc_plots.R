@@ -84,7 +84,7 @@ plot_common_violin <-
     # Build common violin plot
     if (groups == TRUE) {
       p <- tryCatch({
-        ggplot(df, aes_string(x = 'sample', y = ycol, fill = 'group')) +
+        ggplot(df, aes(x = sample, y = !!!ycol, fill = group)) +
           geom_violin(colour = "gray30") +
           labs(x = "", y = ylab, fill = "") +
           scale_fill_brewer(palette = 'Set3') +
@@ -97,7 +97,7 @@ plot_common_violin <-
       })
     } else {
       p <- tryCatch({
-        ggplot(df, aes_string(x = 'sample', y = ycol)) +
+        ggplot(df, aes(x = sample, y = !!!ycol)) +
           geom_violin(colour="gray30") +
           labs(x = "", y = ylab) +
           scale_y_continuous(breaks = pretty_breaks(10)) +
@@ -169,7 +169,7 @@ plot_common_density_ridges <-
     # Build common violin plot
     if (groups == TRUE) {
       p <- tryCatch({
-        ggplot(df, aes_string(y = 'sample', x = xcol, fill = 'group')) +
+        ggplot(df, aes(y = sample, x = !!!xcol, fill = group)) +
           geom_density_ridges(colour = "gray30", alpha = 0.5) +
           labs(x = xlab, y = "", fill = "") +
           scale_fill_brewer(palette = 'Set3') +
@@ -182,7 +182,7 @@ plot_common_density_ridges <-
       })
     } else {
       p <- tryCatch({
-        ggplot(df, aes_string(y = 'sample', x = xcol)) +
+        ggplot(df, aes(y = sample, x = !!!xcol)) +
           geom_density_ridges(colour = "gray30", alpha = 0.5) +
           labs(x = xlab, y = "", fill = "") +
           scale_x_continuous(breaks = pretty_breaks(16)) +

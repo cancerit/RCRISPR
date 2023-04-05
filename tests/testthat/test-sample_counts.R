@@ -65,7 +65,7 @@ test_unordered_counts <-  read_sample_count_file(
   id_column = 1,
   gene_column = 2,
   count_column = 3)
-slot(test_counts, 'filepath', check = TRUE) <- 'test'
+slot(test_unordered_counts, 'filepath', check = TRUE) <- 'test'
 
 # Add path for sample test counts
 sample_count_dir <- system.file("testdata", package = 'rcrispr')
@@ -129,6 +129,18 @@ testthat::test_that("read sample count file and strip ids", {
     strip_ids = T)
   slot(test_counts_stripped, 'filepath', check = TRUE) <- 'test'
   testthat::expect_snapshot(test_counts_stripped)
+})
+
+testthat::test_that("read sample count file with numeric sample names", {
+  test_counts_numeric_sample <-  read_sample_count_file(
+    sample_name = '1HELA_T0',
+    filepath = system.file("testdata", "test_counts_numeric_sample.tsv", package = 'rcrispr'),
+    id_column = 1,
+    gene_column = 2,
+    count_column = 3,
+    check.names = F)
+  slot(test_counts_numeric_sample, 'filepath', check = TRUE) <- 'test'
+  testthat::expect_snapshot(test_counts_numeric_sample)
 })
 
 ###############################################################################

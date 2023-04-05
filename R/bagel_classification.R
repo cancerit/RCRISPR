@@ -315,7 +315,7 @@ plot_roc <-
     roc_obj.coords <- data.frame('FPR' = (1 - roc_obj$specificities),
                                  'TPR' = roc_obj$sensitivities)
     roc_obj.plot <- ggplot(roc_obj.coords, aes(x = FPR, y = TPR)) +
-                      geom_line(size = 0.8, color = 'dodgerblue4') +
+                      geom_line(linewidth = 0.8, color = 'dodgerblue4') +
                       xlab('FPR (1 - Specificity)') +
                       ylab('TPR (Sensitivity)') +
                       theme_pubr() +

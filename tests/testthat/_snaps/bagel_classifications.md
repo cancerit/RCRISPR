@@ -4,7 +4,7 @@
       add_bagel_classifications(data = test_count_matrix, gene_column = 2, ess = ess,
         noness = noness)
     Output
-                                   sgRNA    gene T0_. T3_A T3_B T3_C T18_A T18_B
+                                   sgRNA    gene T0_- T3_A T3_B T3_C T18_A T18_B
       2007     PPA1_TTTAGACTTGGGAAGACCCA    PPA1  277   92   64   67    10    27
       2008     PPA1_GTTGCATGAAGACATACCTG    PPA1  267  143  108   46    62     2
       2009     PPA1_TGGTAGTTGAAGTACCACGC    PPA1   98   45   85   60    72    75
@@ -413,7 +413,7 @@
       # A tibble: 10 x 17
          sample        max_essential max_nonessential max_unknown mean_essential
          <chr>                 <dbl>            <dbl>       <dbl>          <dbl>
-       1 T0_.                   1182              915         931          343. 
+       1 T0_-                   1182              915         931          343. 
        2 T18_A                   314              793         925           50.2
        3 T18_A_Starved           304              584         542           49.0
        4 T18_B                   294              636         761           43.6
@@ -423,7 +423,7 @@
        8 T3_A                    360              492         431          113. 
        9 T3_B                    249              328         354           80.1
       10 T3_C                    250              409         388           95.2
-      # ... with 12 more variables: mean_nonessential <dbl>, mean_unknown <dbl>,
+      # i 12 more variables: mean_nonessential <dbl>, mean_unknown <dbl>,
       #   median_essential <dbl>, median_nonessential <dbl>, median_unknown <dbl>,
       #   min_essential <dbl>, min_nonessential <dbl>, min_unknown <dbl>,
       #   n_genes_essential <dbl>, n_genes_nonessential <dbl>, n_genes_unknown <dbl>,
@@ -439,7 +439,7 @@
       # A tibble: 10 x 17
          sample        max_essential max_nonessential max_unknown mean_essential
          <chr>                 <dbl>            <dbl>       <dbl>          <dbl>
-       1 T0_.                   1182              915         931          343. 
+       1 T0_-                   1182              915         931          343. 
        2 T18_A                   314              793         925           50.2
        3 T18_A_Starved           304              584         542           49.0
        4 T18_B                   294              636         761           43.6
@@ -449,7 +449,7 @@
        8 T3_A                    360              492         431          113. 
        9 T3_B                    249              328         354           80.1
       10 T3_C                    250              409         388           95.2
-      # ... with 12 more variables: mean_nonessential <dbl>, mean_unknown <dbl>,
+      # i 12 more variables: mean_nonessential <dbl>, mean_unknown <dbl>,
       #   median_essential <dbl>, median_nonessential <dbl>, median_unknown <dbl>,
       #   min_essential <dbl>, min_nonessential <dbl>, min_unknown <dbl>,
       #   n_genes_essential <dbl>, n_genes_nonessential <dbl>, n_genes_unknown <dbl>,
@@ -468,7 +468,7 @@
       1 T3_A   -2.502 2.553                        -0.290           0.0318      -0.655
       2 T3_B   -2.430 4.084                        -0.848          -0.732       -1.16 
       3 T3_C   -1.807 3.606                        -0.488          -0.486       -1.06 
-      # ... with 13 more variables: mean_essential <dbl>, mean_nonessential <dbl>,
+      # i 13 more variables: mean_essential <dbl>, mean_nonessential <dbl>,
       #   mean_unknown <dbl>, median_essential <dbl>, median_nonessential <dbl>,
       #   median_unknown <dbl>, min_essential <dbl>, min_nonessential <dbl>,
       #   min_unknown <dbl>, n_genes_essential <dbl>, n_genes_nonessential <dbl>,
