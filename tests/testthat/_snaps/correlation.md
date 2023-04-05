@@ -18,7 +18,7 @@
       p$gg
     Output
       $theme
-      List of 94
+      List of 97
        $ line                      :List of 6
         ..$ colour       : chr "black"
         ..$ linewidth    : num 0.5
@@ -420,6 +420,8 @@
         ..$ debug        : NULL
         ..$ inherit.blank: logi FALSE
         ..- attr(*, "class")= chr [1:2] "element_text" "element"
+       $ strip.text.x.bottom       : NULL
+       $ strip.text.x.top          : NULL
        $ strip.text.y              :List of 11
         ..$ family       : NULL
         ..$ face         : chr "bold"
@@ -433,10 +435,6 @@
         ..$ debug        : NULL
         ..$ inherit.blank: logi FALSE
         ..- attr(*, "class")= chr [1:2] "element_text" "element"
-       $ strip.switch.pad.grid     : 'simpleUnit' num 2.75points
-        ..- attr(*, "unit")= int 8
-       $ strip.switch.pad.wrap     : 'simpleUnit' num 2.75points
-        ..- attr(*, "unit")= int 8
        $ strip.text.y.left         :List of 11
         ..$ family       : NULL
         ..$ face         : NULL
@@ -450,6 +448,11 @@
         ..$ debug        : NULL
         ..$ inherit.blank: logi TRUE
         ..- attr(*, "class")= chr [1:2] "element_text" "element"
+       $ strip.text.y.right        : NULL
+       $ strip.switch.pad.grid     : 'simpleUnit' num 2.75points
+        ..- attr(*, "unit")= int 8
+       $ strip.switch.pad.wrap     : 'simpleUnit' num 2.75points
+        ..- attr(*, "unit")= int 8
        - attr(*, "class")= chr [1:2] "theme" "gg"
        - attr(*, "complete")= logi TRUE
        - attr(*, "validate")= logi TRUE
@@ -476,7 +479,7 @@
       p$gg
     Output
       $theme
-      List of 94
+      List of 97
        $ line                      :List of 6
         ..$ colour       : chr "black"
         ..$ linewidth    : num 0.5
@@ -878,6 +881,8 @@
         ..$ debug        : NULL
         ..$ inherit.blank: logi FALSE
         ..- attr(*, "class")= chr [1:2] "element_text" "element"
+       $ strip.text.x.bottom       : NULL
+       $ strip.text.x.top          : NULL
        $ strip.text.y              :List of 11
         ..$ family       : NULL
         ..$ face         : chr "bold"
@@ -891,10 +896,6 @@
         ..$ debug        : NULL
         ..$ inherit.blank: logi FALSE
         ..- attr(*, "class")= chr [1:2] "element_text" "element"
-       $ strip.switch.pad.grid     : 'simpleUnit' num 2.75points
-        ..- attr(*, "unit")= int 8
-       $ strip.switch.pad.wrap     : 'simpleUnit' num 2.75points
-        ..- attr(*, "unit")= int 8
        $ strip.text.y.left         :List of 11
         ..$ family       : NULL
         ..$ face         : NULL
@@ -908,6 +909,11 @@
         ..$ debug        : NULL
         ..$ inherit.blank: logi TRUE
         ..- attr(*, "class")= chr [1:2] "element_text" "element"
+       $ strip.text.y.right        : NULL
+       $ strip.switch.pad.grid     : 'simpleUnit' num 2.75points
+        ..- attr(*, "unit")= int 8
+       $ strip.switch.pad.wrap     : 'simpleUnit' num 2.75points
+        ..- attr(*, "unit")= int 8
        - attr(*, "class")= chr [1:2] "theme" "gg"
        - attr(*, "complete")= logi TRUE
        - attr(*, "validate")= logi TRUE
