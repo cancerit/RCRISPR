@@ -61,6 +61,7 @@ jobs:
             set +e
             docker exec ${container_id} r -e 'devtools::check(document = FALSE, quiet = TRUE, args = "--no-tests", error_on = c("never"))'
             #docker exec ${container_id} grep -qvP '^Status:.*ERROR' /tmp/rcrispr.Rcheck/00check.log; res=$?
+            ls -l /tmp/
             #docker exec ${container_id} cat /tmp/rcrispr.Rcheck/00check.log
             docker rm -f $container_id
             if [ "$res" -ne "0" ]; then
