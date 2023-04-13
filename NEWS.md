@@ -1,3 +1,9 @@
+# RCRISPR 1.2.1.1
+
+## Minor changes
+
+* Remove `arrange` library sorting when comparing count matrix to library 
+
 # RCRISPR 1.2.1.0
 
 ## Minor changes

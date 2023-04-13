@@ -462,7 +462,7 @@ compare_count_matrix_to_library <-
     check_dataframe(count_matrix, indices = c(id_column, gene_column))
     # Get processed library annotation
     library_annotation <- get_library_annotations(library_annotation_object, processed = TRUE, sort_ids = TRUE)
-    library_annotation <- library_annotation %>% select(sgRNA, gene) %>% arrange(gene, sgRNA)
+    library_annotation <- library_annotation %>% select(sgRNA, gene)
     # Check number of guides is equal
     if (nrow(count_matrix) != nrow(library_annotation))
       stop(paste("Cannot compare counts to library, number of guides in library and sample count differ:", nrow(library_annotation), nrow(count_matrix)))
