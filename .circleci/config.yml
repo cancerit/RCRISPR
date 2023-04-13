@@ -19,6 +19,8 @@ jobs:
       image: ubuntu-2004:202107-02
     steps:
       - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Building CI image
           command: |
