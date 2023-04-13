@@ -67,7 +67,7 @@ jobs:
             echo "LS ~/check_out"
             ls -l ~/check_out
             echo "LS TMP *"
-            ls -l /tmp/*
+            ls -l /tmp/**rcrispr.Rcheck/00check.log*
             #docker exec ${container_id} cat /tmp/rcrispr.Rcheck/00check.log
             docker rm -f $container_id
             if [ "$res" -ne "0" ]; then
