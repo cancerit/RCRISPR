@@ -59,11 +59,12 @@ jobs:
             docker load -i /tmp/workspace/dev-image.tar
             container_id=$(docker run -u root -w /build -d --rm ${LC_REPO}:${CIRCLE_SHA1} sleep 10000)
             set +e
-            #docker exec ${container_id} r -e 'devtools::check(document = FALSE, quiet = TRUE, args = "--no-tests", error_on = c("never"))'
+            mkdir ~/check_out
+            #docker exec ${container_id} r -e 'devtools::check(document = FALSE, quiet = TRUE, args = "--no-tests", output = "~/check_out", error_on = c("never"))'
             docker exec ${container_id} r -e 'result <- devtools::check(error_on = "never")'
             #docker exec ${container_id} grep -qvP '^Status:.*ERROR' /tmp/rcrispr.Rcheck/00check.log; res=$?
-            echo "LS TMP"
-            ls -l /tmp/
+            echo "LS ~/check_out"
+            ls -l ~/check_out
             echo "LS TMP *"
             ls -l /tmp/*
             #docker exec ${container_id} cat /tmp/rcrispr.Rcheck/00check.log
