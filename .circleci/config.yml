@@ -62,8 +62,6 @@ jobs:
             mkdir ~/check_out
             docker exec ${container_id} r -e 'devtools::check(document = FALSE, quiet = TRUE, args =c("--no-tests"), check_dir = "~/check_out", error_on = c("never"));'
             docker exec ${container_id} grep -qvP '^Status:.*ERROR' /root/check_out/rcrispr.Rcheck/00check.log; res=$?
-            echo "LS ~/check_out"
-            ls -l /root/check_out/rcrispr.Rcheck/
             docker rm -f $container_id
             if [ "$res" -ne "0" ]; then
               exit 1
