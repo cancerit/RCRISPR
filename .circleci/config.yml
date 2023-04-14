@@ -60,11 +60,9 @@ jobs:
             container_id=$(docker run -u root -w /build -d --rm ${LC_REPO}:${CIRCLE_SHA1} sleep 10000)
             set +e
             mkdir ~/check_out
-            cd ~/check_out
             #docker exec ${container_id} r -e 'devtools::check(document = FALSE, quiet = TRUE, args = c("--no-tests", check_dir = "~/check_out"), error_on = c("never"))'
-            #docker exec ${container_id} r -e 'result <- devtools::check(document = FALSE, args =c("--no-tests", check_dir = "~/check_out"), error_on = "error"); result;'
+            docker exec ${container_id} r -e 'devtools::check(document = FALSE, args =c("--no-tests"), check_dir = "~/check_out", error_on = c("never"), error_on = "error");'
             #docker exec ${container_id} grep -qvP '^Status:.*ERROR' /tmp/rcrispr.Rcheck/00check.log; res=$?
-            docker exec ${container_id} r -e 'rcmdcheck::rcmdcheck(args =c("--no-tests", check_dir = "~/check_out"), error_on = "error");'
             echo "LS ~/check_out"
             ls -l ~/check_out
             echo "LS TMP *"
