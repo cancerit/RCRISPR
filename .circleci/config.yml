@@ -62,8 +62,9 @@ jobs:
             mkdir ~/check_out
             cd ~/check_out
             #docker exec ${container_id} r -e 'devtools::check(document = FALSE, quiet = TRUE, args = "--no-tests", output = "~/check_out", error_on = c("never"))'
-            docker exec ${container_id} r -e 'result <- devtools::check(document = FALSE, args = "--no-tests", error_on = "error"); result;'
+            #docker exec ${container_id} r -e 'result <- devtools::check(document = FALSE, args = "--no-tests", error_on = "error"); result;'
             #docker exec ${container_id} grep -qvP '^Status:.*ERROR' /tmp/rcrispr.Rcheck/00check.log; res=$?
+            docker exec ${container_id} r -e 'rcmdcheck(quiet = FALSE);'
             echo "LS ~/check_out"
             ls -l ~/check_out
             echo "LS TMP *"

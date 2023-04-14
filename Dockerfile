@@ -42,6 +42,7 @@ ENV INST_NCPU=$(nproc)
 
 # hadolint ignore=DL3059
 RUN R -e "install.packages('devtools', lib = Sys.getenv(\"R_LIBS_USER\"), Ncpus = Sys.getenv(\"INST_NCPU\"))"
+RUN R -e "install.packages('rcmdcheck',  lib = Sys.getenv(\"R_LIBS_USER\"), Ncpus = Sys.getenv(\"INST_NCPU\"))"
 # hadolint ignore=DL3059
 RUN R -e "devtools::install_deps(dep = T, lib = Sys.getenv(\"R_LIBS_USER\"), threads = Sys.getenv(\"INST_NCPU\"))"
 # hadolint ignore=DL3059
