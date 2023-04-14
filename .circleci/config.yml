@@ -61,7 +61,7 @@ jobs:
             set +e
             mkdir ~/check_out
             #docker exec ${container_id} r -e 'devtools::check(document = FALSE, quiet = TRUE, args = c("--no-tests", check_dir = "~/check_out"), error_on = c("never"))'
-            docker exec ${container_id} r -e 'devtools::check(document = FALSE, args =c("--no-tests"), check_dir = "~/check_out", error_on = c("never"), error_on = "error");'
+            docker exec ${container_id} r -e 'devtools::check(document = FALSE, args =c("--no-tests"), check_dir = "~/check_out", error_on = c("never"));'
             #docker exec ${container_id} grep -qvP '^Status:.*ERROR' /tmp/rcrispr.Rcheck/00check.log; res=$?
             echo "LS ~/check_out"
             ls -l ~/check_out
