@@ -1,3 +1,9 @@
+# RCRISPR 1.2.2.2
+
+## Minor changes
+
+* Add output directory to circleCI devtools::check
+
 # RCRISPR 1.2.1.1
 
 ## Minor changes
